@@ -31,6 +31,7 @@ exports.createBuilding = async (req, res) => {
 };
 
 // PUT /api/buildings/:id
+//sdn_______-
 exports.updateBuilding = async (req, res) => {
     try {
         const { id } = req.params;
