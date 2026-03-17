@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-//,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 // Application model: đại diện cho đơn đăng ký, hủy, chuyển phòng của sinh viên
 const applicationSchema = new mongoose.Schema(
     {
