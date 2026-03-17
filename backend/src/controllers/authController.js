@@ -121,15 +121,15 @@ exports.forgotPassword = async (req, res) => {
 exports.resetPassword = async (req, res) => {
     try {
         const { email, code, newPassword, confirmPassword } = req.body;
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{6,}$/;
 
         if (!email || !code || !newPassword || !confirmPassword)
             return res.status(400).json({ success: false, message: "Vui lòng điền đầy đủ thông tin" });
 
         if (newPassword !== confirmPassword)
             return res.status(400).json({ success: false, message: "Mật khẩu xác nhận không khớp" });
-
-        if (newPassword.length < 6)
-            return res.status(400).json({ success: false, message: "Mật khẩu phải có ít nhất 6 ký tự" });
+        if (!passwordRegex.test(newPassword))
+            return res.status(400).json({ success: false, message: "Mat khau phai co it nhat 6 ky tu, 1 chu hoa, 1 chu thuong va 1 ky tu dac biet" });
 
         const hashed = crypto.createHash("sha256").update(code).digest("hex");
 
@@ -159,19 +159,15 @@ exports.resetPassword = async (req, res) => {
 exports.changePassword = async (req, res) => {
     try {
         const { currentPassword, newPassword, confirmPassword } = req.body;
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{6,}$/;
 
         if (!currentPassword || !newPassword || !confirmPassword)
             return res.status(400).json({ success: false, message: "Vui lòng điền đầy đủ thông tin" });
 
         if (newPassword !== confirmPassword)
             return res.status(400).json({ success: false, message: "Mật khẩu xác nhận không khớp" });
-
-        if (newPassword.length < 6)
-            return res.status(400).json({ success: false, message: "Mật khẩu mới phải có ít nhất 6 ký tự" });
-
-        const pwRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
-        if (!pwRegex.test(newPassword))
-            return res.status(400).json({ success: false, message: "Mật khẩu phải có ít nhất 1 chữ hoa, 1 chữ thường và 1 chữ số" });
+        if (!passwordRegex.test(newPassword))
+            return res.status(400).json({ success: false, message: "Mat khau phai co it nhat 6 ky tu, 1 chu hoa, 1 chu thuong va 1 ky tu dac biet" });
 
         const user = await User.findById(req.user.id);
         if (!user)

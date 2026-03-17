@@ -1,11 +1,11 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap");
 
 /* ── Page ── */
 .ar-page {
     min-height: 100vh;
     background: #f8f9fb;
     color: #1a1a1a;
-    font-family: "Inter", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", "Helvetica Neue", Arial, sans-serif;
     padding: 32px;
 }
 
@@ -75,7 +75,7 @@
     border: none;
     border-radius: 10px;
     font-size: 14px;
-    font-family: "Inter", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", "Helvetica Neue", Arial, sans-serif;
     cursor: pointer;
     transition: all .2s;
     background: none;
@@ -107,7 +107,7 @@
     color: #1a1a1a;
     padding: 10px 14px;
     font-size: 14px;
-    font-family: "Inter", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", "Helvetica Neue", Arial, sans-serif;
     outline: none;
 }
 
@@ -220,7 +220,7 @@
     border-radius: 10px;
     color: #555;
     font-size: 13px;
-    font-family: "Inter", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", "Helvetica Neue", Arial, sans-serif;
     padding: 8px 14px;
     cursor: pointer;
     white-space: nowrap;
@@ -239,7 +239,7 @@
     border-radius: 10px;
     color: #16a34a;
     font-size: 13px;
-    font-family: "Inter", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", "Helvetica Neue", Arial, sans-serif;
     padding: 8px 14px;
     cursor: pointer;
     font-weight: 600;
@@ -390,7 +390,7 @@
     color: #1a1a1a;
     padding: 11px 14px;
     font-size: 14px;
-    font-family: "Inter", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", "Helvetica Neue", Arial, sans-serif;
     outline: none;
     resize: vertical;
 }
@@ -417,7 +417,7 @@
     border-radius: 12px;
     color: #888;
     font-size: 14px;
-    font-family: "Inter", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", "Helvetica Neue", Arial, sans-serif;
     cursor: pointer;
 }
 
@@ -434,7 +434,7 @@
     color: #fff;
     font-size: 14px;
     font-weight: 700;
-    font-family: "Inter", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", "Helvetica Neue", Arial, sans-serif;
     cursor: pointer;
 }
 

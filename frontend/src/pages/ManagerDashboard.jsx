@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+﻿import { useState, useEffect, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import "./student/StudentDashboard.css";
 import api from "../services/api";
@@ -17,6 +17,7 @@ export default function ManagerDashboard() {
     const location = useLocation();
     const [active, setActive] = useState("overview");
     const [showChangePw, setShowChangePw] = useState(false);
+    const [reportsView, setReportsView] = useState("recent");
     const user = JSON.parse(localStorage.getItem("user") || "{}");
 
     useEffect(() => {
@@ -326,20 +327,89 @@ export default function ManagerDashboard() {
     const ReportsPanel = () => {
         const [data, setData] = useState([]);
         const [loading, setLoading] = useState(true);
+        const [buildings, setBuildings] = useState([]);
+        const [loadingBuildings, setLoadingBuildings] = useState(false);
+        const [sendingReport, setSendingReport] = useState(false);
+        const [reportAlert, setReportAlert] = useState(null);
+        const [reportForm, setReportForm] = useState({
+            buildingId: "",
+            type: "general",
+            title: "",
+            content: "",
+        });
+        const isComposeView = reportsView === "compose";
 
         useEffect(() => {
+            if (isComposeView) return;
+            setLoading(true);
             api.get("/reports?limit=5")
                 .then((r) => setData(r.data.reports || []))
-                .catch(() => { })
+                .catch(() => setData([]))
                 .finally(() => setLoading(false));
-        }, []);
+        }, [isComposeView]);
+
+        useEffect(() => {
+            if (!isComposeView || buildings.length > 0) return;
+            setLoadingBuildings(true);
+            api.get("/reports/my-buildings")
+                .then((r) => {
+                    const nextBuildings = r.data.buildings || [];
+                    setBuildings(nextBuildings);
+                    setReportForm((prev) => ({
+                        ...prev,
+                        buildingId: prev.buildingId || nextBuildings[0]?._id || "",
+                    }));
+                })
+                .catch(() => setBuildings([]))
+                .finally(() => setLoadingBuildings(false));
+        }, [isComposeView, buildings.length]);
+
+        const showReportAlert = (type, msg) => {
+            setReportAlert({ type, msg });
+            setTimeout(() => setReportAlert(null), 4000);
+        };
+
+        const handleReportChange = (e) => {
+            const { name, value } = e.target;
+            setReportForm((prev) => ({ ...prev, [name]: value }));
+        };
+
+        const handleCreateReport = async (e) => {
+            e.preventDefault();
+            if (!reportForm.buildingId || !reportForm.title.trim() || !reportForm.content.trim()) {
+                showReportAlert("error", "Vui long chon toa nha va nhap day du tieu de, noi dung");
+                return;
+            }
+
+            setSendingReport(true);
+            try {
+                await api.post("/reports", {
+                    buildingId: reportForm.buildingId,
+                    type: reportForm.type,
+                    title: reportForm.title.trim(),
+                    content: reportForm.content.trim(),
+                });
+                showReportAlert("success", "Da gui bao cao cho admin thanh cong");
+                setReportForm((prev) => ({
+                    ...prev,
+                    type: "general",
+                    title: "",
+                    content: "",
+                }));
+                setReportsView("recent");
+            } catch (err) {
+                showReportAlert("error", err.response?.data?.message || "Khong the gui bao cao luc nay");
+            } finally {
+                setSendingReport(false);
+            }
+        };
 
         return (
             <>
                 <div className="sd-panel-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <div>
-                        <h2 className="sd-panel-title">📋 Báo cáo gần đây</h2>
-                        <p className="sd-panel-subtitle">5 báo cáo mới nhất</p>
+                        <h2 className="sd-panel-title">{isComposeView ? "Gui bao cao cho admin" : "📋 Báo cáo gần đây"}</h2>
+                        <p className="sd-panel-subtitle">{isComposeView ? "Nhap noi dung bao cao de gui cho admin" : "5 báo cáo mới nhất"}</p>
                     </div>
                     <button
                         style={{
@@ -352,13 +422,101 @@ export default function ManagerDashboard() {
                             cursor: "pointer",
                             fontSize: 14,
                         }}
-                        onClick={() => setActive('reports')}
+                        onClick={() => setReportsView((prev) => (prev === "compose" ? "recent" : "compose"))}
                     >
-                        Xem tất cả →
+                        {isComposeView ? "Quay lai danh sach <-" : "Gửi báo cáo →"}
                     </button>
                 </div>
 
-                {loading ? (
+                {reportAlert && (
+                    <div style={{
+                        padding: "10px 14px",
+                        borderRadius: 8,
+                        marginBottom: 16,
+                        fontSize: 13,
+                        fontWeight: 600,
+                        background: reportAlert.type === "success" ? "#dcfce7" : "#fee2e2",
+                        color: reportAlert.type === "success" ? "#166534" : "#b91c1c",
+                        border: `1px solid ${reportAlert.type === "success" ? "#86efac" : "#fca5a5"}`,
+                    }}>
+                        {reportAlert.msg}
+                    </div>
+                )}
+
+                {isComposeView ? (
+                    <form onSubmit={handleCreateReport} style={{ background: "#fff", border: "1px solid #f1e6df", borderRadius: 14, padding: 20, display: "grid", gap: 14 }}>
+                        <div>
+                            <label style={{ fontSize: 13, fontWeight: 600, color: "#374151", display: "block", marginBottom: 6 }}>Toa nha</label>
+                            <select
+                                name="buildingId"
+                                value={reportForm.buildingId}
+                                onChange={handleReportChange}
+                                disabled={loadingBuildings || buildings.length === 0}
+                                style={{ width: "100%", padding: "10px 12px", borderRadius: 10, border: "1.5px solid #e2e8f0", fontSize: 14, outline: "none" }}
+                            >
+                                <option value="">{loadingBuildings ? "Dang tai toa nha..." : "Chon toa nha"}</option>
+                                {buildings.map((building) => (
+                                    <option key={building._id} value={building._id}>{building.name}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div>
+                            <label style={{ fontSize: 13, fontWeight: 600, color: "#374151", display: "block", marginBottom: 6 }}>Loai bao cao</label>
+                            <select
+                                name="type"
+                                value={reportForm.type}
+                                onChange={handleReportChange}
+                                style={{ width: "100%", padding: "10px 12px", borderRadius: 10, border: "1.5px solid #e2e8f0", fontSize: 14, outline: "none" }}
+                            >
+                                <option value="general">Tong hop</option>
+                                <option value="maintenance">Bao tri</option>
+                                <option value="incident">Su co</option>
+                                <option value="monthly">Bao cao thang</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label style={{ fontSize: 13, fontWeight: 600, color: "#374151", display: "block", marginBottom: 6 }}>Tieu de</label>
+                            <input
+                                name="title"
+                                value={reportForm.title}
+                                onChange={handleReportChange}
+                                placeholder="Vi du: Bao cao tinh trang toa nha"
+                                style={{ width: "100%", padding: "10px 12px", borderRadius: 10, border: "1.5px solid #e2e8f0", fontSize: 14, outline: "none", boxSizing: "border-box" }}
+                            />
+                        </div>
+
+                        <div>
+                            <label style={{ fontSize: 13, fontWeight: 600, color: "#374151", display: "block", marginBottom: 6 }}>Noi dung</label>
+                            <textarea
+                                name="content"
+                                value={reportForm.content}
+                                onChange={handleReportChange}
+                                rows={6}
+                                placeholder="Mo ta chi tiet noi dung can gui admin"
+                                style={{ width: "100%", padding: "10px 12px", borderRadius: 10, border: "1.5px solid #e2e8f0", fontSize: 14, outline: "none", resize: "vertical", boxSizing: "border-box" }}
+                            />
+                        </div>
+
+                        <div style={{ display: "flex", justifyContent: "flex-end", gap: 10 }}>
+                            <button
+                                type="button"
+                                onClick={() => setReportsView("recent")}
+                                style={{ padding: "10px 16px", borderRadius: 10, border: "1.5px solid #e2e8f0", background: "#fff", color: "#475569", fontWeight: 600, cursor: "pointer" }}
+                            >
+                                Huy
+                            </button>
+                            <button
+                                type="submit"
+                                disabled={sendingReport || loadingBuildings || buildings.length === 0}
+                                style={{ padding: "10px 16px", borderRadius: 10, border: "none", background: sendingReport ? "#cbd5e1" : "#e8540a", color: "#fff", fontWeight: 700, cursor: sendingReport ? "not-allowed" : "pointer" }}
+                            >
+                                {sendingReport ? "Dang gui..." : "Gui bao cao"}
+                            </button>
+                        </div>
+                    </form>
+                ) : loading ? (
                     <div style={{ textAlign: "center", padding: "20px", color: "#bbb" }}>
                         <div className="sd-spinner" style={{ margin: "0 auto" }} />
                     </div>
@@ -1526,5 +1684,3 @@ function QuickLink({ icon, label, onClick }) {
         </button>
     );
 }
-
-

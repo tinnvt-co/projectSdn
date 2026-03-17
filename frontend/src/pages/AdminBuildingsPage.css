@@ -1,9 +1,9 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap");
 
 .ab-page {
     min-height: 100vh;
     background: #f8f9fb;
-    font-family: "Inter", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", "Helvetica Neue", Arial, sans-serif;
     padding: 32px;
 }
 
@@ -36,7 +36,7 @@
     border-radius: 12px;
     font-size: 14px;
     font-weight: 600;
-    font-family: "Inter", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", "Helvetica Neue", Arial, sans-serif;
     cursor: pointer;
     box-shadow: 0 4px 14px rgba(232, 84, 10, .3);
     transition: transform .18s, box-shadow .18s;
@@ -207,7 +207,7 @@
     background: #fff;
     color: #555;
     font-size: 12px;
-    font-family: "Inter", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", "Helvetica Neue", Arial, sans-serif;
     cursor: pointer;
     transition: all .2s;
 }
@@ -224,7 +224,7 @@
     background: rgba(239, 68, 68, .06);
     color: #dc2626;
     font-size: 12px;
-    font-family: "Inter", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", "Helvetica Neue", Arial, sans-serif;
     cursor: pointer;
     transition: all .2s;
 }
@@ -278,7 +278,7 @@
     border-radius: 8px;
     font-size: 12px;
     font-weight: 600;
-    font-family: "Inter", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", "Helvetica Neue", Arial, sans-serif;
     cursor: pointer;
     transition: all .2s;
 }
@@ -388,7 +388,7 @@
     background: rgba(239, 68, 68, .06);
     color: #dc2626;
     font-size: 11px;
-    font-family: "Inter", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", "Helvetica Neue", Arial, sans-serif;
     cursor: pointer;
     transition: all .2s;
 }
@@ -489,7 +489,7 @@
     border-radius: 10px;
     padding: 10px 13px;
     font-size: 14px;
-    font-family: "Inter", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", "Helvetica Neue", Arial, sans-serif;
     outline: none;
     color: #1a1a1a;
     background: #fafafa;
@@ -522,7 +522,7 @@
     border: 1.5px solid #e8e8e8;
     border-radius: 10px;
     font-size: 14px;
-    font-family: "Inter", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", "Helvetica Neue", Arial, sans-serif;
     cursor: pointer;
 }
 
@@ -534,7 +534,7 @@
     border-radius: 10px;
     font-size: 14px;
     font-weight: 600;
-    font-family: "Inter", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", "Helvetica Neue", Arial, sans-serif;
     cursor: pointer;
     box-shadow: 0 4px 14px rgba(232, 84, 10, .3);
 }

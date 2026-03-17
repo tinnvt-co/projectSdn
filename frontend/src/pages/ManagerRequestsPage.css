@@ -1,9 +1,9 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap");
 
 .mr-page {
     min-height: 100vh;
     background: #f8f9fb;
-    font-family: "Inter", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", "Helvetica Neue", Arial, sans-serif;
     padding: 32px;
 }
 
@@ -41,7 +41,7 @@
     border: 1.5px solid #e8e8e8;
     border-radius: 10px;
     font-size: 13px;
-    font-family: "Inter", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", "Helvetica Neue", Arial, sans-serif;
     color: #1a1a1a;
     background: #fff;
     outline: none;
@@ -165,7 +165,7 @@
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
-    font-family: "Inter", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", "Helvetica Neue", Arial, sans-serif;
     transition: all .2s;
 }
 
@@ -182,7 +182,7 @@
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
-    font-family: "Inter", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", "Helvetica Neue", Arial, sans-serif;
     transition: all .2s;
 }
 
@@ -231,7 +231,7 @@
     border-radius: 10px;
     padding: 11px 14px;
     font-size: 14px;
-    font-family: "Inter", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", "Helvetica Neue", Arial, sans-serif;
     outline: none;
     transition: border-color .2s;
     margin-bottom: 12px;
@@ -262,7 +262,7 @@
     border: 1.5px solid #e8e8e8;
     border-radius: 10px;
     font-size: 14px;
-    font-family: "Inter", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", "Helvetica Neue", Arial, sans-serif;
     cursor: pointer;
 }
 
@@ -274,7 +274,7 @@
     border-radius: 10px;
     font-size: 14px;
     font-weight: 600;
-    font-family: "Inter", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", "Helvetica Neue", Arial, sans-serif;
     cursor: pointer;
     box-shadow: 0 4px 14px rgba(232, 84, 10, .35);
 }
