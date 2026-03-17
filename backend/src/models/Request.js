@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+// Mô hình dữ liệu cho yêu cầu của sinh viên
+// Loại yêu cầu: báo hỏng, chuyển phòng, giữ phòng, hủy đặt phòng, khác
 
 const requestSchema = new mongoose.Schema(
     {
