@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
-
+// Mô hình dữ liệu cho cài đặt hệ thống
+// Mỗi cài đặt sẽ có một khóa (key) duy nhất, giá trị (value) có thể là bất kỳ kiểu dữ liệu nào, mô tả về cài đặt và thông tin người cập nhật cuối cùng.
 const settingSchema = new mongoose.Schema(
     {
         key: {
