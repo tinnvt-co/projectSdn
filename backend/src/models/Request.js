@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 // Mô hình dữ liệu cho yêu cầu của sinh viên
-// Mỗi yêu cầu sẽ thuộc về một sinh viên và có các thông tin như loại yêu cầu, tiêu đề, mô tả, tệp đính kèm, phòng hiện tại, phòng mục tiêu (nếu có), trạng thái xử lý, đánh giá của quản lý và đánh giá của quản trị viên.
+// Loại yêu cầu: báo hỏng, chuyển phòng, giữ phòng, hủy đặt phòng, khác
 
 const requestSchema = new mongoose.Schema(
     {
@@ -11,7 +11,7 @@ const requestSchema = new mongoose.Schema(
         },
         type: {
             type: String,
-            enum: ["damage_report", "room_transfer", "room_retention", "other"],
+            enum: ["damage_report", "room_transfer", "room_retention", "room_reservation_cancel", "other"],
             required: true,
         },
         title: {

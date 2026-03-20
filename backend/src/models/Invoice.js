@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
-// Mô hình dữ liệu cho hóa đơn của sinh viên
-// Mỗi hóa đơn sẽ thuộc về một sinh viên và có các thông tin như mã hóa đơn, loại hóa đơn, mô tả, số tiền, ngày đến hạn, trạng thái thanh toán và liên kết đến yêu cầu (nếu có).
+
 const invoiceSchema = new mongoose.Schema(
     {
         invoiceCode: {

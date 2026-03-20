@@ -1,6 +1,4 @@
 const mongoose = require("mongoose");
-// Mô hình dữ liệu cho báo cáo của quản lý
-// Mỗi báo cáo sẽ thuộc về một quản lý và có các thông tin như tiêu đề, nội dung, loại báo cáo, tệp đính kèm, trạng thái xử lý và đánh giá của quản trị viên.
 
 const reportSchema = new mongoose.Schema(
     {

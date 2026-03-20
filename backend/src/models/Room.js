@@ -1,6 +1,5 @@
 const mongoose = require("mongoose"); 
-// Mô hình dữ liệu cho phòng trọ
-// Mỗi phòng trọ sẽ thuộc về một tòa nhà và có các thông tin như số phòng, tầng, loại phòng, số lượng người tối đa, giá tiền, trạng thái, tiện nghi, mô tả và trạng thái hoạt động.
+
 const roomSchema = new mongoose.Schema(
     {
         buildingId: {

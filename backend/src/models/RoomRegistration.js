@@ -19,7 +19,7 @@ const roomRegistrationSchema = new mongoose.Schema(
         },
         status: {
             type: String,
-            enum: ["pending", "approved", "rejected"],
+            enum: ["pending", "approved", "rejected", "cancelled"],
             default: "pending",
         },
         note: {
@@ -38,6 +38,14 @@ const roomRegistrationSchema = new mongoose.Schema(
         reviewNote: {
             type: String,
             trim: true,
+            default: null,
+        },
+        activatedAt: {
+            type: Date,
+            default: null,
+        },
+        endDate: {
+            type: Date,
             default: null,
         },
     },

@@ -1,32 +1,30 @@
 const mongoose = require("mongoose");
-// Mô hình dữ liệu cho phân công phòng của sinh viên
-// Mỗi phân công sẽ liên kết một sinh viên với một phòng trong một kỳ học cụ thể, cùng với thông tin về ngày bắt đầu, ngày kết thúc, trạng thái và ghi chú (nếu có).
 
 const roomAssignmentSchema = new mongoose.Schema(
     {
         studentId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Student",
-            required: [true, "Sinh viên là bắt buộc"],
+            required: true,
         },
         roomId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Room",
-            required: [true, "Phòng là bắt buộc"],
+            required: true,
         },
         buildingId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Building",
-            required: [true, "Tòa nhà là bắt buộc"],
+            required: true,
         },
         termCode: {
             type: String,
-            required: [true, "Mã kỳ học là bắt buộc"],
+            required: true,
             trim: true,
         },
         startDate: {
             type: Date,
-            required: [true, "Ngày bắt đầu là bắt buộc"],
+            required: true,
         },
         endDate: {
             type: Date,
@@ -37,16 +35,9 @@ const roomAssignmentSchema = new mongoose.Schema(
             enum: ["active", "ended", "cancelled"],
             default: "active",
         },
-        note: {
-            type: String,
-            trim: true,
-            default: null,
-        },
     },
     {
         timestamps: true,
-        toJSON: { virtuals: true },
-        toObject: { virtuals: true },
     }
 );
 

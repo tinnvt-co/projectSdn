@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+////tien
 const buildingSchema = new mongoose.Schema(
     {
         name: {
@@ -15,7 +15,7 @@ const buildingSchema = new mongoose.Schema(
         totalFloors: {
             type: Number,
             required: true,
-            min: [1, "Số tầng phải ít nhất là 1"],
+            min: 1,
         },
         description: {
             type: String,
@@ -33,8 +33,6 @@ const buildingSchema = new mongoose.Schema(
     },
     {
         timestamps: true,
-        toJSON: { virtuals: true },
-        toObject: { virtuals: true },
     }
 );
 

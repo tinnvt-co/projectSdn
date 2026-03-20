@@ -1,21 +1,25 @@
 const express = require("express");
 const router = express.Router();
 const {
-  createReport,
-  getAllReports,
-  getReportById,
-  updateReport,
-  reviewReport,
-  getPendingReports,
-  deleteReport,
-} = require("../controllers/Report.controller");
+    getReports,
+    getReportById,
+    createReport,
+    reviewReport,
+    deleteReport,
+    getMyBuildings,
+} = require("../controllers/reportController");
+const { protect, authorize } = require("../middleware/authMiddleware");
 
-router.get("/pending", getPendingReports);
-router.post("/", createReport);
-router.get("/", getAllReports);
-router.get("/:id", getReportById);
-router.put("/:id", updateReport);
-router.patch("/:id/review", reviewReport);
-router.delete("/:id", deleteReport);
+router.use(protect);
+
+// Manager & Admin có thể xem và tạo báo cáo
+router.get("/", authorize("manager", "admin"), getReports);
+router.get("/my-buildings", authorize("manager"), getMyBuildings);
+router.get("/:id", authorize("manager", "admin"), getReportById);
+router.post("/", authorize("manager"), createReport);
+router.delete("/:id", authorize("manager"), deleteReport);
+
+// Chỉ Admin mới duyệt được
+router.put("/:id/review", authorize("admin"), reviewReport);
 
 module.exports = router;

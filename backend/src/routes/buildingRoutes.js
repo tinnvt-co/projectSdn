@@ -1,36 +1,16 @@
 const express = require("express");
 const router = express.Router();
-const {
-  createBuilding,
-  getAllBuildings,
-  getBuildingById,
-  updateBuilding,
-  deleteBuilding,
-  updateBuildingStatus,
-  getBuildingsByStatus,
-  searchBuildings,
-  getBuildingsByManager,
-  getBuildingStats,
-  getAllBuildingStats,
-} = require("../controllers/Building.controller");
+const { protect, authorize } = require("../middleware/authMiddleware");
+const ctrl = require("../controllers/buildingController");
 
-// ===== Thống kê (đặt trước :id để tránh conflict) =====
-router.get("/stats", getAllBuildingStats);
-router.get("/stats/:id", getBuildingStats);
+// ── Building CRUD (admin only) ──
+router.get("/", protect, ctrl.getBuildings);
+router.post("/", protect, authorize("admin"), ctrl.createBuilding);
+router.put("/:id", protect, authorize("admin"), ctrl.updateBuilding);
+router.delete("/:id", protect, authorize("admin"), ctrl.deleteBuilding);
 
-// ===== Tìm kiếm / Lọc =====
-router.get("/search", searchBuildings);
-router.get("/status/:status", getBuildingsByStatus);
-router.get("/manager/:managerId", getBuildingsByManager);
-
-// ===== CRUD =====
-router.post("/", createBuilding);
-router.get("/", getAllBuildings);
-router.get("/:id", getBuildingById);
-router.put("/:id", updateBuilding);
-router.delete("/:id", deleteBuilding);
-
-// ===== Quản lý trạng thái =====
-router.patch("/:id/status", updateBuildingStatus);
+// ── Rooms per building ──
+router.get("/:id/rooms", protect, ctrl.getRoomsByBuilding);
+router.post("/:id/rooms", protect, authorize("admin"), ctrl.createRoom);
 
 module.exports = router;
