@@ -2,6 +2,9 @@ const ElectricityUsage = require("../models/ElectricityUsage");
 const Setting = require("../models/Setting");
 require("../models/Room");
 require("../models/User");
+// ========================
+// 1. CRUD điện năng tiêu thụ
+// ========================
 
 const getNumberSetting = async (key, defaultValue) => {
   const setting = await Setting.findOne({ key });
