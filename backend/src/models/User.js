@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+// Mô hình dữ liệu cho người dùng hệ thống (quản lý, sinh viên, admin)
 
 const userSchema = new mongoose.Schema(
     {

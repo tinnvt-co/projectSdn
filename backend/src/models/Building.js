@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+////tien
 const buildingSchema = new mongoose.Schema(
     {
         name: {
