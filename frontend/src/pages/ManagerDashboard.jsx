@@ -1,6 +1,7 @@
 ﻿﻿import { useState, useEffect, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import "./student/StudentDashboard.css";
+import "./ManagerDashboard.css";
 import api from "../services/api";
 import ChangePasswordModal from "../components/ChangePasswordModal";
 
@@ -967,6 +968,12 @@ export default function ManagerDashboard() {
         const [sendingReminderId, setSendingReminderId] = useState(null);
 
         const fmtMoney = (value) => Number(value || 0).toLocaleString("vi-VN");
+        const INVOICE_STATUS_LABELS = {
+            unpaid: "Chưa thanh toán",
+            partial: "Thanh toán một phần",
+            overdue: "Quá hạn",
+            paid: "Đã thanh toán",
+        };
 
         const load = useCallback(() => {
             setLoading(true);
@@ -1034,7 +1041,7 @@ export default function ManagerDashboard() {
                     </div>
                     <div style={{ flex: 1, minWidth: 180, padding: "12px 16px", borderRadius: 10, background: "#fef2f2", border: "1.5px solid #fca5a555" }}>
                         <div style={{ fontSize: 22, fontWeight: 800, color: "#dc2626" }}>{overview.overdueCount}</div>
-                        <div style={{ fontSize: 12, color: "#777", fontWeight: 600 }}>Bill quá hạn</div>
+                        <div style={{ fontSize: 12, color: "#777", fontWeight: 600 }}>Hóa đơn quá hạn</div>
                     </div>
                 </div>
 
@@ -1057,12 +1064,12 @@ export default function ManagerDashboard() {
                                             {item.student?.fullName} <span style={{ color: "#94a3b8", fontWeight: 600 }}>({item.student?.studentCode})</span>
                                         </div>
                                         <div style={{ fontSize: 12, color: "#666", marginTop: 4 }}>
-                                            {item.building?.name || "�"} � Phong {item.student?.currentRoom?.roomNumber || "�"} � {item.student?.userId?.email || "�"}
+                                            {item.building?.name || "Chưa rõ tòa nhà"} · Phòng {item.student?.currentRoom?.roomNumber || "Chưa rõ"} · {item.student?.userId?.email || "Chưa có email"}
                                         </div>
                                     </div>
                                     <div style={{ textAlign: "right" }}>
                                         <div style={{ fontSize: 18, fontWeight: 800, color: "#dc2626" }}>{fmtMoney(item.totalDebt)}d</div>
-                                        <div style={{ fontSize: 12, color: "#777" }}>{item.invoiceCount} bill � qua han {item.overdueCount}</div>
+                                        <div style={{ fontSize: 12, color: "#777" }}>{item.invoiceCount} hóa đơn · quá hạn {item.overdueCount}</div>
                                         <button
                                             onClick={() => sendReminder(item)}
                                             disabled={sendingReminderId === String(item.studentId)}
@@ -1078,7 +1085,7 @@ export default function ManagerDashboard() {
                                                 fontSize: 12,
                                             }}
                                         >
-                                            {sendingReminderId === String(item.studentId) ? "Dang gui..." : "Gui nhac thanh toan"}
+                                            {sendingReminderId === String(item.studentId) ? "Đang gửi..." : "Gửi nhắc thanh toán"}
                                         </button>
                                     </div>
                                 </div>
@@ -1088,14 +1095,14 @@ export default function ManagerDashboard() {
                                         <div key={invoice._id} style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap", padding: "10px 12px", borderRadius: 8, background: "#f8fafc", border: "1px solid #e2e8f0" }}>
                                             <div>
                                                 <div style={{ fontWeight: 700, fontSize: 13, color: "#334155" }}>{invoice.invoiceCode}</div>
-                                                <div style={{ fontSize: 12, color: "#64748b" }}>{invoice.description || "�"}</div>
+                                                <div style={{ fontSize: 12, color: "#64748b" }}>{invoice.description || "Chưa có mô tả"}</div>
                                             </div>
                                             <div style={{ textAlign: "right" }}>
                                                 <div style={{ fontWeight: 800, fontSize: 13, color: invoice.status === "overdue" ? "#dc2626" : "#ea580c" }}>
                                                     {fmtMoney(invoice.remainingAmount)}d
                                                 </div>
                                                 <div style={{ fontSize: 12, color: "#64748b" }}>
-                                                    Han: {invoice.dueDate ? new Date(invoice.dueDate).toLocaleDateString("vi-VN") : "�"} � {invoice.status}
+                                                    Hạn: {invoice.dueDate ? new Date(invoice.dueDate).toLocaleDateString("vi-VN") : "Chưa rõ"} · {INVOICE_STATUS_LABELS[invoice.status] || invoice.status}
                                                 </div>
                                             </div>
                                         </div>
@@ -1668,7 +1675,7 @@ function StatCard({ icon, label, value, color = "#e8540a" }) {
     return (
         <div className="ad-stat-card">
             <div className="ad-stat-icon" style={{ background: color + "18" }}>{icon}</div>
-            <div>
+            <div className="ad-stat-copy">
                 <div className="ad-stat-num" style={{ color }}>{value ?? "—"}</div>
                 <div className="sd-stat-label">{label}</div>
             </div>
@@ -1679,8 +1686,10 @@ function StatCard({ icon, label, value, color = "#e8540a" }) {
 function QuickLink({ icon, label, onClick }) {
     return (
         <button className="ad-quick-link" onClick={onClick}>
-            <span style={{ fontSize: 24 }}>{icon}</span>
-            <span>{label}</span>
+            <span className="ad-quick-icon">{icon}</span>
+            <span className="ad-quick-label">{label}</span>
         </button>
     );
 }
+
+
