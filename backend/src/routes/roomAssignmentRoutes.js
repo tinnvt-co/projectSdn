@@ -1,5 +1,8 @@
 const express = require("express");
 const router = express.Router();
+// Routes cho quản lý phân công phòng ở của sinh viên
+// Bao gồm tạo, đọc, cập nhật, kết thúc, hủy phân công phòng ở liên quan đến sinh viên và phòng ở
+
 const {
   createAssignment,
   getAllAssignments,

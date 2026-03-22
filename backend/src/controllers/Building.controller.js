@@ -1,312 +1,131 @@
 const Building = require("../models/Building");
 const Room = require("../models/Room");
-require("../models/User"); 
 
-// ========================
-// 1. CRUD tòa nhà
-// ========================
-const createBuilding = async (req, res) => {
-  try {
-    const { name, address, totalFloors, description, managerId } = req.body;
+// ─── BUILDINGS ────────────────────────────────────────────────────────────────
 
-    // Kiểm tra tên tòa nhà đã tồn tại chưa
-    const existingBuilding = await Building.findOne({ name });
-    if (existingBuilding) {
-      return res.status(400).json({ message: "Tên tòa nhà đã tồn tại" });
+// GET /api/buildings
+exports.getBuildings = async (req, res) => {
+    try {
+        const buildings = await Building.find()
+            .populate("managerId", "username email")
+            .sort({ name: 1 });
+        res.json({ success: true, data: buildings });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
     }
-
-    const newBuilding = new Building({
-      name,
-      address,
-      totalFloors,
-      description,
-      managerId,
-    });
-
-    const savedBuilding = await newBuilding.save();
-    res.status(201).json(savedBuilding);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 };
 
-// Lấy danh sách tất cả tòa nhà (trừ inactive)
-const getAllBuildings = async (req, res) => {
-  try {
-    const buildings = await Building.find({
-      status: { $ne: "inactive" },
-    }).populate("managerId", "username email phone");
-
-    res.status(200).json(buildings);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+// POST /api/buildings
+exports.createBuilding = async (req, res) => {
+    try {
+        const { name, address, totalFloors, description, managerId, status } = req.body;
+        if (!name || !totalFloors)
+            return res.status(400).json({ success: false, message: "name và totalFloors là bắt buộc" });
+        const building = await Building.create({ name, address, totalFloors, description, managerId: managerId || null, status: status || "active" });
+        res.status(201).json({ success: true, message: "Tạo tòa nhà thành công", data: building });
+    } catch (err) {
+        if (err.code === 11000)
+            return res.status(409).json({ success: false, message: "Tên tòa nhà đã tồn tại" });
+        res.status(500).json({ success: false, message: err.message });
+    }
 };
 
-// Lấy chi tiết 1 tòa nhà
-const getBuildingById = async (req, res) => {
-  try {
-    const building = await Building.findById(req.params.id).populate(
-      "managerId",
-      "username email phone",
-    );
-
-    if (!building) {
-      return res.status(404).json({ message: "Không tìm thấy tòa nhà" });
+// PUT /api/buildings/:id
+exports.updateBuilding = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, address, totalFloors, description, managerId, status } = req.body;
+        const building = await Building.findByIdAndUpdate(
+            id,
+            { name, address, totalFloors, description, managerId: managerId || null, status },
+            { new: true, runValidators: true }
+        );
+        if (!building) return res.status(404).json({ success: false, message: "Không tìm thấy tòa nhà" });
+        res.json({ success: true, message: "Cập nhật thành công", data: building });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
     }
-    res.status(200).json(building);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 };
 
-// Cập nhật thông tin tòa nhà
-const updateBuilding = async (req, res) => {
-  try {
-    // Nếu đổi tên, kiểm tra trùng
-    if (req.body.name) {
-      const existing = await Building.findOne({
-        name: req.body.name,
-        _id: { $ne: req.params.id },
-      });
-      if (existing) {
-        return res.status(400).json({ message: "Tên tòa nhà đã tồn tại" });
-      }
+// DELETE /api/buildings/:id
+exports.deleteBuilding = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const roomCount = await Room.countDocuments({ buildingId: id });
+        if (roomCount > 0)
+            return res.status(400).json({ success: false, message: `Không thể xóa: tòa nhà còn ${roomCount} phòng` });
+        await Building.findByIdAndDelete(id);
+        res.json({ success: true, message: "Đã xóa tòa nhà" });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
     }
-
-    const updatedBuilding = await Building.findByIdAndUpdate(
-      req.params.id,
-      { $set: req.body },
-      { new: true, runValidators: true },
-    );
-
-    if (!updatedBuilding) {
-      return res.status(404).json({ message: "Không tìm thấy tòa nhà" });
-    }
-    res.status(200).json(updatedBuilding);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 };
 
-// Xóa tòa nhà (soft delete bằng status = "inactive")
-const deleteBuilding = async (req, res) => {
-  try {
-    const building = await Building.findByIdAndUpdate(
-      req.params.id,
-      { status: "inactive" },
-      { new: true },
-    );
+// ─── ROOMS ────────────────────────────────────────────────────────────────────
 
-    if (!building) {
-      return res.status(404).json({ message: "Không tìm thấy tòa nhà" });
+// GET /api/buildings/:id/rooms
+exports.getRoomsByBuilding = async (req, res) => {
+    try {
+        const rooms = await Room.find({ buildingId: req.params.id }).sort({ floor: 1, roomNumber: 1 });
+        res.json({ success: true, data: rooms });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
     }
-    res
-      .status(200)
-      .json({ message: "Đã xóa tòa nhà thành công (soft delete)", building });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 };
 
-// ========================
-// 2. Quản lý trạng thái tòa nhà
-// ========================
+// POST /api/buildings/:id/rooms
+exports.createRoom = async (req, res) => {
+    try {
+        const { roomNumber, floor, type, maxOccupancy, pricePerTerm, status, amenities, description } = req.body;
+        if (!roomNumber || !floor || !pricePerTerm)
+            return res.status(400).json({ success: false, message: "roomNumber, floor, pricePerTerm là bắt buộc" });
 
-// Cập nhật trạng thái tòa nhà
-const updateBuildingStatus = async (req, res) => {
-  try {
-    const { status } = req.body;
-    const validStatuses = ["active", "inactive", "maintenance"];
+        const existing = await Room.findOne({ buildingId: req.params.id, roomNumber });
+        if (existing)
+            return res.status(409).json({ success: false, message: "Số phòng đã tồn tại trong tòa nhà này" });
 
-    if (!validStatuses.includes(status)) {
-      return res.status(400).json({
-        message: `Trạng thái không hợp lệ. Chỉ chấp nhận: ${validStatuses.join(", ")}`,
-      });
-    }
-
-    const building = await Building.findByIdAndUpdate(
-      req.params.id,
-      { status },
-      { new: true, runValidators: true },
-    );
-
-    if (!building) {
-      return res.status(404).json({ message: "Không tìm thấy tòa nhà" });
-    }
-    res.status(200).json(building);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-// ========================
-// 3. Tìm kiếm / Lọc tòa nhà
-// ========================
-
-// Lọc theo trạng thái
-const getBuildingsByStatus = async (req, res) => {
-  try {
-    const { status } = req.params;
-    const validStatuses = ["active", "inactive", "maintenance"];
-
-    if (!validStatuses.includes(status)) {
-      return res.status(400).json({
-        message: `Trạng thái không hợp lệ. Chỉ chấp nhận: ${validStatuses.join(", ")}`,
-      });
-    }
-
-    const buildings = await Building.find({ status }).populate(
-      "managerId",
-      "username email phone",
-    );
-    res.status(200).json(buildings);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-// Tìm kiếm theo tên hoặc địa chỉ
-const searchBuildings = async (req, res) => {
-  try {
-    const { name, address } = req.query;
-    const filter = { status: { $ne: "inactive" } };
-
-    if (name) {
-      filter.name = { $regex: name, $options: "i" };
-    }
-    if (address) {
-      filter.address = { $regex: address, $options: "i" };
-    }
-
-    const buildings = await Building.find(filter).populate(
-      "managerId",
-      "username email phone",
-    );
-    res.status(200).json(buildings);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-// Lọc theo manager
-const getBuildingsByManager = async (req, res) => {
-  try {
-    const buildings = await Building.find({
-      managerId: req.params.managerId,
-      status: { $ne: "inactive" },
-    }).populate("managerId", "username email phone");
-
-    res.status(200).json(buildings);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-// ========================
-// 4. Thống kê tòa nhà
-// ========================
-
-// Thống kê số phòng, phòng trống, phòng đầy của từng tòa nhà
-const getBuildingStats = async (req, res) => {
-  try {
-    const buildingId = req.params.id;
-
-    const building = await Building.findById(buildingId).populate(
-      "managerId",
-      "username email phone",
-    );
-
-    if (!building) {
-      return res.status(404).json({ message: "Không tìm thấy tòa nhà" });
-    }
-
-    const totalRooms = await Room.countDocuments({
-      buildingId,
-      isActive: true,
-    });
-    const availableRooms = await Room.countDocuments({
-      buildingId,
-      isActive: true,
-      status: { $in: ["available", "partial"] },
-    });
-    const fullRooms = await Room.countDocuments({
-      buildingId,
-      isActive: true,
-      status: "full",
-    });
-    const maintenanceRooms = await Room.countDocuments({
-      buildingId,
-      isActive: true,
-      status: "maintenance",
-    });
-
-    res.status(200).json({
-      building,
-      stats: {
-        totalRooms,
-        availableRooms,
-        fullRooms,
-        maintenanceRooms,
-      },
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-// Thống kê tổng quan tất cả tòa nhà
-const getAllBuildingStats = async (req, res) => {
-  try {
-    const buildings = await Building.find({
-      status: { $ne: "inactive" },
-    }).populate("managerId", "username email phone");
-
-    const stats = await Promise.all(
-      buildings.map(async (building) => {
-        const totalRooms = await Room.countDocuments({
-          buildingId: building._id,
-          isActive: true,
+        const room = await Room.create({
+            buildingId: req.params.id,
+            roomNumber,
+            floor: Number(floor),
+            type: type || "standard",
+            maxOccupancy: Number(maxOccupancy) || 4,
+            pricePerTerm: Number(pricePerTerm),
+            status: status || "available",
+            amenities: amenities || [],
+            description,
         });
-        const availableRooms = await Room.countDocuments({
-          buildingId: building._id,
-          isActive: true,
-          status: { $in: ["available", "partial"] },
-        });
-        const fullRooms = await Room.countDocuments({
-          buildingId: building._id,
-          isActive: true,
-          status: "full",
-        });
-
-        return {
-          building,
-          totalRooms,
-          availableRooms,
-          fullRooms,
-        };
-      }),
-    );
-
-    res.status(200).json(stats);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+        res.status(201).json({ success: true, message: "Tạo phòng thành công", data: room });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
 };
 
-// ========================
-// Export tất cả
-// ========================
-module.exports = {
-  createBuilding,
-  getAllBuildings,
-  getBuildingById,
-  updateBuilding,
-  deleteBuilding,
-  updateBuildingStatus,
-  getBuildingsByStatus,
-  searchBuildings,
-  getBuildingsByManager,
-  getBuildingStats,
-  getAllBuildingStats,
+// PUT /api/rooms/:id
+exports.updateRoom = async (req, res) => {
+    try {
+        const { floor, type, maxOccupancy, pricePerTerm, status, amenities, description } = req.body;
+        const room = await Room.findByIdAndUpdate(
+            req.params.id,
+            { floor, type, maxOccupancy, pricePerTerm, status, amenities, description },
+            { new: true, runValidators: true }
+        );
+        if (!room) return res.status(404).json({ success: false, message: "Không tìm thấy phòng" });
+        res.json({ success: true, message: "Cập nhật phòng thành công", data: room });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
 };
+
+// DELETE /api/rooms/:id
+exports.deleteRoom = async (req, res) => {
+    try {
+        const room = await Room.findById(req.params.id);
+        if (!room) return res.status(404).json({ success: false, message: "Không tìm thấy phòng" });
+        if (room.currentOccupancy > 0)
+            return res.status(400).json({ success: false, message: "Không thể xóa phòng đang có người ở" });
+        await Room.findByIdAndDelete(req.params.id);
+        res.json({ success: true, message: "Đã xóa phòng" });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }};

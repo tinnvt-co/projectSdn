@@ -1,23 +1,21 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import api from "../services/api";
 import NotificationBell from "./NotificationBell";
 import "./Header.css";
 
-// Dashboard home per role
 const ROLE_HOME = {
     admin: "/admin/dashboard",
     manager: "/manager/dashboard",
     student: "/student/dashboard",
 };
 
-// Nav links per role
 const NAV_LINKS = {
     admin: [
         { label: "Dashboard", href: "/admin/dashboard" },
-        { label: "Tài khoản", href: "/admin/users" },
-        { label: "Báo cáo", href: "/admin/reports" },
-        { label: "Thông báo", href: "/admin/notifications" },
+        { label: "Tài khoản", href: "/admin/dashboard?tab=users" },
+        { label: "Báo cáo", href: "/admin/dashboard?tab=reports" },
+        { label: "Thông báo", href: "/admin/dashboard?tab=notifications" },
     ],
     manager: [
         { label: "Dashboard", href: "/manager/dashboard" },
@@ -27,12 +25,15 @@ const NAV_LINKS = {
     student: [{ label: "Dashboard", href: "/student/dashboard" }],
 };
 
-// Role badge colors
 const ROLE_META = {
     admin: { label: "Admin", color: "#6366f1" },
     manager: { label: "Manager", color: "#22c55e" },
     student: { label: "Student", color: "#0ea5e9" },
 };
+
+function isActiveLink(location, href) {
+    return `${location.pathname}${location.search}` === href;
+}
 
 export default function Header() {
     const navigate = useNavigate();
@@ -40,29 +41,29 @@ export default function Header() {
     const [user, setUser] = useState(null);
     const [menuOpen, setMenuOpen] = useState(false);
 
-    // Pages that should hide the header (login, forgot-password)
-    // Landing page "/" keeps the header visible
     const HIDDEN_PATHS = ["/login", "/forgot-password"];
-    const isHidden = HIDDEN_PATHS.some((p) => location.pathname.startsWith(p));
+    const isHidden = HIDDEN_PATHS.some((path) => location.pathname.startsWith(path));
 
     useEffect(() => {
         const stored = localStorage.getItem("user");
-        if (stored) {
-            try {
-                setUser(JSON.parse(stored));
-            } catch {
-                setUser(null);
-            }
-        } else {
+        if (!stored) {
+            setUser(null);
+            setMenuOpen(false);
+            return;
+        }
+
+        try {
+            setUser(JSON.parse(stored));
+        } catch {
             setUser(null);
         }
-        // Close mobile menu on route change
+
         setMenuOpen(false);
-    }, [location.pathname]);
+    }, [location.pathname, location.search]);
 
     const handleLogout = async () => {
         try {
-            await api.post("/auth/logout").catch(() => { });
+            await api.post("/auth/logout").catch(() => {});
         } finally {
             localStorage.removeItem("token");
             localStorage.removeItem("user");
@@ -74,14 +75,14 @@ export default function Header() {
 
     const navLinks = user ? NAV_LINKS[user.role] || [] : [];
     const roleMeta = user ? ROLE_META[user.role] : null;
+    const homeHref = user ? ROLE_HOME[user.role] || "/" : "/";
 
     return (
         <header className="site-header">
             <div className="site-header-inner">
-                {/* Logo — navigate to role dashboard, not "/" */}
                 <button
                     className="header-logo"
-                    onClick={() => navigate("/")}
+                    onClick={() => navigate(homeHref)}
                     aria-label="Trang chủ ký túc xá"
                     style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}
                 >
@@ -98,29 +99,25 @@ export default function Header() {
                     </div>
                 </button>
 
-                {/* Desktop Nav */}
                 {user && (
                     <nav className="header-nav" aria-label="Điều hướng chính">
                         {navLinks.map((link) => (
-                            <a
+                            <Link
                                 key={link.href}
-                                href={link.href}
-                                className={`header-nav-link${location.pathname === link.href ? " active" : ""}`}
+                                to={link.href}
+                                className={`header-nav-link${isActiveLink(location, link.href) ? " active" : ""}`}
                             >
                                 {link.label}
-                            </a>
+                            </Link>
                         ))}
                     </nav>
                 )}
 
-                {/* Right side actions */}
                 <div className="header-actions">
                     {user ? (
                         <>
-                            {/* Notification bell (only for students) */}
                             {user.role === "student" && <NotificationBell />}
 
-                            {/* User info */}
                             <div className="header-user">
                                 <div
                                     className="header-avatar"
@@ -144,7 +141,6 @@ export default function Header() {
                                 </div>
                             </div>
 
-                            {/* Logout */}
                             <button
                                 className="header-logout-btn"
                                 onClick={handleLogout}
@@ -159,16 +155,15 @@ export default function Header() {
                             </button>
                         </>
                     ) : (
-                        <a href="/login" className="header-login-btn">
+                        <Link to="/login" className="header-login-btn">
                             Đăng nhập
-                        </a>
+                        </Link>
                     )}
 
-                    {/* Mobile hamburger */}
                     {user && (
                         <button
                             className={`header-hamburger${menuOpen ? " open" : ""}`}
-                            onClick={() => setMenuOpen((v) => !v)}
+                            onClick={() => setMenuOpen((value) => !value)}
                             aria-label="Mở menu"
                         >
                             <span />
@@ -179,21 +174,20 @@ export default function Header() {
                 </div>
             </div>
 
-            {/* Mobile dropdown menu */}
             {user && menuOpen && (
                 <div className="header-mobile-menu">
                     {navLinks.map((link) => (
-                        <a
+                        <Link
                             key={link.href}
-                            href={link.href}
-                            className={`header-mobile-link${location.pathname === link.href ? " active" : ""}`}
+                            to={link.href}
+                            className={`header-mobile-link${isActiveLink(location, link.href) ? " active" : ""}`}
                             onClick={() => setMenuOpen(false)}
                         >
                             {link.label}
-                        </a>
+                        </Link>
                     ))}
                     <button className="header-mobile-logout" onClick={handleLogout}>
-                        🚪 Đăng xuất
+                        Đăng xuất
                     </button>
                 </div>
             )}

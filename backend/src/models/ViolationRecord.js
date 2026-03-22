@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+// Mô hình dữ liệu cho đăng ký phòng của sinh viên
+// Mỗi bản ghi sẽ liên kết một sinh viên với một phòng cụ thể trong một kỳ học nhất định, cùng với trạng thái và thông tin đánh giá của quản lý.
 
 const violationRecordSchema = new mongoose.Schema(
     {

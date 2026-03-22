@@ -1,19 +1,17 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import LoginPage from "./pages/LoginPage";
-import ForgotPasswordPage from "./pages/ForgotPasswordPage";
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminUsersPage from "./pages/AdminUsersPage";
-import ManagerReportsPage from "./pages/ManagerReportsPage";
-import ManagerRequestsPage from "./pages/ManagerRequestsPage";
-import ManagerDashboard from "./pages/ManagerDashboard";
-import AdminReportsPage from "./pages/AdminReportsPage";
-import AdminNotificationsPage from "./pages/AdminNotificationsPage";
-import StudentDashboard from "./pages/student/StudentDashboard";
-import Header from "./components/Header";
+import { Suspense, lazy } from "react";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Footer from "./components/Footer";
-import LandingPage from "./pages/LandingPage";
+import Header from "./components/Header";
 
-// ── Helper: đọc user an toàn từ localStorage ──
+const LandingPage = lazy(() => import("./pages/LandingPage"));
+const LoginPage = lazy(() => import("./pages/LoginPage"));
+const ForgotPasswordPage = lazy(() => import("./pages/ForgotPasswordPage"));
+const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
+const ManagerDashboard = lazy(() => import("./pages/ManagerDashboard"));
+const ManagerReportsPage = lazy(() => import("./pages/ManagerReportsPage"));
+const ManagerRequestsPage = lazy(() => import("./pages/ManagerRequestsPage"));
+const StudentDashboard = lazy(() => import("./pages/student/StudentDashboard"));
+
 function getStoredUser() {
   try {
     return JSON.parse(localStorage.getItem("user"));
@@ -22,22 +20,18 @@ function getStoredUser() {
   }
 }
 
-// ── Helper: map role → dashboard ──
 const DASHBOARD_MAP = {
   admin: "/admin/dashboard",
   manager: "/manager/dashboard",
   student: "/student/dashboard",
 };
 
-// ── Protected Route ──
 function PrivateRoute({ children, roles }) {
   const token = localStorage.getItem("token");
   const user = getStoredUser();
 
-  // Chưa đăng nhập
   if (!token || !user) return <Navigate to="/login" replace />;
 
-  // Đã đăng nhập nhưng sai role → về đúng dashboard của mình
   if (roles && !roles.includes(user.role)) {
     return <Navigate to={DASHBOARD_MAP[user.role] || "/login"} replace />;
   }
@@ -45,7 +39,6 @@ function PrivateRoute({ children, roles }) {
   return children;
 }
 
-// ── Guest Route: đã login thì không vào /login nữa ──
 function GuestRoute({ children }) {
   const token = localStorage.getItem("token");
   const user = getStoredUser();
@@ -57,103 +50,128 @@ function GuestRoute({ children }) {
   return children;
 }
 
+function RouteLoader() {
+  return (
+    <div
+      style={{
+        minHeight: "50vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "32px 16px",
+      }}
+    >
+      <div
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 12,
+          padding: "14px 18px",
+          borderRadius: 999,
+          background: "#fff7ed",
+          border: "1px solid #fed7aa",
+          color: "#c2410c",
+          fontWeight: 700,
+          boxShadow: "0 12px 30px rgba(194, 65, 12, 0.08)",
+        }}
+      >
+        <span
+          style={{
+            width: 12,
+            height: 12,
+            borderRadius: "50%",
+            background: "#f97316",
+            boxShadow: "0 0 0 6px rgba(249, 115, 22, 0.16)",
+          }}
+        />
+        Dang tai trang...
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
   return (
     <BrowserRouter>
       <Header />
-      <Routes>
-        {/* Public */}
-        <Route path="/" element={<LandingPage />} />
-        <Route
-          path="/login"
-          element={
-            <GuestRoute>
-              <LoginPage />
-            </GuestRoute>
-          }
-        />
-        <Route
-          path="/forgot-password"
-          element={
-            <GuestRoute>
-              <ForgotPasswordPage />
-            </GuestRoute>
-          }
-        />
+      <Suspense fallback={<RouteLoader />}>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route
+            path="/login"
+            element={
+              <GuestRoute>
+                <LoginPage />
+              </GuestRoute>
+            }
+          />
+          <Route
+            path="/forgot-password"
+            element={
+              <GuestRoute>
+                <ForgotPasswordPage />
+              </GuestRoute>
+            }
+          />
 
-        {/* Admin routes */}
-        <Route
-          path="/admin/dashboard"
-          element={
-            <PrivateRoute roles={["admin"]}>
-              <AdminDashboard />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/admin/users"
-          element={
-            <PrivateRoute roles={["admin"]}>
-              <AdminUsersPage />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/admin/reports"
-          element={
-            <PrivateRoute roles={["admin"]}>
-              <AdminReportsPage />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/admin/notifications"
-          element={
-            <PrivateRoute roles={["admin"]}>
-              <AdminNotificationsPage />
-            </PrivateRoute>
-          }
-        />
+          <Route
+            path="/admin/dashboard"
+            element={
+              <PrivateRoute roles={["admin"]}>
+                <AdminDashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/users"
+            element={<Navigate to="/admin/dashboard?tab=users" replace />}
+          />
+          <Route
+            path="/admin/reports"
+            element={<Navigate to="/admin/dashboard?tab=reports" replace />}
+          />
+          <Route
+            path="/admin/notifications"
+            element={<Navigate to="/admin/dashboard?tab=notifications" replace />}
+          />
 
-        {/* Manager routes */}
-        <Route
-          path="/manager/dashboard"
-          element={
-            <PrivateRoute roles={["manager"]}>
-              <ManagerDashboard />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/manager/reports"
-          element={
-            <PrivateRoute roles={["manager"]}>
-              <ManagerReportsPage />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/manager/requests"
-          element={
-            <PrivateRoute roles={["manager"]}>
-              <ManagerRequestsPage />
-            </PrivateRoute>
-          }
-        />
+          <Route
+            path="/manager/dashboard"
+            element={
+              <PrivateRoute roles={["manager"]}>
+                <ManagerDashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/manager/reports"
+            element={
+              <PrivateRoute roles={["manager"]}>
+                <ManagerReportsPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/manager/requests"
+            element={
+              <PrivateRoute roles={["manager"]}>
+                <ManagerRequestsPage />
+              </PrivateRoute>
+            }
+          />
 
-        {/* Student routes */}
-        <Route
-          path="/student/*"
-          element={
-            <PrivateRoute roles={["student"]}>
-              <StudentDashboard />
-            </PrivateRoute>
-          }
-        />
+          <Route
+            path="/student/*"
+            element={
+              <PrivateRoute roles={["student"]}>
+                <StudentDashboard />
+              </PrivateRoute>
+            }
+          />
 
-        {/* Fallback: mọi route không khớp → login */}
-        <Route path="*" element={<Navigate to="/login" replace />} />
-      </Routes>
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+      </Suspense>
       <Footer />
     </BrowserRouter>
   );

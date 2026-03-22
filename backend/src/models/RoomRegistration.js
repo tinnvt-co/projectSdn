@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+// Mô hình dữ liệu cho đăng ký phòng ở của sinh viên    
 const roomRegistrationSchema = new mongoose.Schema(
     {
         studentId: {

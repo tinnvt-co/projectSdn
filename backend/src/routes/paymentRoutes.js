@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { protect, authorize } = require("../middleware/authMiddleware");
 const {
   createPayment,
   getAllPayments,
@@ -7,6 +8,8 @@ const {
   updatePayment,
   deletePayment,
 } = require("../controllers/Payment.controller");
+
+router.use(protect, authorize("admin"));
 
 router.post("/", createPayment);
 router.get("/", getAllPayments);

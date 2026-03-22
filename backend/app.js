@@ -38,6 +38,9 @@ app.use("/api/rooms", require("./src/routes/roomRoutes"));
 app.use("/api/finance", require("./src/routes/financeRoutes"));
 app.use("/api/settings", require("./src/routes/settingRoutes"));
 app.use("/api/invoices", require("./src/routes/invoiceRoutes"));
+app.use("/api/payments", require("./src/routes/paymentRoutes"));
+app.use("/api/violation-records", require("./src/routes/violationRecordRoutes"));
+app.use("/api/electricity-usages", require("./src/routes/electricityUsageRoutes"));
 app.use("/api/payment-webhooks", require("./src/routes/paymentWebhookRoutes"));
 
 module.exports = app;

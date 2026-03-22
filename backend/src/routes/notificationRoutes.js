@@ -1,5 +1,7 @@
 const express = require("express");
 const router = express.Router();
+// Routes cho thông báo giữa admin/manager và sinh viên
+
 const {
     sendNotification,
     getMyNotifications,
