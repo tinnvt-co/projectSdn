@@ -1,10 +1,8 @@
-﻿import { useState, useEffect, useCallback } from "react";
+﻿﻿import { useState, useEffect, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import "./student/StudentDashboard.css";
 import api from "../services/api";
 import ChangePasswordModal from "../components/ChangePasswordModal";
-
-// Main menu items for manager dashboard
 
 const MENU = [
     { id: "overview", icon: "📊", label: "Tổng quan" },
