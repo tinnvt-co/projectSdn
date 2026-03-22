@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import api from "../services/api";
-
 import "./AdminNotifications.css";
 
+// Notification types
 const TYPE_OPTIONS = [
     { value: "general", label: "📢 Thông báo chung" },
     { value: "payment_reminder", label: "💳 Nhắc thanh toán" },
