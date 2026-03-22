@@ -1,26 +1,16 @@
-import { useCallback, useEffect, useState } from "react";
+﻿import { useCallback, useEffect, useState } from "react";
 import api from "../../../services/api";
 import { StatCard } from "./cards";
-
-const AN_TYPE_OPTIONS = [
-    { value: "general", label: "📢 Thông báo chung" },
-    { value: "payment_reminder", label: "💳 Nhắc thanh toán" },
-    { value: "maintenance", label: "🔧 Bảo trì" },
-    { value: "announcement", label: "📣 Quan trọng" },
-];
-
-const AN_TYPE_ICONS = { general: "📢", payment_reminder: "💳", maintenance: "🔧", announcement: "📣" };
-
-function formatDate(d) {
-    return new Date(d).toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" });
-}
-
-const AN_INIT_FORM = { title: "", message: "", type: "general", receiverType: "role", targetRole: "student", receiverIds: [] };
-
-/* Finance Panel */
+import NotificationComposer from "./notifications/NotificationComposer";
+import NotificationHistory from "./notifications/NotificationHistory";
+import {
+    NOTIFICATION_INIT_FORM,
+    NOTIFICATION_TYPE_OPTIONS,
+    getNotificationAudienceLabel,
+} from "./notifications/constants";
 
 function NotificationsPanel() {
-    const [form, setForm] = useState(AN_INIT_FORM);
+    const [form, setForm] = useState(NOTIFICATION_INIT_FORM);
     const [sending, setSending] = useState(false);
     const [alert, setAlert] = useState({ type: "", msg: "" });
     const [sentList, setSentList] = useState([]);
@@ -38,14 +28,20 @@ function NotificationsPanel() {
     };
 
     useEffect(() => {
-        if (!userSearch.trim()) { setUserResults([]); return; }
+        if (!userSearch.trim()) {
+            setUserResults([]);
+            return;
+        }
         const timer = setTimeout(async () => {
             setUserSearching(true);
             try {
                 const { data } = await api.get("/users", { params: { role: searchRole, search: userSearch } });
                 setUserResults(data.users || []);
-            } catch { setUserResults([]); }
-            finally { setUserSearching(false); }
+            } catch {
+                setUserResults([]);
+            } finally {
+                setUserSearching(false);
+            }
         }, 300);
         return () => clearTimeout(timer);
     }, [userSearch, searchRole]);
@@ -55,14 +51,29 @@ function NotificationsPanel() {
         try {
             const { data } = await api.get("/notifications/sent?limit=30");
             setSentList(data.data || []);
-        } catch { } finally {
+        } catch {
+            setSentList([]);
+        } finally {
             setLoadingList(false);
         }
     }, []);
 
-    useEffect(() => { loadSentList(); }, [loadSentList]);
+    useEffect(() => {
+        loadSentList();
+    }, [loadSentList]);
 
-    const handleChange = (e) => setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
+    const handleChange = (e) => setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+
+    const resetAudienceSearch = useCallback(() => {
+        setReceiverIds([]);
+        setUserSearch("");
+        setUserResults([]);
+    }, []);
+
+    const resetComposer = useCallback(() => {
+        setForm(NOTIFICATION_INIT_FORM);
+        resetAudienceSearch();
+    }, [resetAudienceSearch]);
 
     const handleSend = async (e) => {
         e.preventDefault();
@@ -76,14 +87,11 @@ function NotificationsPanel() {
         }
         setSending(true);
         try {
-            const payload = { ...form, receiverIds: receiverIds.map(u => u._id) };
+            const payload = { ...form, receiverIds: receiverIds.map((user) => user._id) };
             const { data } = await api.post("/notifications/send", payload);
             showAlert("success", data.message || "Gửi thông báo thành công!");
-            setForm(AN_INIT_FORM);
-            setReceiverIds([]);
-            setUserSearch("");
-            setUserResults([]);
-            loadSentList();
+            resetComposer();
+            await loadSentList();
             setActiveTab("history");
         } catch (err) {
             showAlert("error", err.response?.data?.message || "Gửi thất bại");
@@ -92,13 +100,36 @@ function NotificationsPanel() {
         }
     };
 
+    const handleReceiverTypeChange = (e) => {
+        handleChange(e);
+        resetAudienceSearch();
+    };
+
+    const handleSearchRoleChange = (e) => {
+        setSearchRole(e.target.value);
+        setUserSearch("");
+        setUserResults([]);
+    };
+
+    const handleSelectReceiver = (user) => {
+        setReceiverIds((prev) => {
+            if (prev.some((item) => item._id === user._id)) return prev;
+            return [...prev, user];
+        });
+        setUserSearch("");
+        setUserResults([]);
+    };
+
+    const handleRemoveReceiver = (receiverId) => {
+        setReceiverIds((prev) => prev.filter((item) => item._id !== receiverId));
+    };
+
     const totalRecipientsSent = sentList.reduce((sum, item) => sum + (item.receiverIds?.length || 0), 0);
     const totalRead = sentList.reduce((sum, item) => sum + (item.readBy?.length || 0), 0);
     const importantCount = sentList.filter((item) => item.type === "announcement").length;
-    const audienceLabel = form.receiverType === "role"
-        ? (form.targetRole === "all" ? "Tất cả người dùng" : form.targetRole === "student" ? "Tất cả sinh viên" : "Tất cả quản lý")
-        : receiverIds.length > 0 ? `${receiverIds.length} người đã chọn` : "Chưa chọn người nhận";
+    const audienceLabel = getNotificationAudienceLabel(form, receiverIds);
     const latestSent = sentList.slice(0, 4);
+    const selectedTypeLabel = NOTIFICATION_TYPE_OPTIONS.find((item) => item.value === form.type)?.label || form.type;
 
     return (
         <div className="ad-panel-stack">
@@ -151,229 +182,36 @@ function NotificationsPanel() {
             </div>
 
             {activeTab === "send" && (
-                <div className="ad-split-layout">
-                    <section className="ad-surface-panel">
-                        <div className="ad-surface-head">
-                            <div>
-                                <h3 className="ad-surface-title">Soạn thông báo mới</h3>
-                                <p className="ad-surface-text">Chọn loại thông báo, đối tượng nhận và xem trước trước khi phát hành.</p>
-                            </div>
-                        </div>
-                        <div className="an-send-panel ad-neutral-width">
-                            <form className="an-form ad-flat-form" onSubmit={handleSend}>
-                                <div className="an-field">
-                                    <label className="an-label">Loại thông báo</label>
-                                    <div className="an-type-grid">
-                                        {AN_TYPE_OPTIONS.map((t) => (
-                                            <label key={t.value} className={`an-type-card ${form.type === t.value ? "selected" : ""}`}>
-                                                <input type="radio" name="type" value={t.value} checked={form.type === t.value} onChange={handleChange} />
-                                                {t.label}
-                                            </label>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                <div className="an-field">
-                                    <label className="an-label">Gửi đến</label>
-                                    <div className="an-receiver-row">
-                                        <select name="receiverType" value={form.receiverType} onChange={e => {
-                                            handleChange(e);
-                                            setReceiverIds([]);
-                                            setUserSearch("");
-                                            setUserResults([]);
-                                        }} className="an-select">
-                                            <option value="role">Theo nhóm người dùng</option>
-                                            <option value="individual">Cá nhân</option>
-                                        </select>
-                                        {form.receiverType === "role" && (
-                                            <select name="targetRole" value={form.targetRole} onChange={handleChange} className="an-select">
-                                                <option value="student">🎓 Tất cả sinh viên</option>
-                                                <option value="manager">📋 Tất cả quản lý</option>
-                                                <option value="all">👥 Tất cả người dùng</option>
-                                            </select>
-                                        )}
-                                    </div>
-
-                                    {form.receiverType === "individual" && (
-                                        <div style={{ marginTop: 10 }}>
-                                            <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
-                                                <select className="an-select" value={searchRole} onChange={e => { setSearchRole(e.target.value); setUserSearch(""); setUserResults([]); }}>
-                                                    <option value="student">🎓 Sinh viên</option>
-                                                    <option value="manager">🏢 Quản lý</option>
-                                                    <option value="admin">🛡️ Admin</option>
-                                                </select>
-                                            </div>
-
-                                            <div style={{ position: "relative" }}>
-                                                <input
-                                                    className="an-input"
-                                                    placeholder="🔍 Tìm username hoặc email..."
-                                                    value={userSearch}
-                                                    onChange={e => setUserSearch(e.target.value)}
-                                                />
-                                                {userSearching && <span style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", fontSize: 12, color: "#888" }}>Đang tìm...</span>}
-                                                {userResults.length > 0 && (
-                                                    <div style={{ position: "absolute", top: "100%", left: 0, right: 0, background: "#fff", border: "1px solid #e2e8f0", borderRadius: 8, boxShadow: "0 8px 24px #0002", zIndex: 100, maxHeight: 220, overflowY: "auto" }}>
-                                                        {userResults.map(u => (
-                                                            <div
-                                                                key={u._id}
-                                                                onClick={() => {
-                                                                    if (!receiverIds.find(r => r._id === u._id)) {
-                                                                        setReceiverIds(prev => [...prev, u]);
-                                                                    }
-                                                                    setUserSearch("");
-                                                                    setUserResults([]);
-                                                                }}
-                                                                style={{ padding: "10px 14px", cursor: "pointer", borderBottom: "1px solid #f1f5f9", display: "flex", alignItems: "center", gap: 10 }}
-                                                                onMouseEnter={e => e.currentTarget.style.background = "#f8fafc"}
-                                                                onMouseLeave={e => e.currentTarget.style.background = ""}
-                                                            >
-                                                                <div style={{ width: 32, height: 32, borderRadius: "50%", background: "#6366f1", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, flexShrink: 0 }}>
-                                                                    {u.username[0].toUpperCase()}
-                                                                </div>
-                                                                <div>
-                                                                    <div style={{ fontSize: 13, fontWeight: 600, color: "#1a1a1a" }}>{u.username}</div>
-                                                                    <div style={{ fontSize: 11, color: "#888" }}>{u.email}</div>
-                                                                </div>
-                                                                {receiverIds.find(r => r._id === u._id) && <span style={{ marginLeft: "auto", color: "#22c55e", fontSize: 16 }}>✓</span>}
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                )}
-                                            </div>
-
-                                            {receiverIds.length > 0 && (
-                                                <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 8 }}>
-                                                    {receiverIds.map(u => (
-                                                        <span key={u._id} style={{ display: "flex", alignItems: "center", gap: 5, background: "#6366f115", border: "1px solid #6366f130", borderRadius: 20, padding: "4px 10px", fontSize: 12, color: "#6366f1" }}>
-                                                            👤 {u.username}
-                                                            <button type="button" onClick={() => setReceiverIds(prev => prev.filter(r => r._id !== u._id))} style={{ background: "none", border: "none", cursor: "pointer", color: "#ef4444", fontSize: 14, padding: 0, lineHeight: 1 }}>×</button>
-                                                        </span>
-                                                    ))}
-                                                </div>
-                                            )}
-                                            {receiverIds.length === 0 && <p style={{ fontSize: 12, color: "#e8540a", marginTop: 6 }}>⚠️ Chưa chọn người nhận nào</p>}
-                                        </div>
-                                    )}
-
-                                    <p className="an-receiver-hint">📤 Sẽ gửi tới: <strong>{audienceLabel}</strong></p>
-                                </div>
-
-                                <div className="an-field">
-                                    <label className="an-label">Tiêu đề <span className="req">*</span></label>
-                                    <input className="an-input" name="title" value={form.title} onChange={handleChange} placeholder="Nhập tiêu đề thông báo..." maxLength={120} required />
-                                    <span className="an-char-count">{form.title.length}/120</span>
-                                </div>
-
-                                <div className="an-field">
-                                    <label className="an-label">Nội dung <span className="req">*</span></label>
-                                    <textarea className="an-textarea" name="message" value={form.message} onChange={handleChange} placeholder="Nhập nội dung thông báo chi tiết..." rows={4} maxLength={1000} required />
-                                    <span className="an-char-count">{form.message.length}/1000</span>
-                                </div>
-
-                                {(form.title || form.message) && (
-                                    <div className="an-preview">
-                                        <p className="an-preview-label">👁️ Xem trước</p>
-                                        <div className="an-preview-card">
-                                            <div className="an-preview-icon">{AN_TYPE_ICONS[form.type]}</div>
-                                            <div>
-                                                <div className="an-preview-title">{form.title || "Tiêu đề..."}</div>
-                                                <div className="an-preview-msg">{form.message || "Nội dung..."}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-
-                                <div className="an-form-actions">
-                                    <button type="button" className="an-btn-reset" onClick={() => { setForm(AN_INIT_FORM); setReceiverIds([]); setUserSearch(""); setUserResults([]); }}>🔄 Đặt lại</button>
-                                    <button type="submit" className="an-btn-send" disabled={sending}>
-                                        {sending ? <><span className="an-spinner" /> Đang gửi...</> : "📤 Gửi thông báo"}
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </section>
-
-                    <aside className="ad-surface-panel">
-                        <div className="ad-surface-head">
-                            <div>
-                                <h3 className="ad-surface-title">Tóm tắt phiên gửi</h3>
-                                <p className="ad-surface-text">Kiểm tra nhanh đối tượng nhận và nhịp gửi gần đây trước khi phát hành.</p>
-                            </div>
-                        </div>
-                        <div className="ad-kv-list">
-                            <div className="ad-kv-row"><span className="ad-kv-label">Loại thông báo</span><strong className="ad-kv-value">{AN_TYPE_OPTIONS.find(item => item.value === form.type)?.label || form.type}</strong></div>
-                            <div className="ad-kv-row"><span className="ad-kv-label">Đối tượng</span><strong className="ad-kv-value">{audienceLabel}</strong></div>
-                            <div className="ad-kv-row"><span className="ad-kv-label">Độ dài nội dung</span><strong className="ad-kv-value">{form.message.length} ký tự</strong></div>
-                            <div className="ad-kv-row"><span className="ad-kv-label">Tổng lịch sử</span><strong className="ad-kv-value">{sentList.length} bản ghi</strong></div>
-                        </div>
-                        <div className="ad-side-divider" />
-                        <div className="ad-surface-head" style={{ marginBottom: 10 }}>
-                            <div>
-                                <h3 className="ad-surface-title">Gần đây nhất</h3>
-                                <p className="ad-surface-text">4 thông báo mới nhất để bạn kiểm tra giọng điệu và nhịp gửi.</p>
-                            </div>
-                        </div>
-                        {loadingList ? (
-                            <div className="ad-empty-inline">Đang tải lịch sử...</div>
-                        ) : latestSent.length === 0 ? (
-                            <div className="ad-empty-inline">Chưa có thông báo nào được gửi.</div>
-                        ) : (
-                            <div className="ad-mini-list">
-                                {latestSent.map((item) => (
-                                    <div key={item._id} className="ad-mini-item">
-                                        <div className="ad-mini-icon">{AN_TYPE_ICONS[item.type] || "📢"}</div>
-                                        <div className="ad-mini-copy">
-                                            <div className="ad-mini-title">{item.title}</div>
-                                            <div className="ad-mini-meta">{formatDate(item.createdAt)} · {item.receiverIds?.length || 0} người nhận</div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </aside>
-                </div>
+                <NotificationComposer
+                    audienceLabel={audienceLabel}
+                    form={form}
+                    latestSent={latestSent}
+                    loadingList={loadingList}
+                    onFieldChange={handleChange}
+                    onReceiverTypeChange={handleReceiverTypeChange}
+                    onRemoveReceiver={handleRemoveReceiver}
+                    onReset={resetComposer}
+                    onSearchRoleChange={handleSearchRoleChange}
+                    onSelectReceiver={handleSelectReceiver}
+                    onSubmit={handleSend}
+                    onUserSearchChange={setUserSearch}
+                    receiverIds={receiverIds}
+                    searchRole={searchRole}
+                    selectedTypeLabel={selectedTypeLabel}
+                    sending={sending}
+                    sentCount={sentList.length}
+                    userResults={userResults}
+                    userSearch={userSearch}
+                    userSearching={userSearching}
+                />
             )}
 
             {activeTab === "history" && (
-                <section className="ad-surface-panel">
-                    <div className="ad-surface-head">
-                        <div>
-                            <h3 className="ad-surface-title">Lịch sử gửi thông báo</h3>
-                            <p className="ad-surface-text">Theo dõi hiệu quả gửi, số người nhận và lượt đọc trên cùng một danh sách quản trị.</p>
-                        </div>
-                        <button type="button" className="ad-hero-btn" onClick={loadSentList}>Làm mới</button>
-                    </div>
-                    <div className="an-history-panel ad-neutral-width">
-                        {loadingList ? (
-                            <div className="an-history-loading"><div className="an-spinner-lg" /><span>Đang tải lịch sử...</span></div>
-                        ) : sentList.length === 0 ? (
-                            <div className="an-history-empty"><span>📭</span><p>Chưa có thông báo nào được gửi</p></div>
-                        ) : (
-                            <div className="an-history-list">
-                                {sentList.map((n) => (
-                                    <div key={n._id} className="an-history-item">
-                                        <div className="an-history-icon">{AN_TYPE_ICONS[n.type] || "📢"}</div>
-                                        <div className="an-history-content">
-                                            <div className="an-history-title">{n.title}</div>
-                                            <div className="an-history-msg">{n.message}</div>
-                                            <div className="an-history-meta">
-                                                <span className="an-history-target">
-                                                    {n.receiverType === "role"
-                                                        ? (n.targetRole === "all" ? "👥 Tất cả" : n.targetRole === "student" ? "🎓 Sinh viên" : "📋 Quản lý")
-                                                        : "👤 Cá nhân"}
-                                                </span>
-                                                <span className="an-history-receivers">{n.receiverIds?.length || 0} người nhận</span>
-                                                <span className="an-history-read">✅ {n.readBy?.length || 0} đã đọc</span>
-                                                <span className="an-history-date">{formatDate(n.createdAt)}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                </section>
+                <NotificationHistory
+                    loadingList={loadingList}
+                    onRefresh={loadSentList}
+                    sentList={sentList}
+                />
             )}
         </div>
     );

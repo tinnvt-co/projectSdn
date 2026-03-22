@@ -125,6 +125,339 @@
     padding-right: 4px;
 }
 
+.ad-inline-alert {
+    margin-bottom: 16px;
+}
+
+.ad-inline-alert-sm {
+    margin-bottom: 12px;
+}
+
+.ad-surface-head-tight {
+    margin-bottom: 10px;
+}
+
+.ad-recipient-stack {
+    margin-top: 10px;
+}
+
+.ad-search-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.ad-search-shell {
+    position: relative;
+}
+
+.ad-search-indicator {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    font-size: 12px;
+}
+
+.ad-search-results {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    max-height: 220px;
+    overflow-y: auto;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+    z-index: 100;
+}
+
+.ad-search-results-compact {
+    max-height: 200px;
+}
+
+.ad-search-result {
+    width: 100%;
+    padding: 10px 14px;
+    border: none;
+    border-bottom: 1px solid #f1f5f9;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.ad-search-result:last-child {
+    border-bottom: none;
+}
+
+.ad-search-result:hover {
+    background: #f8fafc;
+}
+
+.ad-search-result-column {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.ad-search-avatar,
+.ad-selected-avatar,
+.ad-debtor-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.ad-search-avatar,
+.ad-selected-avatar {
+    background: #6366f1;
+}
+
+.ad-debtor-avatar {
+    background: #ef4444;
+}
+
+.ad-search-copy,
+.ad-selected-copy,
+.ad-debtor-copy {
+    flex: 1;
+    min-width: 0;
+}
+
+.ad-search-title,
+.ad-selected-title,
+.ad-debtor-title {
+    color: #1a1a1a;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.ad-search-meta,
+.ad-selected-meta,
+.ad-debtor-meta {
+    margin-top: 2px;
+    color: #888;
+    font-size: 11px;
+}
+
+.ad-search-check {
+    margin-left: auto;
+    color: #22c55e;
+    font-size: 16px;
+}
+
+.ad-chip-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.ad-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border: 1px solid rgba(99, 102, 241, 0.19);
+    border-radius: 999px;
+    background: rgba(99, 102, 241, 0.08);
+    color: #6366f1;
+    font-size: 12px;
+}
+
+.ad-chip-remove,
+.ad-selected-remove {
+    padding: 0;
+    border: none;
+    background: none;
+    color: #ef4444;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.ad-chip-remove {
+    font-size: 14px;
+}
+
+.ad-selected-remove {
+    font-size: 18px;
+}
+
+.ad-inline-note {
+    margin-top: 6px;
+    color: #64748b;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.ad-inline-note.warning,
+.ad-inline-note.danger {
+    color: #e8540a;
+}
+
+.ad-selected-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border: 1.5px solid rgba(99, 102, 241, 0.25);
+    border-radius: 10px;
+    background: rgba(99, 102, 241, 0.06);
+}
+
+.ad-inline-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ad-inline-input {
+    flex: 1;
+}
+
+.ad-inline-suffix {
+    flex-shrink: 0;
+    color: #888;
+    font-size: 13px;
+}
+
+.ad-inline-pill {
+    white-space: nowrap;
+    padding: 5px 10px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    background: #f8fafc;
+    color: #334155;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.ad-inline-pill.danger {
+    background: rgba(239, 68, 68, 0.08);
+    border-color: rgba(239, 68, 68, 0.18);
+    color: #ef4444;
+}
+
+.ad-bill-preview-card {
+    margin-top: 8px;
+    padding: 10px 14px;
+    border: 1.5px solid rgba(245, 158, 11, 0.18);
+    border-radius: 10px;
+    background: rgba(245, 158, 11, 0.08);
+}
+
+.ad-bill-preview-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.ad-bill-preview-row.split {
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px solid rgba(245, 158, 11, 0.14);
+}
+
+.ad-bill-preview-meta {
+    color: #888;
+    font-size: 12px;
+}
+
+.ad-bill-preview-total {
+    color: #f59e0b;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.ad-bill-preview-success {
+    color: #16a34a;
+    font-size: 12px;
+}
+
+.ad-bill-preview-per {
+    color: #16a34a;
+    font-size: 16px;
+    font-weight: 800;
+}
+
+.ad-form-split {
+    display: flex;
+    gap: 12px;
+}
+
+.ad-form-grow {
+    flex: 1;
+}
+
+.ad-full-width-btn {
+    width: 100%;
+    justify-content: center;
+    margin-top: 8px;
+}
+
+.ad-kv-list-spaced {
+    margin-bottom: 16px;
+}
+
+.ad-debtor-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.ad-debtor-card {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+}
+
+.ad-debtor-card:hover {
+    border-color: rgba(232, 84, 10, 0.34);
+}
+
+.ad-debtor-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ad-debtor-amount-wrap {
+    flex-shrink: 0;
+    text-align: right;
+}
+
+.ad-debtor-amount {
+    color: #ef4444;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.ad-debtor-count {
+    color: #94a3b8;
+    font-size: 10px;
+}
+
 .ad-settings-price-stack {
     display: flex;
     flex-direction: column;
@@ -262,7 +595,9 @@
     .ad-settings-toggle-card,
     .ad-settings-price-card,
     .ad-kv-row,
-    .ad-mini-item {
+    .ad-mini-item,
+    .ad-selected-card,
+    .ad-debtor-card {
         flex-direction: column;
         align-items: flex-start;
     }
@@ -272,8 +607,12 @@
         width: 100%;
     }
 
-    .ad-settings-price-input-wrap {
+    .ad-settings-price-input-wrap,
+    .ad-inline-row,
+    .ad-form-split {
         width: 100%;
+        flex-direction: column;
+        align-items: stretch;
     }
 
     .ad-kv-row {
@@ -281,6 +620,18 @@
     }
 
     .ad-kv-value {
+        text-align: left;
+    }
+
+    .ad-search-result,
+    .ad-bill-preview-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .ad-search-check,
+    .ad-debtor-amount-wrap {
+        margin-left: 0;
         text-align: left;
     }
 }
