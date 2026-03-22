@@ -316,7 +316,7 @@ exports.getPayments = async (req, res) => {
         const student = await getStudent(req.user);
         const payments = await Payment.find({ studentId: student._id })
             .sort({ paidAt: -1 })
-            .populate("invoiceId", "type totalAmount dueDate status");
+            .populate("invoiceId", "invoiceCode type amount paidAmount dueDate status");
         res.json({ success: true, data: payments });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });

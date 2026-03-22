@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { protect, authorize } = require("../middleware/authMiddleware");
 const {
   createElectricityUsage,
   getAllElectricityUsages,
@@ -7,6 +8,8 @@ const {
   updateElectricityUsage,
   deleteElectricityUsage,
 } = require("../controllers/ElectricityUsage.controller");
+
+router.use(protect, authorize("admin"));
 
 router.post("/", createElectricityUsage);
 router.get("/", getAllElectricityUsages);
