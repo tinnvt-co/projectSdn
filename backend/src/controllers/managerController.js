@@ -9,6 +9,7 @@ const PaymentSession = require("../models/PaymentSession");
 const ElectricityUsage = require("../models/ElectricityUsage");
 const Setting = require("../models/Setting");
 const Notification = require("../models/Notification");
+const { releaseExpiredBookingHolds } = require("../services/paymentService");
 
 const getCurrentTermCode = (date = new Date()) => {
     const month = date.getMonth() + 1;
@@ -53,12 +54,59 @@ const genInvoiceCode = () => {
     return `INV-${y}${m}${d}-${rand}`;
 };
 
+const getManagedBuildingIds = async (user) => {
+    if (user.role === "admin") return null;
+
+    const buildings = await Building.find({ managerId: user._id }).select("_id").lean();
+    return buildings.map((item) => String(item._id));
+};
+
+const getManagedRoomIds = async (managedBuildingIds) => {
+    if (!managedBuildingIds || managedBuildingIds.length === 0) return [];
+
+    const rooms = await Room.find({ buildingId: { $in: managedBuildingIds } }).select("_id").lean();
+    return rooms.map((item) => String(item._id));
+};
+
+const canAccessRequestScope = async (user, request, { managedRoomIds = null } = {}) => {
+    if (user.role === "admin") return true;
+
+    const requestRoomIds = [request.currentRoomId, request.targetRoomId]
+        .filter(Boolean)
+        .map((item) => String(item));
+
+    if (requestRoomIds.length === 0) return false;
+
+    const scopedRoomIds = managedRoomIds || await getManagedRoomIds(await getManagedBuildingIds(user));
+    if (scopedRoomIds.length === 0) return false;
+
+    const managedRoomSet = new Set(scopedRoomIds);
+    return requestRoomIds.some((roomId) => managedRoomSet.has(roomId));
+};
+
 exports.getRequests = async (req, res) => {
     try {
         const { type, status } = req.query;
         const filter = {};
         if (type) filter.type = type;
         if (status) filter.status = status;
+
+        if (req.user.role === "manager") {
+            const managedBuildingIds = await getManagedBuildingIds(req.user);
+            if (!managedBuildingIds || managedBuildingIds.length === 0) {
+                return res.json({ success: true, count: 0, data: [] });
+            }
+
+            const managedRoomIds = await getManagedRoomIds(managedBuildingIds);
+            if (managedRoomIds.length === 0) {
+                return res.json({ success: true, count: 0, data: [] });
+            }
+
+            filter.$or = [
+                { currentRoomId: { $in: managedRoomIds } },
+                { targetRoomId: { $in: managedRoomIds } },
+            ];
+        }
 
         const requests = await Request.find(filter)
             .sort({ createdAt: -1 })
@@ -88,11 +136,16 @@ exports.reviewRequest = async (req, res) => {
     try {
         const { id } = req.params;
         const { action, note } = req.body;
+        const managedBuildingIds = req.user.role === "manager" ? await getManagedBuildingIds(req.user) : null;
+        const managedRoomIds = managedBuildingIds ? await getManagedRoomIds(managedBuildingIds) : null;
 
         if (!["approve", "reject"].includes(action))
             return res.status(400).json({ success: false, message: "action phải là approve hoặc reject" });
 
         const request = await Request.findById(id);
+        if (request && !(await canAccessRequestScope(req.user, request, { managedRoomIds }))) {
+            return res.status(403).json({ success: false, message: "Ban khong co quyen xu ly yeu cau nay" });
+        }
         if (!request)
             return res.status(404).json({ success: false, message: "Không tìm thấy yêu cầu" });
         if (request.status !== "pending")
@@ -117,6 +170,24 @@ exports.reviewRequest = async (req, res) => {
                 return res.status(400).json({ success: false, message: "Sinh viên chưa có phòng hiện tại để chuyển" });
             if (String(student.currentRoomId) === String(request.targetRoomId))
                 return res.status(400).json({ success: false, message: "Phòng đích trung với phòng hiện tại" });
+
+            if (req.user.role === "manager") {
+                const targetRoomScope = await Room.findById(request.targetRoomId).select("buildingId");
+                const currentRoomScope = await Room.findById(student.currentRoomId).select("buildingId");
+                const managedBuildingSet = new Set(managedBuildingIds || []);
+
+                if (
+                    !targetRoomScope?.buildingId ||
+                    !currentRoomScope?.buildingId ||
+                    !managedBuildingSet.has(String(targetRoomScope.buildingId)) ||
+                    !managedBuildingSet.has(String(currentRoomScope.buildingId))
+                ) {
+                    return res.status(403).json({
+                        success: false,
+                        message: "Manager chi duoc duyet chuyen phong trong pham vi toa nha minh quan ly",
+                    });
+                }
+            }
 
             const targetRoom = await increaseRoomOccupancy(request.targetRoomId);
             await decreaseRoomOccupancy(student.currentRoomId);
@@ -218,11 +289,17 @@ exports.approveRetention = async (req, res) => {
     try {
         const { id } = req.params;
         const { nextTermCode } = req.body;
+        const managedRoomIds = req.user.role === "manager"
+            ? await getManagedRoomIds(await getManagedBuildingIds(req.user))
+            : null;
 
         if (!nextTermCode)
             return res.status(400).json({ success: false, message: "nextTermCode là bắt buộc" });
 
         const request = await Request.findById(id).populate("studentId");
+        if (request && !(await canAccessRequestScope(req.user, request, { managedRoomIds }))) {
+            return res.status(403).json({ success: false, message: "Ban khong co quyen xu ly yeu cau nay" });
+        }
         if (!request) return res.status(404).json({ success: false, message: "Không tìm thấy yêu cầu" });
         if (request.type !== "room_retention")
             return res.status(400).json({ success: false, message: "Không phải yêu cầu giữ phòng" });
@@ -264,6 +341,7 @@ exports.approveRetention = async (req, res) => {
 
 exports.getManagerBuildingRooms = async (req, res) => {
     try {
+        await releaseExpiredBookingHolds();
         const managerId = req.user._id;
         const buildings = await Building.find({ managerId }).select("name address totalFloors status").lean();
 

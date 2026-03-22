@@ -14,6 +14,7 @@ const {
     getInvoiceStatus,
     activateRoomForPaidBooking,
     completeQrPaymentSession,
+    releaseExpiredBookingHolds,
 } = require("../services/paymentService");
 
 const getCurrentTermCode = (date = new Date()) => {
@@ -201,6 +202,7 @@ exports.getRoomHistory = async (req, res) => {
 exports.getBookings = async (req, res) => {
     try {
         const student = await getStudent(req.user);
+        await releaseExpiredBookingHolds({ studentId: student._id });
         const bookings = await RoomRegistration.find({ studentId: student._id })
             .sort({ createdAt: -1 })
             .populate({
@@ -225,6 +227,7 @@ exports.createBooking = async (req, res) => {
             return res.status(403).json({ success: false, message: "Ban qu?n lý hi?n dang t?m d?ng nh?n don dang ký phòng. Vui lòng th? l?i sau." });
 
         const student = await getStudent(req.user);
+        await releaseExpiredBookingHolds();
         const { roomId, termCode, note } = req.body;
         if (!roomId || !termCode)
             return res.status(400).json({ success: false, message: "roomId và termCode là b?t bu?c" });
@@ -327,6 +330,7 @@ exports.getPayments = async (req, res) => {
 exports.getOutstandingInvoices = async (req, res) => {
     try {
         const student = await getStudent(req.user);
+        await releaseExpiredBookingHolds({ studentId: student._id });
         const invoices = await Invoice.find({
             studentId: student._id,
             status: { $in: ["unpaid", "partial", "overdue"] },
@@ -352,6 +356,7 @@ exports.getOutstandingInvoices = async (req, res) => {
 exports.createQrPaymentSession = async (req, res) => {
     try {
         const student = await getStudent(req.user);
+        await releaseExpiredBookingHolds({ studentId: student._id });
         const { invoiceIds } = req.body;
 
         if (!Array.isArray(invoiceIds) || invoiceIds.length === 0) {
@@ -461,6 +466,7 @@ exports.getQrPaymentSession = async (req, res) => {
 exports.payOutstandingInvoices = async (req, res) => {
     try {
         const student = await getStudent(req.user);
+        await releaseExpiredBookingHolds({ studentId: student._id });
         const { invoiceIds, paymentMethod = "bank_transfer", note } = req.body;
 
         if (!Array.isArray(invoiceIds) || invoiceIds.length === 0) {
@@ -586,6 +592,7 @@ exports.getMyRequests = async (req, res) => {
 exports.createRequest = async (req, res) => {
     try {
         const student = await getStudent(req.user);
+        await releaseExpiredBookingHolds({ studentId: student._id });
         const { type, title, description, targetRoomId } = req.body;
         if (!type || !title || !description)
             return res.status(400).json({ success: false, message: "type, title, description là b?t bu?c" });
@@ -718,6 +725,7 @@ exports.getViolations = async (req, res) => {
 // GET /student/rooms/available
 exports.getAvailableRooms = async (req, res) => {
     try {
+        await releaseExpiredBookingHolds();
         const { type, building } = req.query;
         const filter = {
             isActive: true,

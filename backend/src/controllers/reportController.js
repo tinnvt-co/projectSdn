@@ -43,7 +43,7 @@ exports.getReports = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: error.message || "Không thể tải danh sách báo cáo",
+            message: error.message || "Khong the tai danh sach bao cao",
         });
     }
 };
@@ -55,14 +55,14 @@ exports.getReportById = async (req, res) => {
         if (!report) {
             return res.status(404).json({
                 success: false,
-                message: "Không tìm thấy báo cáo",
+                message: "Khong tim thay bao cao",
             });
         }
 
         if (req.user.role === "manager" && !isManagerOwner(req, report)) {
             return res.status(403).json({
                 success: false,
-                message: "Bạn không có quyền xem báo cáo này",
+                message: "Ban khong co quyen xem bao cao nay",
             });
         }
 
@@ -73,7 +73,7 @@ exports.getReportById = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: error.message || "Không thể tải chi tiết báo cáo",
+            message: error.message || "Khong the tai chi tiet bao cao",
         });
     }
 };
@@ -85,7 +85,7 @@ exports.createReport = async (req, res) => {
         if (!title?.trim() || !content?.trim() || !buildingId) {
             return res.status(400).json({
                 success: false,
-                message: "Vui lòng nhập đầy đủ tiêu đề, nội dung và tòa nhà",
+                message: "Vui long nhap day du tieu de, noi dung va toa nha",
             });
         }
 
@@ -93,14 +93,14 @@ exports.createReport = async (req, res) => {
         if (!building) {
             return res.status(404).json({
                 success: false,
-                message: "Không tìm thấy tòa nhà được chọn",
+                message: "Khong tim thay toa nha duoc chon",
             });
         }
 
         if (req.user.role === "manager" && String(building.managerId) !== String(req.user._id)) {
             return res.status(403).json({
                 success: false,
-                message: "Bạn chỉ có thể gửi báo cáo cho tòa nhà mình phụ trách",
+                message: "Ban chi co the gui bao cao cho toa nha minh phu trach",
             });
         }
 
@@ -118,13 +118,13 @@ exports.createReport = async (req, res) => {
 
         return res.status(201).json({
             success: true,
-            message: "Gửi báo cáo thành công",
+            message: "Gui bao cao thanh cong",
             report: savedReport,
         });
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: error.message || "Không thể tạo báo cáo",
+            message: error.message || "Khong the tao bao cao",
         });
     }
 };
@@ -137,7 +137,14 @@ exports.reviewReport = async (req, res) => {
         if (!report) {
             return res.status(404).json({
                 success: false,
-                message: "Không tìm thấy báo cáo",
+                message: "Khong tim thay bao cao",
+            });
+        }
+
+        if (report.status !== "pending") {
+            return res.status(400).json({
+                success: false,
+                message: "Bao cao nay da duoc duyet truoc do",
             });
         }
 
@@ -154,13 +161,13 @@ exports.reviewReport = async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            message: "Đã duyệt báo cáo",
+            message: "Da duyet bao cao",
             report: updatedReport,
         });
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: error.message || "Không thể duyệt báo cáo",
+            message: error.message || "Khong the duyet bao cao",
         });
     }
 };
@@ -172,21 +179,21 @@ exports.deleteReport = async (req, res) => {
         if (!report) {
             return res.status(404).json({
                 success: false,
-                message: "Không tìm thấy báo cáo",
+                message: "Khong tim thay bao cao",
             });
         }
 
         if (!isManagerOwner(req, report)) {
             return res.status(403).json({
                 success: false,
-                message: "Bạn không có quyền xóa báo cáo này",
+                message: "Ban khong co quyen xoa bao cao nay",
             });
         }
 
         if (report.status !== "pending") {
             return res.status(400).json({
                 success: false,
-                message: "Chỉ có thể xóa báo cáo đang chờ duyệt",
+                message: "Chi co the xoa bao cao dang cho duyet",
             });
         }
 
@@ -194,12 +201,12 @@ exports.deleteReport = async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            message: "Đã xóa báo cáo",
+            message: "Da xoa bao cao",
         });
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: error.message || "Không thể xóa báo cáo",
+            message: error.message || "Khong the xoa bao cao",
         });
     }
 };
@@ -218,7 +225,7 @@ exports.getMyBuildings = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: error.message || "Không thể tải danh sách tòa nhà phụ trách",
+            message: error.message || "Khong the tai danh sach toa nha phu trach",
         });
     }
 };

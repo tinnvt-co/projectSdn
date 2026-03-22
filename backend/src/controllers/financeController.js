@@ -1,6 +1,5 @@
 const Invoice = require("../models/Invoice");
 const Payment = require("../models/Payment");
-const Student = require("../models/Student");
 
 // ─────────────────────────────────────────
 // [ADMIN] Tổng hợp dữ liệu tài chính
@@ -30,21 +29,26 @@ exports.getFinanceSummary = async (req, res) => {
         const now = new Date();
         const twelveMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 11, 1);
 
-        const monthlyRevenue = await Invoice.aggregate([
+        const monthlyRevenue = await Payment.aggregate([
             {
                 $match: {
-                    createdAt: { $gte: twelveMonthsAgo },
-                    status: { $in: ["paid", "partial"] },
+                    paidAt: { $gte: twelveMonthsAgo },
                 },
             },
             {
                 $group: {
                     _id: {
-                        year: { $year: "$createdAt" },
-                        month: { $month: "$createdAt" },
+                        year: { $year: "$paidAt" },
+                        month: { $month: "$paidAt" },
                     },
-                    revenue: { $sum: "$paidAmount" },
-                    count: { $sum: 1 },
+                    revenue: { $sum: "$amount" },
+                    invoiceIds: { $addToSet: "$invoiceId" },
+                },
+            },
+            {
+                $project: {
+                    revenue: 1,
+                    count: { $size: "$invoiceIds" },
                 },
             },
             { $sort: { "_id.year": 1, "_id.month": 1 } },

@@ -4,6 +4,25 @@ const PaymentSession = require("../models/PaymentSession");
 const Student = require("../models/Student");
 const RoomAssignment = require("../models/RoomAssignment");
 const RoomRegistration = require("../models/RoomRegistration");
+const Room = require("../models/Room");
+
+const calcRoomStatus = (room) => {
+    if (room.status === "maintenance") return "maintenance";
+    if (room.currentOccupancy >= room.maxOccupancy) return "full";
+    if (room.currentOccupancy > 0) return "partial";
+    return "available";
+};
+
+const decreaseRoomOccupancy = async (roomId) => {
+    if (!roomId) return;
+
+    const room = await Room.findById(roomId);
+    if (!room) return;
+
+    room.currentOccupancy = Math.max(0, room.currentOccupancy - 1);
+    room.status = calcRoomStatus(room);
+    await room.save();
+};
 
 const getInvoiceStatus = (invoice) => {
     if ((invoice.paidAmount || 0) >= (invoice.amount || 0)) return "paid";
@@ -61,6 +80,64 @@ const activateRoomForPaidBooking = async ({ studentId, reviewedBy }) => {
     await booking.save();
 
     return assignment;
+};
+
+const releaseExpiredBookingHolds = async ({ studentId = null, now = new Date() } = {}) => {
+    const bookingQuery = {
+        status: "approved",
+        activatedAt: null,
+    };
+
+    if (studentId) bookingQuery.studentId = studentId;
+
+    const bookings = await RoomRegistration.find(bookingQuery).sort({ createdAt: 1 });
+    const releasedBookingIds = [];
+
+    for (const booking of bookings) {
+        const invoices = await Invoice.find({
+            studentId: booking.studentId,
+            roomId: booking.roomId,
+            termCode: booking.termCode,
+            type: "room_fee",
+        });
+
+        if (invoices.length === 0) continue;
+
+        const hasAnyPayment = invoices.some((invoice) => (invoice.paidAmount || 0) > 0);
+        if (hasAnyPayment) continue;
+
+        const latestDueDate = invoices.reduce((latest, invoice) => {
+            if (!invoice.dueDate) return latest;
+            const dueDate = new Date(invoice.dueDate);
+            if (Number.isNaN(dueDate.getTime())) return latest;
+            return !latest || dueDate > latest ? dueDate : latest;
+        }, null);
+
+        if (!latestDueDate || latestDueDate >= now) continue;
+
+        await decreaseRoomOccupancy(booking.roomId);
+
+        booking.status = "cancelled";
+        booking.reviewedAt = now;
+        booking.reviewNote = booking.reviewNote
+            ? `${booking.reviewNote}. Tu dong huy giu cho do qua han thanh toan`
+            : "Tu dong huy giu cho do qua han thanh toan";
+        await booking.save();
+
+        const invoiceIds = invoices.map((invoice) => invoice._id);
+        if (invoiceIds.length > 0) {
+            await PaymentSession.deleteMany({
+                studentId: booking.studentId,
+                status: { $in: ["pending", "expired", "cancelled"] },
+                invoiceIds: { $in: invoiceIds },
+            });
+            await Invoice.deleteMany({ _id: { $in: invoiceIds }, paidAmount: 0 });
+        }
+
+        releasedBookingIds.push(String(booking._id));
+    }
+
+    return releasedBookingIds;
 };
 
 const completeQrPaymentSession = async ({
@@ -145,4 +222,5 @@ module.exports = {
     getInvoiceStatus,
     activateRoomForPaidBooking,
     completeQrPaymentSession,
+    releaseExpiredBookingHolds,
 };
