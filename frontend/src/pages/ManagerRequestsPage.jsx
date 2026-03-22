@@ -3,18 +3,18 @@ import api from "../services/api";
 import "./ManagerRequestsPage.css";
 
 const TYPE_LABEL = {
-    damage_report: "Bao hong hoc",
-    room_transfer: "Chuyen phong",
-    room_retention: "Giu phong",
-    room_reservation_cancel: "Huy phong da giu cho",
-    other: "Khac",
+    damage_report: "Báo hỏng hóc",
+    room_transfer: "Chuyển phòng",
+    room_retention: "Giữ phòng",
+    room_reservation_cancel: "Hủy phòng đã giữ chỗ",
+    other: "Khác",
 };
 
 const STATUS_MAP = {
-    pending: { label: "Cho xu ly", cls: "pending" },
-    manager_approved: { label: "Da duyet", cls: "manager_approved" },
-    manager_rejected: { label: "Da tu choi", cls: "manager_rejected" },
-    completed: { label: "Hoan thanh", cls: "completed" },
+    pending: { label: "Chờ xử lý", cls: "pending" },
+    manager_approved: { label: "Đã duyệt", cls: "manager_approved" },
+    manager_rejected: { label: "Đã từ chối", cls: "manager_rejected" },
+    completed: { label: "Hoàn thành", cls: "completed" },
 };
 
 const fmtDate = (d) => (d ? new Date(d).toLocaleDateString("vi-VN") : "-");
@@ -37,7 +37,7 @@ export default function ManagerRequestsPage() {
         if (filterType) params.type = filterType;
         api.get("/manager/requests", { params })
             .then((r) => setData(r.data.data))
-            .catch(() => showAlert("error", "Khong the tai danh sach yeu cau"))
+            .catch(() => showAlert("error", "Không thể tải danh sách yêu cầu"))
             .finally(() => setLoading(false));
     }, [filterStatus, filterType]);
 
@@ -60,19 +60,19 @@ export default function ManagerRequestsPage() {
             if (modal.mode === "retention") {
                 if (!nextTerm) {
                     setSubmitting(false);
-                    return showAlert("error", "Nhap ky hoc tiep theo");
+                    return showAlert("error", "Nhập kỳ học tiếp theo");
                 }
                 await api.put(`/manager/requests/${modal.item._id}/approve-retention`, { nextTermCode: nextTerm });
-                showAlert("success", `Da duyet giu phong ky ${nextTerm}`);
+                showAlert("success", `Đã duyệt giữ phòng kỳ ${nextTerm}`);
             } else {
                 const action = modal.mode === "approve" ? "approve" : "reject";
                 await api.put(`/manager/requests/${modal.item._id}`, { action, note });
-                showAlert("success", `Da ${action === "approve" ? "duyet" : "tu choi"} yeu cau`);
+                showAlert("success", `Đã ${action === "approve" ? "duyệt" : "từ chối"} yêu cầu`);
             }
             setModal(null);
             load();
         } catch (err) {
-            showAlert("error", err.response?.data?.message || "Thao tac that bai");
+            showAlert("error", err.response?.data?.message || "Thao tác thất bại");
         }
         setSubmitting(false);
     };
@@ -84,8 +84,8 @@ export default function ManagerRequestsPage() {
         <div className="mr-page">
             <div className="mr-header">
                 <div>
-                    <h1 className="mr-title">Yeu cau sinh vien</h1>
-                    <p className="mr-subtitle">Duyet va quan ly yeu cau tu sinh vien KTX</p>
+                    <h1 className="mr-title">Yêu cầu sinh viên</h1>
+                    <p className="mr-subtitle">Duyệt và quản lý yêu cầu từ sinh viên KTX</p>
                 </div>
             </div>
 
@@ -94,52 +94,52 @@ export default function ManagerRequestsPage() {
             <div className="mr-stats">
                 <div className="mr-stat">
                     <div className="mr-stat-num" style={{ color: "#d97706" }}>{pending}</div>
-                    <div className="mr-stat-label">Cho xu ly</div>
+                    <div className="mr-stat-label">Chờ xử lý</div>
                 </div>
                 <div className="mr-stat">
                     <div className="mr-stat-num" style={{ color: "#16a34a" }}>{approved}</div>
-                    <div className="mr-stat-label">Da duyet</div>
+                    <div className="mr-stat-label">Đã duyệt</div>
                 </div>
                 <div className="mr-stat">
                     <div className="mr-stat-num" style={{ color: "#e8540a" }}>{data.length}</div>
-                    <div className="mr-stat-label">Tong cong</div>
+                    <div className="mr-stat-label">Tổng cộng</div>
                 </div>
             </div>
 
             <div className="mr-filters">
                 <select className="mr-select" value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
-                    <option value="">Tat ca trang thai</option>
-                    <option value="pending">Cho xu ly</option>
-                    <option value="manager_approved">Da duyet</option>
-                    <option value="manager_rejected">Da tu choi</option>
-                    <option value="completed">Hoan thanh</option>
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="pending">Chờ xử lý</option>
+                    <option value="manager_approved">Đã duyệt</option>
+                    <option value="manager_rejected">Đã từ chối</option>
+                    <option value="completed">Hoàn thành</option>
                 </select>
                 <select className="mr-select" value={filterType} onChange={(e) => setFilterType(e.target.value)}>
-                    <option value="">Tat ca loai</option>
-                    <option value="damage_report">Bao hong hoc</option>
-                    <option value="room_transfer">Chuyen phong</option>
-                    <option value="room_retention">Giu phong</option>
-                    <option value="room_reservation_cancel">Huy phong da giu cho</option>
-                    <option value="other">Khac</option>
+                    <option value="">Tất cả loại</option>
+                    <option value="damage_report">Báo hỏng hóc</option>
+                    <option value="room_transfer">Chuyển phòng</option>
+                    <option value="room_retention">Giữ phòng</option>
+                    <option value="room_reservation_cancel">Hủy phòng đã giữ chỗ</option>
+                    <option value="other">Khác</option>
                 </select>
             </div>
 
             {loading ? (
-                <div className="mr-loading"><div className="mr-spinner" /><p>Dang tai...</p></div>
+                <div className="mr-loading"><div className="mr-spinner" /><p>Đang tải...</p></div>
             ) : data.length === 0 ? (
-                <div className="mr-empty">Khong co yeu cau nao</div>
+                <div className="mr-empty">Không có yêu cầu nào</div>
             ) : (
                 <div className="mr-table-wrap">
                     <table className="mr-table">
                         <thead>
                             <tr>
-                                <th>Sinh vien</th>
-                                <th>Loai yeu cau</th>
-                                <th>Tieu de</th>
-                                <th>Phong hien tai</th>
-                                <th>Ngay gui</th>
-                                <th>Trang thai</th>
-                                <th>Thao tac</th>
+                                <th>Sinh viên</th>
+                                <th>Loại yêu cầu</th>
+                                <th>Tiêu đề</th>
+                                <th>Phòng hiện tại</th>
+                                <th>Ngày gửi</th>
+                                <th>Trạng thái</th>
+                                <th>Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -164,7 +164,7 @@ export default function ManagerRequestsPage() {
                                             <div style={{ fontSize: 12, color: "#777", marginTop: 2 }}>{item.description?.slice(0, 70)}{item.description?.length > 70 ? "..." : ""}</div>
                                         </td>
                                         <td style={{ fontSize: 13, color: "#555" }}>
-                                            {item.currentRoomId ? `Phong ${item.currentRoomId.roomNumber}` : "-"}
+                                            {item.currentRoomId ? `Phòng ${item.currentRoomId.roomNumber}` : "-"}
                                         </td>
                                         <td style={{ fontSize: 13, color: "#666" }}>{fmtDate(item.createdAt)}</td>
                                         <td>
@@ -178,19 +178,19 @@ export default function ManagerRequestsPage() {
                                                 <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
                                                     {item.type === "room_retention" ? (
                                                         <button className="mr-btn-approve" onClick={() => openModal("retention", item)}>
-                                                            Duyet giu phong
+                                                            Duyệt giữ phòng
                                                         </button>
                                                     ) : (
                                                         <button className="mr-btn-approve" onClick={() => openModal("approve", item)}>
-                                                            Duyet
+                                                            Duyệt
                                                         </button>
                                                     )}
                                                     <button className="mr-btn-reject" onClick={() => openModal("reject", item)}>
-                                                        Tu choi
+                                                        Từ chối
                                                     </button>
                                                 </div>
                                             ) : (
-                                                <span style={{ fontSize: 12, color: "#bbb" }}>Da xu ly</span>
+                                                <span style={{ fontSize: 12, color: "#bbb" }}>Đã xử lý</span>
                                             )}
                                         </td>
                                     </tr>
@@ -206,13 +206,13 @@ export default function ManagerRequestsPage() {
                     <div className="mr-modal" onClick={(e) => e.stopPropagation()}>
                         {modal.mode === "retention" ? (
                             <>
-                                <div className="mr-modal-title">Duyet giu phong</div>
+                                <div className="mr-modal-title">Duyệt giữ phòng</div>
                                 <div className="mr-modal-sub">
-                                    Sinh vien: <strong>{modal.item.studentId?.fullName || "-"}</strong><br />
-                                    He thong se tu dong tao dang ky phong cho ky tiep theo.
+                                    Sinh viên: <strong>{modal.item.studentId?.fullName || "-"}</strong><br />
+                                    Hệ thống sẽ tự động tạo đăng ký phòng cho kỳ tiếp theo.
                                 </div>
                                 <label style={{ fontSize: 13, fontWeight: 600, color: "#555", display: "block", marginBottom: 6 }}>
-                                    Ky hoc tiep theo <span style={{ color: "#ef4444" }}>*</span>
+                                    Kỳ học tiếp theo <span style={{ color: "#ef4444" }}>*</span>
                                 </label>
                                 <input
                                     className="mr-input"
@@ -220,31 +220,31 @@ export default function ManagerRequestsPage() {
                                     value={nextTerm}
                                     onChange={(e) => setNextTerm(e.target.value)}
                                 />
-                                <label style={{ fontSize: 13, fontWeight: 600, color: "#555", display: "block", marginBottom: 6 }}>Ghi chu</label>
-                                <textarea className="mr-textarea" placeholder="Ghi chu them..." value={note} onChange={(e) => setNote(e.target.value)} />
+                                <label style={{ fontSize: 13, fontWeight: 600, color: "#555", display: "block", marginBottom: 6 }}>Ghi chú</label>
+                                <textarea className="mr-textarea" placeholder="Ghi chú thêm..." value={note} onChange={(e) => setNote(e.target.value)} />
                             </>
                         ) : (
                             <>
                                 <div className="mr-modal-title">
-                                    {modal.mode === "approve" ? "Duyet yeu cau" : "Tu choi yeu cau"}
+                                    {modal.mode === "approve" ? "Duyệt yêu cầu" : "Từ chối yêu cầu"}
                                 </div>
                                 <div className="mr-modal-sub">
                                     <strong>{modal.item.title}</strong><br />
-                                    Sinh vien: {modal.item.studentId?.fullName || "-"}
+                                    Sinh viên: {modal.item.studentId?.fullName || "-"}
                                 </div>
-                                <label style={{ fontSize: 13, fontWeight: 600, color: "#555", display: "block", marginBottom: 6 }}>Ghi chu</label>
+                                <label style={{ fontSize: 13, fontWeight: 600, color: "#555", display: "block", marginBottom: 6 }}>Ghi chú</label>
                                 <textarea
                                     className="mr-textarea"
-                                    placeholder="Ly do hoac ghi chu..."
+                                    placeholder="Lý do hoặc ghi chú..."
                                     value={note}
                                     onChange={(e) => setNote(e.target.value)}
                                 />
                             </>
                         )}
                         <div className="mr-modal-actions">
-                            <button className="mr-btn-cancel" onClick={() => setModal(null)}>Huy</button>
+                            <button className="mr-btn-cancel" onClick={() => setModal(null)}>Hủy</button>
                             <button className="mr-btn-confirm" onClick={handleSubmit} disabled={submitting}>
-                                {submitting ? "Dang xu ly..." : "Xac nhan"}
+                                {submitting ? "Đang xử lý..." : "Xác nhận"}
                             </button>
                         </div>
                     </div>
