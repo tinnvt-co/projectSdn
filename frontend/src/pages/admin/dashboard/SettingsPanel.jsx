@@ -201,7 +201,7 @@ function SettingsPanel() {
             <section className="ad-section-hero ad-section-hero-settings">
                 <div className="ad-section-copy">
                     <span className="ad-section-eyebrow">Billing Control Center</span>
-                    <h2 className="ad-section-title">⚙️ Cài đặt & gửi bill</h2>
+                    <h2 className="ad-section-title">Cài đặt & gửi bill</h2>
                     <p className="ad-section-subtitle">
                         Điều chỉnh giá dịch vụ, kiểm soát trạng thái đăng ký phòng và phát hành hóa đơn từ cùng một màn hình điều hành của admin.
                     </p>
@@ -231,8 +231,8 @@ function SettingsPanel() {
                 </div>
                 <div className="ad-toolbar-controls">
                     <div className="an-tabs" style={{ marginBottom: 0 }}>
-                        <button className={`an-tab ${activeTab === "prices" ? "active" : ""}`} onClick={() => setActiveTab("prices")}>💲 Cài đặt giá</button>
-                        <button className={`an-tab ${activeTab === "bill" ? "active" : ""}`} onClick={() => setActiveTab("bill")}>💻 Gửi bill thanh toán</button>
+                        <button className={`an-tab ${activeTab === "prices" ? "active" : ""}`} onClick={() => setActiveTab("prices")}>Cài đặt giá</button>
+                        <button className={`an-tab ${activeTab === "bill" ? "active" : ""}`} onClick={() => setActiveTab("bill")}>Gửi bill thanh toán</button>
                     </div>
                 </div>
             </div>

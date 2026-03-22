@@ -74,7 +74,7 @@ function FinancePanel() {
             <section className="ad-section-hero ad-section-hero-finance">
                 <div className="ad-section-copy">
                     <span className="ad-section-eyebrow">Finance Console</span>
-                    <h2 className="ad-section-title">💰 Báo cáo tài chính</h2>
+                    <h2 className="ad-section-title">Báo cáo tài chính</h2>
                     <p className="ad-section-subtitle">
                         Theo dõi doanh thu, công nợ và trạng thái hóa đơn trong một dashboard có cùng ngôn ngữ thiết kế với các tab admin khác.
                     </p>
@@ -239,7 +239,7 @@ function FinancePanel() {
                     )}
                     {invoices.length === 0 && !invoiceLoading ? (
                         <div className="ad-empty-inline">
-                            🎉 Không có hóa đơn nào {invoiceStatus ? `với trạng thái "${activeStatusLabel}"` : ""}
+                            Không có hóa đơn nào {invoiceStatus ? `với trạng thái "${activeStatusLabel}"` : ""}
                         </div>
                     ) : (
                         <table className="sd-table">

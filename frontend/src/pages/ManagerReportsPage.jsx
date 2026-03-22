@@ -4,10 +4,10 @@ import api from "../services/api";
 import "./ManagerReports.css";
 
 const TYPE_LABELS = {
-    general: "📋 Tổng quát",
-    maintenance: "🔧 Bảo trì",
-    incident: "⚠️ Sự cố",
-    monthly: "📅 Hàng tháng",
+    general: "Tổng quát",
+    maintenance: "Bảo trì",
+    incident: "Sự cố",
+    monthly: "Hàng tháng",
 };
 const TYPE_COLORS = {
     general: "#6366f1",
@@ -72,7 +72,7 @@ export default function ManagerReportsPage() {
             {/* Header */}
             <div className="mr-header">
                 <div>
-                    <h1 className="mr-title">📄 Báo cáo</h1>
+                    <h1 className="mr-title">Báo cáo</h1>
                     <p className="mr-subtitle">Gửi và theo dõi báo cáo đến Ban quản lý</p>
                 </div>
                 <button className="btn-new" onClick={() => setModal("create")}>
@@ -83,7 +83,7 @@ export default function ManagerReportsPage() {
             {/* Alert */}
             {alert.msg && (
                 <div className={`mr-alert ${alert.type}`}>
-                    {alert.type === "success" ? "✅" : "⚠️"} {alert.msg}
+                    {alert.msg}
                 </div>
             )}
 
@@ -177,17 +177,17 @@ function ReportCard({ report, onView, onDelete }) {
                 <h3 className="r-title">{report.title}</h3>
                 <p className="r-content">{report.content.slice(0, 140)}{report.content.length > 140 ? "..." : ""}</p>
                 <div className="r-footer">
-                    <span className="r-building">🏢 {report.buildingId?.name || "—"}</span>
+                    <span className="r-building">{report.buildingId?.name || "—"}</span>
                     <span className="r-date">{new Date(report.createdAt).toLocaleDateString("vi-VN")}</span>
                 </div>
                 {report.adminReview?.note && (
                     <div className="r-review-note">
-                        💬 Admin: {report.adminReview.note}
+                        Admin: {report.adminReview.note}
                     </div>
                 )}
             </div>
             {report.status === "pending" && (
-                <button className="r-del-btn" onClick={e => { e.stopPropagation(); onDelete(); }}>🗑️</button>
+                <button className="r-del-btn" onClick={e => { e.stopPropagation(); onDelete(); }}>Xóa</button>
             )}
         </div>
     );
@@ -218,15 +218,15 @@ function CreateReportModal({ buildings, onClose, onSuccess, onError }) {
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal-box wide" onClick={e => e.stopPropagation()}>
                 <div className="modal-header">
-                    <h2>📝 Gửi báo cáo mới</h2>
-                    <button className="modal-close" onClick={onClose}>✕</button>
+                    <h2>Gửi báo cáo mới</h2>
+                    <button className="modal-close" onClick={onClose}>×</button>
                 </div>
                 <form className="modal-form" onSubmit={handleSubmit}>
                     {/* Tòa nhà */}
                     <div className="form-row">
                         <label>Tòa nhà <span className="req">*</span></label>
                         {buildings.length === 0 ? (
-                            <p className="warn-text">⚠️ Bạn chưa được phân công quản lý tòa nhà nào</p>
+                            <p className="warn-text">Bạn chưa được phân công quản lý tòa nhà nào</p>
                         ) : (
                             <select value={form.buildingId} onChange={e => setForm(p => ({ ...p, buildingId: e.target.value }))} required>
                                 <option value="">-- Chọn tòa nhà --</option>
@@ -271,11 +271,11 @@ function CreateReportModal({ buildings, onClose, onSuccess, onError }) {
                             required
                         />
                     </div>
-                    {err && <div className="modal-err">⚠️ {err}</div>}
+                    {err && <div className="modal-err">{err}</div>}
                     <div className="modal-actions">
                         <button type="button" className="btn-cancel" onClick={onClose}>Hủy</button>
                         <button type="submit" className="btn-submit" disabled={loading || buildings.length === 0}>
-                            {loading ? "Đang gửi..." : "📤 Gửi báo cáo"}
+                            {loading ? "Đang gửi..." : "Gửi báo cáo"}
                         </button>
                     </div>
                 </form>
@@ -291,8 +291,8 @@ function DetailModal({ report, onClose }) {
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal-box wide" onClick={e => e.stopPropagation()}>
                 <div className="modal-header">
-                    <h2>📄 Chi tiết báo cáo</h2>
-                    <button className="modal-close" onClick={onClose}>✕</button>
+                    <h2>Chi tiết báo cáo</h2>
+                    <button className="modal-close" onClick={onClose}>×</button>
                 </div>
                 <div className="detail-body">
                     <div className="detail-row">
@@ -325,7 +325,7 @@ function DetailModal({ report, onClose }) {
                     </div>
                     {report.adminReview?.note && (
                         <div className="admin-review">
-                            <span className="detail-label">💬 Phản hồi từ Admin</span>
+                            <span className="detail-label">Phản hồi từ Admin</span>
                             <p>{report.adminReview.note}</p>
                             <span className="review-date">— {report.adminReview.reviewedBy?.username} | {new Date(report.adminReview.reviewedAt).toLocaleString("vi-VN")}</span>
                         </div>

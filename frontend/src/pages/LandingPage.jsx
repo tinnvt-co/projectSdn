@@ -1,34 +1,61 @@
-import React, { useState, useEffect, useCallback } from "react";
+﻿import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import "./LandingPage.css";
 
 const CAROUSEL_SLIDES = [
     {
         img: "https://ocd.fpt.edu.vn/css/images/landing/bg5.jpg",
-        title: "Kênh thông tin",
-        subtitle: "Ký túc xá Đại Học FPT",
+        tag: "Kênh thông tin chính thức",
+        title: "Kênh thông tin dành cho cư dân ký túc xá",
+        subtitle: "Theo dõi mọi cập nhật về đời sống, vận hành và dịch vụ trong hệ thống KTX Đại học FPT.",
     },
     {
         img: "https://ocd.fpt.edu.vn/css/images/landing/bg1.jpg",
-        title: "Không gian sống hiện đại",
-        subtitle: "Tiện nghi – An toàn – Thân thiện",
+        tag: "Không gian sống hiện đại",
+        title: "Môi trường sống an toàn, tiện nghi và chỉn chu",
+        subtitle: "Từ phòng ở, điện nước đến thông báo nội bộ đều được tổ chức tập trung trên một nền tảng thống nhất.",
     },
     {
         img: "https://ocd.fpt.edu.vn/css/images/landing/bg3.jpg",
-        title: "Học tập & Sinh hoạt",
-        subtitle: "Môi trường lý tưởng cho sinh viên",
+        tag: "Học tập và sinh hoạt",
+        title: "Một trải nghiệm nội trú phù hợp nhịp sống sinh viên",
+        subtitle: "Kết nối nhanh với Ban quản lý, chủ động xử lý yêu cầu và theo dõi thông tin lưu trú theo thời gian thực.",
     },
     {
         img: "https://ocd.fpt.edu.vn/css/images/landing/bg4.jpg",
-        title: "Cộng đồng FPT",
-        subtitle: "Nơi kết nối sinh viên toàn quốc",
-    }
-
+        tag: "Cộng đồng FPT",
+        title: "Không gian kết nối sinh viên trên toàn quốc",
+        subtitle: "Hệ thống được thiết kế để mỗi cơ sở vẫn đồng bộ về trải nghiệm và quy trình quản lý.",
+    },
 ];
 
 const QUICK_LINKS = [
-    { title: "Thông tin KTX Đại học FPT", sub: "Thông tin", icon: "🏠", target: "section-info" },
-    { title: "Các câu hỏi thường gặp", sub: "FAQ", icon: "❓", target: "section-faq" },
+    {
+        eyebrow: "Thông tin tổng quan",
+        title: "Khám phá hệ thống ký túc xá FPT",
+        sub: "Xem nhanh tiện ích, chính sách lưu trú và định hướng không gian sống dành cho sinh viên.",
+        cta: "Xem thông tin",
+        target: "section-info",
+    },
+    {
+        eyebrow: "FAQ",
+        title: "Những câu hỏi được quan tâm nhiều nhất",
+        sub: "Nội quy, điện nước, quy trình gửi yêu cầu và các đầu mối hỗ trợ được tổng hợp gọn trong một chỗ.",
+        cta: "Mở FAQ",
+        target: "section-faq",
+    },
+];
+
+const HERO_POINTS = [
+    "Quản lý phòng ở, thanh toán và yêu cầu trên cùng một hệ thống",
+    "Cập nhật thông báo nhanh cho sinh viên, quản lý và admin",
+    "Thiết kế đồng bộ cho nhiều cơ sở và nhiều vai trò sử dụng",
+];
+
+const HERO_METRICS = [
+    { value: "4", label: "cơ sở vận hành" },
+    { value: "24/7", label: "kênh hỗ trợ nội trú" },
+    { value: "1", label: "nền tảng quản lý tập trung" },
 ];
 
 const FAQ_ITEMS = [
@@ -36,95 +63,82 @@ const FAQ_ITEMS = [
         q: "1. Khi ở KTX cần lưu ý điều gì?",
         a: (
             <>
-                <p><strong>Ký túc xá có một số điều cần lưu ý khi ở như sau:</strong></p>
+                <p><strong>Một số nguyên tắc quan trọng khi sinh hoạt tại ký túc xá:</strong></p>
                 <ul>
-                    <li>Không được nuôi vật nuôi, thú cưng (chó, mèo...).</li>
-                    <li>Không được uống rượu, bia, chơi cờ bạc, sử dụng các chất kích thích và chất cấm.</li>
-                    <li>Không được nấu ăn trong ký túc xá.</li>
-                    <li>Không được đưa người lạ không ở trong ký túc xá vào phòng sau giờ giới nghiêm.</li>
-                    <li>Giờ giới nghiêm trong ký túc xá là sau 10 giờ 30 phút tối.</li>
-                    <li>Giữ gìn vệ sinh chung và đổ rác trước 9 giờ sáng.</li>
+                    <li>Không nuôi thú cưng trong khu nội trú.</li>
+                    <li>Không sử dụng rượu bia, chất kích thích hoặc tổ chức cờ bạc trong phòng.</li>
+                    <li>Không nấu ăn trong phòng ở nếu không thuộc khu vực cho phép.</li>
+                    <li>Không đưa người lạ vào phòng sau giờ giới nghiêm.</li>
+                    <li>Giữ gìn vệ sinh chung và đổ rác đúng thời gian quy định.</li>
                 </ul>
-                <p>Tất cả các lỗi vi phạm đều bị trừ dựa trên mức độ lỗi vi phạm.</p>
+                <p>Mọi vi phạm sẽ được xử lý theo nội quy và mức độ ảnh hưởng tới môi trường sống chung.</p>
             </>
         ),
     },
     {
-        q: "2. Thời hạn lưu trú và thông tin phòng ở (FPTU HN)",
+        q: "2. Thời hạn lưu trú và thông tin điện nước được tính như thế nào?",
         a: (
             <>
-                <p><strong>Thời hạn lưu trú các kỳ</strong></p>
+                <p><strong>Thời hạn lưu trú thường theo từng học kỳ:</strong></p>
                 <ul>
-                    <li>Kỳ Spring: Tháng 1 – tháng 4</li>
-                    <li>Kỳ Summer: Tháng 5 – tháng 8</li>
-                    <li>Kỳ Fall: Tháng 9 – tháng 12</li>
+                    <li>Kỳ Spring: từ tháng 1 đến tháng 4.</li>
+                    <li>Kỳ Summer: từ tháng 5 đến tháng 8.</li>
+                    <li>Kỳ Fall: từ tháng 9 đến tháng 12.</li>
                 </ul>
-                <p><strong>Phụ trội Điện nước/kỳ</strong></p>
+                <p><strong>Chính sách điện nước cơ bản:</strong></p>
                 <ul>
-                    <li>Định mức miễn phí: 200 số Điện &amp; 12 số nước</li>
-                    <li>Dùng vượt định mức: Nộp phí phụ trội</li>
-                    <li>Đơn giá: 2.500đ/số điện, 10.000đ/số nước</li>
-                </ul>
-                <p><strong>Thông tin phòng ở</strong></p>
-                <ul>
-                    <li>Kích thước giường: 2000x1900mm (Dom CDFH), 1930x900mm (Dom AB)</li>
-                    <li>CSVC cung cấp: Giường tầng, tủ để, tủ giày, bàn học (tùy loại phòng), giá phơi quần áo</li>
-                    <li>Thiết bị: Đèn điều sáng, điều hòa, bình nóng lạnh</li>
-                    <li>Dịch vụ nhà trường cung cấp: ăn uống, tiện ích (giặt là, cắt tóc, siêu thị, phòng gym); phí SV tự túc</li>
-                    <li>Hỗ trợ mạng: KTX hỗ trợ tiếp cận cáp. Hỗ trợ hỗ trợ theo các quy định ra nội quy KTX.</li>
-                    <li>Điểm tiếp nhận đăng ký mạng: Phòng trực Dom C hoặc liên hệ hotline đặt tại sảnh các Dom</li>
-                    <li>Đồ cá nhân: sinh viên tự trang bị là như chăn, màn, ga, gối, đệm...</li>
+                    <li>Miễn phí trong định mức điện và nước theo quy định hiện hành.</li>
+                    <li>Phần vượt định mức sẽ được tính theo đơn giá vận hành của KTX.</li>
+                    <li>Sinh viên có thể theo dõi lịch sử tiêu thụ trực tiếp trên hệ thống.</li>
                 </ul>
             </>
         ),
     },
     {
-        q: "3. Điểm uy tín là gì?",
+        q: "3. Điểm uy tín được hiểu như thế nào?",
         a: (
             <>
-                <p>Điểm uy tín (Credibility in FPT Dormitory – CFD score) là một trong những yếu tố để tạo ra môi trường KTX văn minh và lành mạnh hơn</p>
+                <p>Điểm uy tín là một chỉ số phản ánh mức độ tuân thủ và ý thức sử dụng dịch vụ ký túc xá của sinh viên.</p>
                 <ul>
-                    <li>Điểm uy tín là tiêu chí để đánh giá ý thức của sinh viên khi sử dụng dịch vụ ký túc xá.</li>
-                    <li>Điểm uy tín thay đổi dựa theo những hành vi, hoạt động và sử dụng góp của sinh viên trong suốt thời gian ở ký túc xá.</li>
-                    <li>Phản hồi: KTX hỗ trợ tiếp cận, giam tùy ứng theo các quy định đã được đề ra trong nội quy KTX.</li>
-                    <li>Điểm uy tín là một trong những tiêu chí được dùng để xét duyệt xem sinh viên có được sử dụng ký túc xá trong kỳ hay không.</li>
+                    <li>Điểm thay đổi theo hành vi thực tế trong suốt thời gian lưu trú.</li>
+                    <li>Đây là một trong những yếu tố được tham chiếu khi xét duyệt tiếp tục ở KTX.</li>
+                    <li>Hệ thống giúp Ban quản lý theo dõi và phản hồi minh bạch hơn với từng trường hợp.</li>
                 </ul>
             </>
         ),
     },
     {
-        q: "4. Làm thế nào để gửi yêu cầu tới Ban Quản lý KTX?",
+        q: "4. Làm thế nào để gửi yêu cầu tới Ban quản lý KTX?",
         a: (
             <ol>
-                <li>Bước 1: Vào chức năng <strong>My request</strong></li>
-                <li>Bước 2: Bấm vào nút <strong>Create new request</strong> → Chọn <strong>loại yêu cầu</strong> (Type request) thích hợp.</li>
-                <li>Bước 3: Điền nội dung của yêu cầu vào phần <strong>Content</strong>.</li>
-                <li>Bước 4: Bấm vào nút <strong>Create request</strong>.</li>
+                <li>Đăng nhập vào hệ thống và mở mục <strong>Yêu cầu của tôi</strong>.</li>
+                <li>Chọn <strong>Gửi yêu cầu mới</strong> và xác định đúng loại yêu cầu.</li>
+                <li>Điền nội dung chi tiết, thông tin liên quan và gửi yêu cầu.</li>
+                <li>Theo dõi trạng thái xử lý trực tiếp trong dashboard sinh viên.</li>
             </ol>
         ),
     },
     {
-        q: "5. Làm thế nào để báo cáo sửa chữa đồ dùng trong phòng?",
+        q: "5. Làm thế nào để báo sửa chữa đồ dùng hoặc thiết bị trong phòng?",
         a: (
             <ol>
-                <li>Bước 1: Vào chức năng <strong>My request</strong></li>
-                <li>Bước 2: Bấm vào nút <strong>Create new request</strong> → Chọn <strong>Báo cáo văn đề kỹ thuật</strong> ở mục Type request</li>
-                <li>Bước 3: Hệ thống sẽ tới trang <em>https://cim.fpt.edu.vn/</em></li>
-                <li>Bước 4: Điền những thông tin cần thiết và gửi ảnh tình trạng thiết bị (trên hệ thống CIM).</li>
-                <li>Bước 5: Bấm vào nút <strong>Create</strong> (trên hệ thống CIM)</li>
+                <li>Truy cập mục <strong>Yêu cầu của tôi</strong>.</li>
+                <li>Tạo yêu cầu mới với nhóm nội dung liên quan đến sự cố kỹ thuật hoặc hỏng hóc.</li>
+                <li>Mô tả tình trạng thực tế và bổ sung thông tin phòng ở.</li>
+                <li>Ban quản lý sẽ tiếp nhận, phản hồi và cập nhật tiến độ xử lý ngay trên hệ thống.</li>
             </ol>
         ),
     },
     {
-        q: "6. Thông tin liên lạc của bảo vệ và y tế là gì?",
+        q: "6. Khi cần hỗ trợ khẩn cấp thì liên hệ ở đâu?",
         a: (
             <>
-                <p><strong>Thông tin liên lạc của phòng bảo vệ và phòng y tế (24/7):</strong></p>
+                <p><strong>Một số đầu mối hỗ trợ thường trực:</strong></p>
                 <ul>
                     <li>Phòng bảo vệ: (024) 668 05913</li>
                     <li>Phòng y tế: (024) 668 05917</li>
                 </ul>
-                <p><em>Thông tin chi tiết và cụ thể hơn, sinh viên có thể <strong>Đăng nhập</strong> và xem thêm ở trang <strong>Home</strong></em></p>
+                <p>Đăng nhập hệ thống để xem thêm thông báo, lịch sử yêu cầu và các hướng dẫn nội trú mới nhất.</p>
             </>
         ),
     },
@@ -135,14 +149,13 @@ const TOTAL = CAROUSEL_SLIDES.length;
 export default function LandingPage() {
     const navigate = useNavigate();
     const [current, setCurrent] = useState(0);
-    const [openFaq, setOpenFaq] = useState(null);
+    const [openFaq, setOpenFaq] = useState(0);
 
     const scrollTo = (id) => {
         const el = document.getElementById(id);
         if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
     };
 
-    // Use functional updater to avoid stale-closure in useEffect
     const goTo = useCallback((idx) => {
         setCurrent(((idx % TOTAL) + TOTAL) % TOTAL);
     }, []);
@@ -150,88 +163,131 @@ export default function LandingPage() {
     const next = useCallback(() => setCurrent((c) => (c + 1) % TOTAL), []);
     const prev = useCallback(() => setCurrent((c) => (c - 1 + TOTAL) % TOTAL), []);
 
-    // Auto-play – runs only once, no dependency on 'current'
     useEffect(() => {
         const timer = setInterval(() => setCurrent((c) => (c + 1) % TOTAL), 4500);
         return () => clearInterval(timer);
     }, []);
 
+    const toggleFaq = (index) => {
+        setOpenFaq((currentIndex) => (currentIndex === index ? null : index));
+    };
+
     return (
         <div className="lp-root">
-            {/* ── Hero ── */}
-            <div className="lp-hero">
+            <section className="lp-hero">
+                <div className="lp-hero-grid">
+                    <div className="lp-hero-copy">
+                        <span className="lp-eyebrow">On campus dormitory</span>
+                        <h1>Hệ thống Ký túc xá Đại học FPT</h1>
+                        <p className="lp-hero-lead">
+                            Một giao diện tập trung để theo dõi lưu trú, thanh toán, thông báo và yêu cầu nội trú theo cách rõ ràng,
+                            hiện đại và dễ dùng cho cả sinh viên lẫn bộ phận quản lý.
+                        </p>
 
+                        <div className="lp-hero-points">
+                            {HERO_POINTS.map((point) => (
+                                <div key={point} className="lp-hero-point">{point}</div>
+                            ))}
+                        </div>
 
-                {/* Carousel */}
-                <div className="lp-carousel">
-                    {CAROUSEL_SLIDES.map((slide, i) => (
-                        <div
-                            key={i}
-                            className={`lp-slide${i === current ? " active" : ""}`}
-                            style={{ backgroundImage: `url(${slide.img})` }}
-                        >
-                            <div className="lp-slide-overlay" />
-                            <div className="lp-slide-text">
-                                <h2 className="lp-slide-title">{slide.title}</h2>
-                                <p className="lp-slide-subtitle">{slide.subtitle}</p>
+                        <div className="lp-hero-actions">
+                            <button type="button" className="lp-primary-btn" onClick={() => navigate("/login")}>
+                                Đăng nhập hệ thống
+                            </button>
+                            <button type="button" className="lp-secondary-btn" onClick={() => scrollTo("section-faq")}>
+                                Xem câu hỏi thường gặp
+                            </button>
+                        </div>
+
+                        <div className="lp-hero-metrics">
+                            {HERO_METRICS.map((item) => (
+                                <div key={item.label} className="lp-hero-metric">
+                                    <strong>{item.value}</strong>
+                                    <span>{item.label}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="lp-carousel-shell">
+                        <div className="lp-carousel-badge">Kênh thông tin chính thức</div>
+                        <div className="lp-carousel">
+                            {CAROUSEL_SLIDES.map((slide, i) => (
+                                <div
+                                    key={slide.title}
+                                    className={`lp-slide${i === current ? " active" : ""}`}
+                                    style={{ backgroundImage: `url(${slide.img})` }}
+                                >
+                                    <div className="lp-slide-overlay" />
+                                    <div className="lp-slide-text">
+                                        <span className="lp-slide-tag">{slide.tag}</span>
+                                        <h2 className="lp-slide-title">{slide.title}</h2>
+                                        <p className="lp-slide-subtitle">{slide.subtitle}</p>
+                                    </div>
+                                </div>
+                            ))}
+
+                            <button type="button" className="lp-arrow lp-arrow-prev" onClick={prev} aria-label="Trước">
+                                ‹
+                            </button>
+                            <button type="button" className="lp-arrow lp-arrow-next" onClick={next} aria-label="Tiếp">
+                                ›
+                            </button>
+
+                            <div className="lp-dots">
+                                {CAROUSEL_SLIDES.map((slide, i) => (
+                                    <button
+                                        type="button"
+                                        key={slide.title}
+                                        className={`lp-dot${i === current ? " active" : ""}`}
+                                        onClick={() => goTo(i)}
+                                        aria-label={`Chuyển tới slide ${i + 1}`}
+                                    />
+                                ))}
                             </div>
                         </div>
-                    ))}
-
-                    <button className="lp-arrow lp-arrow-prev" onClick={prev} aria-label="Trước">‹</button>
-                    <button className="lp-arrow lp-arrow-next" onClick={next} aria-label="Tiếp">›</button>
-
-                    <div className="lp-dots">
-                        {CAROUSEL_SLIDES.map((_, i) => (
-                            <button
-                                key={i}
-                                className={`lp-dot${i === current ? " active" : ""}`}
-                                onClick={() => goTo(i)}
-                            />
-                        ))}
                     </div>
                 </div>
-                <br></br>
-                {/* Quick-link cards */}
+
                 <div className="lp-quicklinks">
                     {QUICK_LINKS.map((ql) => (
-                        <div key={ql.title} className="lp-ql-card" onClick={() => scrollTo(ql.target)}>
-                            <span className="lp-ql-icon">{ql.icon}</span>
-                            <div>
-                                <div className="lp-ql-title">{ql.title}</div>
-                                <div className="lp-ql-sub">{ql.sub} →</div>
-                            </div>
-                        </div>
+                        <button type="button" key={ql.title} className="lp-ql-card" onClick={() => scrollTo(ql.target)}>
+                            <span className="lp-ql-kicker">{ql.eyebrow}</span>
+                            <div className="lp-ql-title">{ql.title}</div>
+                            <div className="lp-ql-sub">{ql.sub}</div>
+                            <span className="lp-ql-cta">{ql.cta}</span>
+                        </button>
                     ))}
                 </div>
-            </div>
+            </section>
 
-
-            {/* ── Section tiêu đề ── */}
             <section id="section-info" className="lp-section-title">
-                <h2>Thông tin Ký túc xá Đại Học FPT</h2>
+                <span className="lp-section-kicker">Tổng quan nội trú</span>
+                <h2>Thông tin Ký túc xá Đại học FPT</h2>
                 <div className="lp-divider" />
                 <p className="lp-section-lead">
-                    Để biết thêm chi tiết về KTX, các bạn có thể truy cập vào{" "}
-                    <a href="#" className="lp-link-pdf">File PDF</a> để tìm hiểu thêm.
+                    Tìm hiểu nhanh về không gian sống, chính sách lưu trú và định hướng vận hành ký túc xá qua tài liệu giới thiệu chính thức.
+                    <a
+                        href="https://ocd.fpt.edu.vn/"
+                        className="lp-link-pdf"
+                        target="_blank"
+                        rel="noreferrer"
+                    >
+                        Xem thêm thông tin
+                    </a>
                 </p>
             </section>
 
-            {/* ── Content block 1 ── */}
             <section className="lp-content-block lp-block-right-img">
                 <div className="lp-block-text">
+                    <span className="lp-content-kicker">Môi trường sống</span>
                     <p>
-                        Trường Đại học FPT là một trong những ngôi trường nổi tiếng đào tạo đa ngành,
-                        với chất lượng đào tạo đạt chuẩn quốc tế. Trường không chỉ quan tâm đến chất
-                        lượng đào tạo, công tác tuyển sinh mà còn chăm lo cho đời sống sinh viên.
+                        Trường Đại học FPT không chỉ đầu tư cho chất lượng đào tạo mà còn chú trọng mạnh vào trải nghiệm sinh hoạt của sinh viên.
+                        Ký túc xá được phát triển như một hệ sinh thái nội trú chỉn chu, nơi mọi nhu cầu thiết yếu đều có thể được theo dõi và hỗ trợ rõ ràng.
                     </p>
                     <p>
-                        Bằng việc đầu tư, xây dựng khu{" "}
-                        <span className="lp-highlight">Ký túc xá</span> đầy đủ trang thiết bị căn
-                        thiết, không gian thoáng mát, sạch sẽ. Để đáp ứng nhu cầu và tạo không gian
-                        học tập, sinh hoạt thoải mái nhất cho sinh viên.{" "}
-                        <span className="lp-highlight">KTX</span> cũng được xem như ngôi nhà thứ 2
-                        của nhiều sinh viên.
+                        Không gian phòng ở được thiết kế để ưu tiên sự gọn gàng, an toàn và tiện nghi. Từ quản lý điện nước đến gửi yêu cầu hoặc nhận thông báo,
+                        sinh viên đều có thể chủ động tiếp cận thông tin ngay trên cùng một nền tảng.
                     </p>
                 </div>
                 <div className="lp-block-img">
@@ -243,84 +299,101 @@ export default function LandingPage() {
                 </div>
             </section>
 
-
-
-            {/* ── Content block 2 ── */}
             <section className="lp-content-block lp-block-left-img">
                 <div className="lp-block-img">
                     <img
                         src="https://ocd.fpt.edu.vn/css/images/landing/content2.png"
-                        alt="Ký túc xá FPT nội thất"
+                        alt="Nội thất ký túc xá FPT"
                         loading="lazy"
                     />
                 </div>
                 <div className="lp-block-text">
+                    <span className="lp-content-kicker">Trải nghiệm dành cho sinh viên</span>
                     <p className="lp-highlight-lead">
-                        Ký túc xá của trường Đại học FPT là chỗ ở dành riêng cho sinh viên của Đại học FPT.
+                        Ký túc xá là lựa chọn giúp sinh viên cân bằng tốt giữa chi phí, an ninh và sự thuận tiện trong học tập.
                     </p>
                     <p>
-                        Hiện nay, một vấn đề các bạn tân sinh viên sau khi biết kết quả trúng tuyển
-                        Đại học. Đó là tìm kiếm cho mình một chỗ ở phù hợp, vừa tiết kiệm vừa đảm
-                        bảo an ninh, môi trường học tập. Không chỉ các tân sinh viên mà các bạn sinh
-                        viên các khóa trước hầu hết đều mong muốn ở tại{" "}
-                        <span className="lp-highlight">KTX</span> trường để thuận lợi cho việc di
-                        chuyển. Và để tiết kiệm chi phí, có một trường để học tập và sinh hoạt.
+                        Với tân sinh viên, đây là một điểm tựa để bắt đầu nhịp sống đại học trong môi trường đã được chuẩn hóa. Với sinh viên đang theo học,
+                        KTX mang lại lợi thế rõ ràng về di chuyển, nhịp sinh hoạt và khả năng kết nối với cộng đồng cùng trường.
+                    </p>
+                    <p>
+                        Từng loại phòng, từng khu chức năng và luồng hỗ trợ đều hướng đến việc giúp sinh viên yên tâm học tập trong suốt thời gian gắn bó với Đại học FPT.
                     </p>
                 </div>
             </section>
 
-            {/* ── Full-width image ── */}
             <section className="lp-full-img">
-                <img
-                    src="https://ocd.fpt.edu.vn/css/images/landing/content3.png"
-                    alt="Toàn cảnh Ký túc xá FPT"
-                    loading="lazy"
-                />
-            </section>
-            {/* ── Text section between blocks ── */}
-            <section className="lp-text-section">
-                <p className="lp-text-section-lead">
-                    <em>Ký túc xá trường Đại học FPT được xây dựng với thiết kế hiện đại, thoáng mát và đầy đủ tiện nghi.</em>
-                </p>
-                <p>
-                    Khu <span className="lp-highlight">KTX</span> gồm các tòa nhà. Mỗi tòa KTX có các tầng rộng rãi, sạch sẽ, có cả wifi,
-                    máy giặt sấy tự động... Xung quanh còn là cây cối xanh mướt trong lành, dễ chịu, thoáng mát. Phòng ở được thiết kế
-                    hiện đại, không gian thoải mái, thiết kế phù hợp cho từng loại phòng 3-4-6-8 người. Mỗi phòng sẽ được trang bị các
-                    thiết bị căn thiết, đầy đủ phục vụ cho những nhu cầu thiết yếu của sinh viên như giường tầng, bàn học, giá phơi quần
-                    áo, bình nóng lạnh, điều hòa, tủ để giày, nhà vệ sinh riêng cho mỗi phòng... giúp sinh viên an tâm học tập trong
-                    quãng thời gian gắn bó với đại học FPT, đem đến cho sinh viên cảm giác thoải mái tiện nghi như ở nhà.
-                </p>
-            </section>
-
-            {/* ── FAQ ── */}
-            <section id="section-faq" className="lp-faq">
-                <div className="lp-faq-inner">
-                    <h2 className="lp-faq-title">FAQ</h2>
-                    <div className="lp-faq-divider" />
-                    <div className="lp-faq-list">
-                        {FAQ_ITEMS.map((item, i) => (
-                            <div key={i} className="lp-faq-item open">
-                                <div className="lp-faq-question">
-                                    <span>{item.q}</span>
-                                </div>
-                                <div className="lp-faq-answer">{item.a}</div>
-                            </div>
-                        ))}
+                <div className="lp-full-img-shell">
+                    <img
+                        src="https://ocd.fpt.edu.vn/css/images/landing/content3.png"
+                        alt="Toàn cảnh ký túc xá FPT"
+                        loading="lazy"
+                    />
+                    <div className="lp-full-img-caption">
+                        Hệ thống phòng ở, tiện ích và cảnh quan được thiết kế để mang lại cảm giác sống nội trú hiện đại, sạch sẽ và thuận tiện.
                     </div>
                 </div>
             </section>
 
-            {/* ── CTA ── */}
-            <section className="lp-cta">
-                <div className="lp-cta-inner">
-                    <h2>Bắt đầu quản lý Ký túc xá ngay hôm nay</h2>
-                    <p>Đăng nhập để truy cập hệ thống quản lý KTX Đại học FPT</p>
-                    <button className="lp-cta-btn" onClick={() => navigate("/login")}>
-                        Đăng nhập hệ thống →
-                    </button>
+            <section className="lp-text-section">
+                <div className="lp-text-card">
+                    <span className="lp-content-kicker">Không gian và tiện ích</span>
+                    <p className="lp-text-section-lead">
+                        Ký túc xá được xây dựng theo hướng hiện đại, thoáng và đủ tiện nghi cho nhịp sống sinh viên mỗi ngày.
+                    </p>
+                    <p>
+                        Mỗi tòa nhà đều được tổ chức để phục vụ tốt cho cả nhu cầu nghỉ ngơi lẫn học tập. Từ hạ tầng mạng, khu giặt sấy, tiện ích nội khu đến các phòng ở nhiều sức chứa,
+                        mọi thành phần đều được thiết kế để sinh viên có một môi trường ổn định, dễ thích nghi và an tâm trong suốt quá trình học tại FPT.
+                    </p>
                 </div>
             </section>
 
+            <section id="section-faq" className="lp-faq">
+                <div className="lp-faq-inner">
+                    <span className="lp-section-kicker">Hỏi đáp nhanh</span>
+                    <h2 className="lp-faq-title">Những điều sinh viên thường cần biết khi ở KTX</h2>
+                    <div className="lp-faq-divider" />
+                    <div className="lp-faq-list">
+                        {FAQ_ITEMS.map((item, i) => {
+                            const isOpen = openFaq === i;
+                            return (
+                                <div key={item.q} className={`lp-faq-item${isOpen ? " open" : ""}`}>
+                                    <button
+                                        type="button"
+                                        className="lp-faq-question"
+                                        onClick={() => toggleFaq(i)}
+                                        aria-expanded={isOpen}
+                                    >
+                                        <span>{item.q}</span>
+                                        <span className="lp-faq-toggle">{isOpen ? "Thu gọn" : "Mở"}</span>
+                                    </button>
+                                    {isOpen && <div className="lp-faq-answer">{item.a}</div>}
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            </section>
+
+            <section className="lp-cta">
+                <div className="lp-cta-inner">
+                    <div className="lp-cta-copy">
+                        <span className="lp-eyebrow lp-eyebrow-light">Sẵn sàng bắt đầu</span>
+                        <h2>Quản lý và sử dụng ký túc xá trên một nền tảng thống nhất</h2>
+                        <p>
+                            Đăng nhập để xem thông báo, theo dõi thanh toán, gửi yêu cầu và kết nối với quy trình vận hành nội trú một cách rõ ràng hơn.
+                        </p>
+                    </div>
+                    <div className="lp-cta-actions">
+                        <button type="button" className="lp-cta-btn" onClick={() => navigate("/login")}>
+                            Đăng nhập hệ thống
+                        </button>
+                        <button type="button" className="lp-cta-ghost" onClick={() => scrollTo("section-faq")}>
+                            Xem FAQ
+                        </button>
+                    </div>
+                </div>
+            </section>
         </div>
     );
 }

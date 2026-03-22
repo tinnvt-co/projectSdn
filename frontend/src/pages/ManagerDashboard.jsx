@@ -56,7 +56,7 @@ export default function ManagerDashboard() {
         return (
             <>
                 <div className="sd-panel-header">
-                    <h2 className="sd-panel-title">📊 Tổng quan</h2>
+                    <h2 className="sd-panel-title">Tổng quan</h2>
                     <p className="sd-panel-subtitle">Thống kê nhanh công việc quản lý</p>
                 </div>
 
@@ -68,7 +68,7 @@ export default function ManagerDashboard() {
                 </div>
 
                 <div className="sd-panel-header" style={{ marginTop: 32 }}>
-                    <h3 style={{ fontSize: 16, fontWeight: 700, color: "#1a1a1a" }}>⚡ Truy cập nhanh</h3>
+                    <h3 style={{ fontSize: 16, fontWeight: 700, color: "#1a1a1a" }}>Truy cập nhanh</h3>
                 </div>
                 <div className="ad-quick-grid">
                     <QuickLink icon="📝" label="Xử lý yêu cầu" onClick={() => setActive('requests')} />
@@ -80,10 +80,10 @@ export default function ManagerDashboard() {
     };
 
     const MR_TYPE_LABEL = {
-        damage_report: "🔧 Báo hỏng hóc",
-        room_transfer: "🔄 Chuyển phòng",
-        room_retention: "📌 Giữ phòng",
-        other: "📝 Khác",
+        damage_report: "Báo hỏng hóc",
+        room_transfer: "Chuyển phòng",
+        room_retention: "Giữ phòng",
+        other: "Khác",
     };
     const MR_STATUS_MAP = {
         pending: { label: "Chờ xử lý", color: "#f59e0b" },
@@ -129,11 +129,11 @@ export default function ManagerDashboard() {
                 if (modal.mode === "retention") {
                     if (!nextTerm) { setSubmitting(false); return showReqAlert("error", "Nhập kỳ học tiếp theo"); }
                     await api.put(`/manager/requests/${modal.item._id}/approve-retention`, { nextTermCode: nextTerm });
-                    showReqAlert("success", `✅ Đã duyệt giữ phòng kỳ ${nextTerm}`);
+                    showReqAlert("success", `Đã duyệt giữ phòng kỳ ${nextTerm}`);
                 } else {
                     const action = modal.mode === "approve" ? "approve" : "reject";
                     await api.put(`/manager/requests/${modal.item._id}`, { action, note });
-                    showReqAlert("success", `✅ Đã ${action === "approve" ? "duyệt" : "từ chối"} yêu cầu`);
+                    showReqAlert("success", `Đã ${action === "approve" ? "duyệt" : "từ chối"} yêu cầu`);
                 }
                 setModal(null);
                 load();
@@ -151,7 +151,7 @@ export default function ManagerDashboard() {
         return (
             <>
                 <div className="sd-panel-header">
-                    <h2 className="sd-panel-title">📝 Yêu cầu sinh viên</h2>
+                    <h2 className="sd-panel-title">Yêu cầu sinh viên</h2>
                     <p className="sd-panel-subtitle">Duyệt và quản lý yêu cầu từ sinh viên KTX</p>
                 </div>
 
@@ -254,17 +254,17 @@ export default function ManagerDashboard() {
                                                         {item.type === "room_retention" ? (
                                                             <button onClick={() => openModal("retention", item)}
                                                                 style={{ padding: "5px 10px", borderRadius: 6, border: "none", background: "#16a34a", color: "#fff", cursor: "pointer", fontSize: 12, fontWeight: 600 }}>
-                                                                📌 Duyệt
+                                                                Duyệt giữ phòng
                                                             </button>
                                                         ) : (
                                                             <button onClick={() => openModal("approve", item)}
                                                                 style={{ padding: "5px 10px", borderRadius: 6, border: "none", background: "#16a34a", color: "#fff", cursor: "pointer", fontSize: 12, fontWeight: 600 }}>
-                                                                ✅ Duyệt
+                                                                Duyệt
                                                             </button>
                                                         )}
                                                         <button onClick={() => openModal("reject", item)}
                                                             style={{ padding: "5px 10px", borderRadius: 6, border: "none", background: "#ef4444", color: "#fff", cursor: "pointer", fontSize: 12, fontWeight: 600 }}>
-                                                            ✕ Từ chối
+                                                            Từ chối
                                                         </button>
                                                     </div>
                                                 ) : (
@@ -286,7 +286,7 @@ export default function ManagerDashboard() {
                         <div style={{ background: "#fff", borderRadius: 16, padding: 28, width: "100%", maxWidth: 420, boxShadow: "0 20px 60px #0003" }}
                             onClick={e => e.stopPropagation()}>
                             <div style={{ fontSize: 18, fontWeight: 800, marginBottom: 8, color: "#1a1a1a" }}>
-                                {modal.mode === "retention" ? "📌 Duyệt giữ phòng" : modal.mode === "approve" ? "✅ Duyệt yêu cầu" : "✕ Từ chối yêu cầu"}
+                                {modal.mode === "retention" ? "Duyệt giữ phòng" : modal.mode === "approve" ? "Duyệt yêu cầu" : "Từ chối yêu cầu"}
                             </div>
                             <div style={{ fontSize: 13, color: "#666", marginBottom: 16 }}>
                                 <strong>{modal.item.title}</strong><br />
@@ -409,7 +409,7 @@ export default function ManagerDashboard() {
             <>
                 <div className="sd-panel-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <div>
-                        <h2 className="sd-panel-title">{isComposeView ? "Gửi báo cáo cho admin" : "📋 Báo cáo gần đây"}</h2>
+                        <h2 className="sd-panel-title">{isComposeView ? "Gửi báo cáo cho admin" : "Báo cáo gần đây"}</h2>
                         <p className="sd-panel-subtitle">{isComposeView ? "Nhập nội dung báo cáo để gửi cho admin" : "5 báo cáo mới nhất"}</p>
                     </div>
                     <button
@@ -561,10 +561,10 @@ export default function ManagerDashboard() {
     };
 
     const TYPE_OPTIONS = [
-        { value: "general", label: "📢 Thông báo chung" },
-        { value: "payment_reminder", label: "💳 Nhắc thanh toán" },
-        { value: "maintenance", label: "🔧 Bảo trì" },
-        { value: "announcement", label: "📣 Thông báo quan trọng" },
+        { value: "general", label: "Thông báo chung" },
+        { value: "payment_reminder", label: "Nhắc thanh toán" },
+        { value: "maintenance", label: "Bảo trì" },
+        { value: "announcement", label: "Thông báo quan trọng" },
     ];
 
     const NotificationsPanel = () => {
@@ -696,7 +696,7 @@ export default function ManagerDashboard() {
         return (
             <>
                 <div className="sd-panel-header">
-                    <h2 className="sd-panel-title">🔔 Gửi thông báo</h2>
+                    <h2 className="sd-panel-title">Gửi thông báo</h2>
                     <p className="sd-panel-subtitle">Gửi thông báo tới sinh viên trong tòa nhà bạn quản lý</p>
                 </div>
 
@@ -709,14 +709,14 @@ export default function ManagerDashboard() {
                             flex: 1, minWidth: 160, padding: "12px 16px", borderRadius: 10,
                             background: "#f0fdf4", border: "1.5px solid #86efac",
                         }}>
-                            <div style={{ fontSize: 11, color: "#16a34a", fontWeight: 600, marginBottom: 2 }}>🏢 TÒA NHÀ QUẢN LÝ</div>
+                            <div style={{ fontSize: 11, color: "#16a34a", fontWeight: 600, marginBottom: 2 }}>TÒA NHÀ QUẢN LÝ</div>
                             <div style={{ fontSize: 14, fontWeight: 700, color: "#15803d" }}>{buildingNames || "Chưa được gán"}</div>
                         </div>
                         <div style={{
                             flex: 1, minWidth: 160, padding: "12px 16px", borderRadius: 10,
                             background: "#eff6ff", border: "1.5px solid #93c5fd",
                         }}>
-                            <div style={{ fontSize: 11, color: "#1d4ed8", fontWeight: 600, marginBottom: 2 }}>🎓 TỔNG SINH VIÊN</div>
+                            <div style={{ fontSize: 11, color: "#1d4ed8", fontWeight: 600, marginBottom: 2 }}>TỔNG SINH VIÊN</div>
                             <div style={{ fontSize: 22, fontWeight: 800, color: "#1e40af" }}>{buildingInfo.total ?? "—"}</div>
                         </div>
                     </div>
@@ -724,8 +724,8 @@ export default function ManagerDashboard() {
 
                 {/* Tabs */}
                 <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
-                    {tabBtn("send", "✉️ Soạn thông báo")}
-                    {tabBtn("history", `📋 Lịch sử${sentList.length > 0 ? ` (${sentList.length})` : ""}`)}
+                    {tabBtn("send", "Soạn thông báo")}
+                    {tabBtn("history", `Lịch sử${sentList.length > 0 ? ` (${sentList.length})` : ""}`)}
                 </div>
 
                 {/* Alert */}
@@ -736,7 +736,7 @@ export default function ManagerDashboard() {
                         color: notifAlert.type === "success" ? "#16a34a" : "#dc2626",
                         border: `1px solid ${notifAlert.type === "success" ? "#86efac" : "#fca5a5"}`,
                     }}>
-                        {notifAlert.type === "success" ? "✅" : "⚠️"} {notifAlert.msg}
+                        {notifAlert.msg}
                     </div>
                 )}
 
@@ -745,7 +745,6 @@ export default function ManagerDashboard() {
                     <>
                         {buildingInfo.buildings?.length === 0 && !loadingBuilding ? (
                             <div style={{ padding: "24px", textAlign: "center", background: "#fff7ed", borderRadius: 10, border: "1.5px solid #fed7aa" }}>
-                                <div style={{ fontSize: 32, marginBottom: 8 }}>🏢</div>
                                 <div style={{ fontWeight: 700, color: "#c2410c", marginBottom: 4 }}>Bạn chưa được gán quản lý tòa nhà nào</div>
                                 <div style={{ fontSize: 13, color: "#9a3412" }}>Liên hệ admin để được phân công tòa nhà trước khi gửi thông báo.</div>
                             </div>
@@ -777,8 +776,8 @@ export default function ManagerDashboard() {
                                     <label style={labelStyle}>Gửi đến</label>
                                     <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
                                         {[
-                                            { val: "building", icon: "🏢", label: `Tất cả sinh viên (${buildingInfo.total})` },
-                                            { val: "individual", icon: "👤", label: "Chọn sinh viên cụ thể" },
+                                            { val: "building", label: `Tất cả sinh viên (${buildingInfo.total})` },
+                                            { val: "individual", label: "Chọn sinh viên cụ thể" },
                                         ].map(opt => (
                                             <button key={opt.val} type="button"
                                                 onClick={() => { setForm(p => ({ ...p, receiverType: opt.val })); setSelectedStudents([]); setSearchKw(""); }}
@@ -789,7 +788,7 @@ export default function ManagerDashboard() {
                                                     background: form.receiverType === opt.val ? "#fff4f0" : "#fafafa",
                                                     color: form.receiverType === opt.val ? "#e8540a" : "#555",
                                                 }}>
-                                                {opt.icon} {opt.label}
+                                                {opt.label}
                                             </button>
                                         ))}
                                     </div>
@@ -799,7 +798,7 @@ export default function ManagerDashboard() {
                                         <div>
                                             <div style={{ position: "relative" }}>
                                                 <input style={inputStyle}
-                                                    placeholder="🔍 Tìm tên, mã sinh viên, username..."
+                                                    placeholder="Tìm tên, mã sinh viên, username..."
                                                     value={searchKw}
                                                     onChange={e => setSearchKw(e.target.value)} />
                                                 {searching && (
@@ -839,7 +838,7 @@ export default function ManagerDashboard() {
                                                                     <div style={{ flex: 1 }}>
                                                                         <div style={{ fontSize: 13, fontWeight: 600, color: "#1a1a1a" }}>{s.fullName}</div>
                                                                         <div style={{ fontSize: 11, color: "#888" }}>
-                                                                            {s.studentCode} · {s.userId?.username} · 🏢 {s.currentRoomId?.buildingId?.name}
+                                                                            {s.studentCode} · {s.userId?.username} · {s.currentRoomId?.buildingId?.name}
                                                                         </div>
                                                                     </div>
                                                                     {alreadyAdded && <span style={{ color: "#22c55e", fontSize: 16 }}>✓</span>}
@@ -864,7 +863,7 @@ export default function ManagerDashboard() {
                                                             background: "#fff4f0", border: "1px solid #fed7aa",
                                                             borderRadius: 20, padding: "4px 10px", fontSize: 12, color: "#ea580c",
                                                         }}>
-                                                            👤 {s.fullName} ({s.studentCode})
+                                                            {s.fullName} ({s.studentCode})
                                                             <button type="button" onClick={() => removeStudent(s.userId)}
                                                                 style={{ background: "none", border: "none", cursor: "pointer", color: "#ef4444", fontSize: 14, padding: 0, lineHeight: 1 }}>
                                                                 ×
@@ -873,14 +872,14 @@ export default function ManagerDashboard() {
                                                     ))}
                                                 </div>
                                             ) : (
-                                                <p style={{ fontSize: 12, color: "#e8540a", marginTop: 8 }}>⚠️ Chưa chọn sinh viên nào</p>
+                                                <p style={{ fontSize: 12, color: "#e8540a", marginTop: 8 }}>Chưa chọn sinh viên nào</p>
                                             )}
                                         </div>
                                     )}
 
                                     {form.receiverType === "building" && (
                                         <p style={{ fontSize: 12, color: "#16a34a", fontWeight: 600 }}>
-                                            📤 Sẽ gửi đến <strong>{buildingInfo.total}</strong> sinh viên trong: <strong>{buildingNames}</strong>
+                                            Sẽ gửi đến <strong>{buildingInfo.total}</strong> sinh viên trong: <strong>{buildingNames}</strong>
                                         </p>
                                     )}
                                 </div>
@@ -907,7 +906,7 @@ export default function ManagerDashboard() {
                                 <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", paddingTop: 4 }}>
                                     <button type="button" onClick={() => { setForm(INIT_FORM); setSelectedStudents([]); setSearchKw(""); }}
                                         style={{ padding: "10px 20px", borderRadius: 8, border: "1.5px solid #e2e8f0", background: "#fff", cursor: "pointer", fontWeight: 600, fontSize: 13, color: "#555" }}>
-                                        🔄 Đặt lại
+                                        Đặt lại
                                     </button>
                                     <button type="submit" disabled={sending || buildingInfo.buildings?.length === 0}
                                         style={{
@@ -917,7 +916,7 @@ export default function ManagerDashboard() {
                                             cursor: (sending || buildingInfo.buildings?.length === 0) ? "not-allowed" : "pointer",
                                             fontWeight: 700, fontSize: 13,
                                         }}>
-                                        {sending ? "⏳ Đang gửi..." : "📤 Gửi thông báo"}
+                                        {sending ? "Đang gửi..." : "Gửi thông báo"}
                                     </button>
                                 </div>
                             </form>
@@ -946,7 +945,7 @@ export default function ManagerDashboard() {
                                             <div className="sd-list-title">{n.title}</div>
                                             <p className="sd-list-text">{n.message?.slice(0, 80)}{n.message?.length > 80 ? "..." : ""}</p>
                                             <div className="sd-list-meta">
-                                                {n.receiverIds?.length || 0} người nhận · ✅ {n.readBy?.length || 0} đã đọc · {n.createdAt ? new Date(n.createdAt).toLocaleDateString("vi-VN") : "—"}
+                                                {n.receiverIds?.length || 0} người nhận · {n.readBy?.length || 0} đã đọc · {n.createdAt ? new Date(n.createdAt).toLocaleDateString("vi-VN") : "—"}
                                             </div>
                                         </div>
                                     </div>
@@ -1173,7 +1172,7 @@ export default function ManagerDashboard() {
                     description: billForm.description || (billModal.type === "violation" ? "Vi phạm quy chế KTX" : "Đền bù thiệt hại cơ sở vật chất"),
                     dueDate: billForm.dueDate,
                 });
-                showAlert("success", `✅ Đã gửi bill cho sinh viên ${billModal.sv.fullName}`);
+                showAlert("success", `Đã gửi bill cho sinh viên ${billModal.sv.fullName}`);
                 setBillModal(null);
                 setSelectedSv(null);
             } catch (err) {
@@ -1240,7 +1239,7 @@ export default function ManagerDashboard() {
         return (
             <>
                 <div className="sd-panel-header">
-                    <h2 className="sd-panel-title">🏢 Quản lý tòa nhà</h2>
+                    <h2 className="sd-panel-title">Quản lý tòa nhà</h2>
                     <p className="sd-panel-subtitle">Xem phòng và sinh viên trong tòa nhà bạn quản lý</p>
                 </div>
 
@@ -1277,9 +1276,9 @@ export default function ManagerDashboard() {
                                     }}
                                 >
                                     <div>
-                                        <span style={{ fontWeight: 800, fontSize: 16, color: "#1a1a1a" }}>🏢 {b.name}</span>
+                                        <span style={{ fontWeight: 800, fontSize: 16, color: "#1a1a1a" }}>{b.name}</span>
                                         <span style={{ marginLeft: 12, fontSize: 12, color: "#888" }}>
-                                            📍 {b.address || "—"} · {b.totalFloors} tầng · {b.rooms?.length || 0} phòng
+                                            {b.address || "—"} · {b.totalFloors} tầng · {b.rooms?.length || 0} phòng
                                         </span>
                                     </div>
                                     <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -1336,7 +1335,7 @@ export default function ManagerDashboard() {
                                                                     fontWeight: 700,
                                                                 }}
                                                             >
-                                                                ⚡ Nhập số điện và gửi bill cả phòng
+                                                                Nhập số điện và gửi bill cả phòng
                                                             </button>
 
                                                             {/* Students in room */}
@@ -1371,7 +1370,7 @@ export default function ManagerDashboard() {
                                                                             {selectedSv?._id === sv._id && (
                                                                                 <div style={{ marginTop: 10, display: "flex", flexDirection: "column", gap: 6 }}>
                                                                                     <div style={{ fontSize: 11, color: "#555", marginBottom: 2 }}>
-                                                                                        📧 {sv.userId?.email || "—"} · {sv.gender === "male" ? "Nam" : "Nữ"}
+                                                                                        {sv.userId?.email || "—"} · {sv.gender === "male" ? "Nam" : "Nữ"}
                                                                                     </div>
                                                                                     <button
                                                                                         onClick={e => { e.stopPropagation(); openBill("violation", sv, room._id, b.name); }}
@@ -1381,7 +1380,7 @@ export default function ManagerDashboard() {
                                                                                             cursor: "pointer", fontSize: 12, fontWeight: 700, textAlign: "left",
                                                                                         }}
                                                                                     >
-                                                                                        ⚠️ Xử lý vi phạm quy chế
+                                                                                        Xử lý vi phạm quy chế
                                                                                     </button>
                                                                                     <button
                                                                                         onClick={e => { e.stopPropagation(); openBill("damage", sv, room._id, b.name); }}
@@ -1391,7 +1390,7 @@ export default function ManagerDashboard() {
                                                                                             cursor: "pointer", fontSize: 12, fontWeight: 700, textAlign: "left",
                                                                                         }}
                                                                                     >
-                                                                                        🔨 Đền bù thiệt hại CSVC
+                                                                                        Đền bù thiệt hại CSVC
                                                                                     </button>
                                                                                 </div>
                                                                             )}
@@ -1423,7 +1422,7 @@ export default function ManagerDashboard() {
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
                                 <div>
                                     <div style={{ fontSize: 18, fontWeight: 800, color: "#1a1a1a" }}>
-                                        {billModal.type === "violation" ? "⚠️ Xử lý vi phạm quy chế" : "🔨 Đền bù thiệt hại CSVC"}
+                                        {billModal.type === "violation" ? "Xử lý vi phạm quy chế" : "Đền bù thiệt hại CSVC"}
                                     </div>
                                     <div style={{ fontSize: 13, color: "#666", marginTop: 4 }}>
                                         Sinh viên: <strong>{billModal.sv.fullName}</strong> ({billModal.sv.studentCode})
@@ -1431,7 +1430,7 @@ export default function ManagerDashboard() {
                                     <div style={{ fontSize: 12, color: "#888" }}>Tòa nhà: {billModal.buildingName}</div>
                                 </div>
                                 <button onClick={() => setBillModal(null)}
-                                    style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#94a3b8" }}>✕</button>
+                                    style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#94a3b8" }}>×</button>
                             </div>
 
                             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
@@ -1501,7 +1500,7 @@ export default function ManagerDashboard() {
                                         color: "#fff", cursor: sending ? "not-allowed" : "pointer",
                                         fontWeight: 700, fontSize: 13,
                                     }}>
-                                    {sending ? "⏳ Đang gửi..." : "📤 Gửi bill"}
+                                    {sending ? "Đang gửi..." : "Gửi bill"}
                                 </button>
                             </div>
                         </div>
@@ -1521,7 +1520,7 @@ export default function ManagerDashboard() {
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
                                 <div>
                                     <div style={{ fontSize: 18, fontWeight: 800, color: "#1a1a1a" }}>
-                                        ⚡ Nhập số điện phòng {electricModal.room.roomNumber}
+                                        Nhập số điện phòng {electricModal.room.roomNumber}
                                     </div>
                                     <div style={{ fontSize: 12, color: "#666", marginTop: 4 }}>
                                         Tòa nhà: {electricModal.buildingName}
@@ -1534,7 +1533,7 @@ export default function ManagerDashboard() {
                                     onClick={() => setElectricModal(null)}
                                     style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#94a3b8" }}
                                 >
-                                    ✕
+                                    ×
                                 </button>
                             </div>
 

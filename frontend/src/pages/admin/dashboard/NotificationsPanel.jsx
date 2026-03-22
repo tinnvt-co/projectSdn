@@ -136,7 +136,7 @@ function NotificationsPanel() {
             <section className="ad-section-hero ad-section-hero-notifications">
                 <div className="ad-section-copy">
                     <span className="ad-section-eyebrow">Communication Center</span>
-                    <h2 className="ad-section-title">🔔 Gửi thông báo</h2>
+                    <h2 className="ad-section-title">Gửi thông báo</h2>
                     <p className="ad-section-subtitle">
                         Tập trung soạn, phát hành và theo dõi lịch sử gửi thông báo trong cùng một màn hình quản trị rõ ràng, nhất quán và dễ kiểm soát.
                     </p>
@@ -157,7 +157,7 @@ function NotificationsPanel() {
 
             {alert.msg && (
                 <div className={`an-alert ${alert.type}`} style={{ marginBottom: 0 }}>
-                    {alert.type === "success" ? "✓" : "⚠️"} {alert.msg}
+                    {alert.msg}
                 </div>
             )}
 
@@ -175,8 +175,8 @@ function NotificationsPanel() {
                 </div>
                 <div className="ad-toolbar-controls">
                     <div className="an-tabs" style={{ marginBottom: 0 }}>
-                        <button className={`an-tab ${activeTab === "send" ? "active" : ""}`} onClick={() => setActiveTab("send")}>✉️ Soạn thông báo</button>
-                        <button className={`an-tab ${activeTab === "history" ? "active" : ""}`} onClick={() => setActiveTab("history")}>📋 Lịch sử gửi {sentList.length > 0 && <span className="an-tab-count">{sentList.length}</span>}</button>
+                        <button className={`an-tab ${activeTab === "send" ? "active" : ""}`} onClick={() => setActiveTab("send")}>Soạn thông báo</button>
+                        <button className={`an-tab ${activeTab === "history" ? "active" : ""}`} onClick={() => setActiveTab("history")}>Lịch sử gửi {sentList.length > 0 && <span className="an-tab-count">{sentList.length}</span>}</button>
                     </div>
                 </div>
             </div>

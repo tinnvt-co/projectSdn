@@ -62,7 +62,7 @@ export default function AdminDashboard() {
                     <div className="sd-sidebar-avatar">{initials}</div>
                     <div className="sd-sidebar-name">{user.username || "Admin"}</div>
                     <div className="sd-sidebar-code" style={{ color: "#e8540a", fontWeight: 600, fontSize: 11 }}>
-                        🛡️ Quản trị viên
+                        Quản trị viên
                     </div>
                 </div>
 

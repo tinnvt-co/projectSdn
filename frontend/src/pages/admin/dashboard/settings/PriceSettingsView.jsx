@@ -24,7 +24,7 @@ function PriceSettingsView({
 
                 {priceAlert.msg && (
                     <div className={`an-alert ${priceAlert.type} ad-inline-alert`}>
-                        {priceAlert.type === "success" ? "✓" : "⚠️"} {priceAlert.msg}
+                        {priceAlert.msg}
                     </div>
                 )}
 
@@ -33,11 +33,11 @@ function PriceSettingsView({
                 ) : (
                     <div className="ad-settings-price-stack">
                         <div className={`ad-settings-toggle-card ${regOpen ? "open" : "closed"}`}>
-                            <span className="ad-settings-toggle-icon">{regOpen ? "🟢" : "🔴"}</span>
+                            <span className="ad-settings-toggle-icon">{regOpen ? "Đang mở" : "Đang khóa"}</span>
                             <div className="ad-settings-toggle-copy">
                                 <div className="ad-settings-toggle-title">Cho phép sinh viên đăng ký phòng</div>
                                 <div className="ad-settings-toggle-meta">
-                                    {regOpen ? "Đang mở — Sinh viên có thể gửi đơn đăng ký" : "Đang tắt — Sinh viên không thể đăng ký phòng"}
+                                    {regOpen ? "Sinh viên có thể gửi đơn đăng ký" : "Sinh viên tạm thời không thể đăng ký phòng"}
                                 </div>
                             </div>
                             <button
@@ -46,7 +46,7 @@ function PriceSettingsView({
                                 disabled={regToggling}
                                 className={`ad-settings-toggle-btn ${regOpen ? "danger" : "success"}`}
                             >
-                                {regToggling ? "..." : regOpen ? "Tắt" : "Bật"}
+                                {regToggling ? "Đang cập nhật..." : regOpen ? "Tắt" : "Bật"}
                             </button>
                         </div>
 
@@ -61,7 +61,7 @@ function PriceSettingsView({
                                         type="number"
                                         min="0"
                                         value={prices[config.key] ?? ""}
-                                        onChange={(e) => onPriceChange(config.key, e.target.value)}
+                                        onChange={(event) => onPriceChange(config.key, event.target.value)}
                                         className="ad-settings-price-input"
                                     />
                                     <span className="ad-settings-price-suffix">{config.suffix || "đ"}</span>
@@ -71,7 +71,7 @@ function PriceSettingsView({
 
                         <div className="ad-settings-actions">
                             <button type="button" onClick={onSavePrices} disabled={priceSaving} className="an-btn-send">
-                                {priceSaving ? <><span className="an-spinner" /> Đang lưu...</> : "💾 Lưu cài đặt"}
+                                {priceSaving ? <><span className="an-spinner" /> Đang lưu...</> : "Lưu cài đặt"}
                             </button>
                         </div>
                     </div>

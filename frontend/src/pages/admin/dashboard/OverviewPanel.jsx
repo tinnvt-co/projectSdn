@@ -114,7 +114,7 @@ function OverviewPanel() {
         <>
             <div className="sd-panel-header" style={{ display: "flex", justifyContent: "space-between", gap: 16, alignItems: "flex-start", flexWrap: "wrap" }}>
                 <div>
-                    <h2 className="sd-panel-title">🛡️ Tổng quan hệ thống</h2>
+                    <h2 className="sd-panel-title">Tổng quan hệ thống</h2>
                     <p className="sd-panel-subtitle">Bảng điều hành trung tâm cho admin ký túc xá</p>
                 </div>
                 <button
@@ -241,7 +241,7 @@ function OverviewPanel() {
 
             <div className="sd-panel-header" style={{ marginTop: 32, marginBottom: 12 }}>
                 <div>
-                    <h3 style={{ fontSize: 16, fontWeight: 700, color: "#1a1a1a", marginBottom: 4 }}>⚡ Truy cập nhanh</h3>
+                    <h3 style={{ fontSize: 16, fontWeight: 700, color: "#1a1a1a", marginBottom: 4 }}>Truy cập nhanh</h3>
                     <p style={{ fontSize: 13, color: "#64748b", margin: 0 }}>Đi thẳng đến 6 khu vực admin bạn thao tác thường xuyên nhất.</p>
                 </div>
             </div>

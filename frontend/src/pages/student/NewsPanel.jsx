@@ -15,13 +15,13 @@ const fmtDatetime = (value) => {
 };
 
 const TYPE_META = {
-    general: { icon: "📢", label: "Thông báo chung" },
-    payment_reminder: { icon: "💳", label: "Nhắc thanh toán" },
-    maintenance: { icon: "🔧", label: "Bảo trì" },
-    announcement: { icon: "📣", label: "Thông báo quan trọng" },
+    general: { label: "Thông báo chung" },
+    payment_reminder: { label: "Nhắc thanh toán" },
+    maintenance: { label: "Bảo trì" },
+    announcement: { label: "Thông báo quan trọng" },
 };
 
-const getTypeMeta = (type) => TYPE_META[type] || { icon: "📌", label: "Khác" };
+const getTypeMeta = (type) => TYPE_META[type] || { label: "Khác" };
 
 export default function NewsPanel() {
     const [all, setAll] = useState([]);
@@ -67,7 +67,7 @@ export default function NewsPanel() {
     return (
         <>
             <div className="sd-panel-header">
-                <h2 className="sd-panel-title">🔔 Tin tức & Thông báo</h2>
+                <h2 className="sd-panel-title">Tin tức & Thông báo</h2>
                 <p className="sd-panel-subtitle">Thông báo mới nhất từ Ban quản lý KTX</p>
             </div>
 
@@ -77,14 +77,13 @@ export default function NewsPanel() {
                         flex: 1,
                         display: "flex",
                         alignItems: "center",
-                        gap: 8,
+                        gap: 0,
                         border: "1.5px solid #e8e8e8",
                         borderRadius: 12,
                         padding: "0 14px",
                         background: "#fff",
                     }}
                 >
-                    <span style={{ color: "#94a3b8", fontSize: 16 }}>🔎</span>
                     <input
                         style={{
                             border: "none",
@@ -155,7 +154,6 @@ export default function NewsPanel() {
                     </button>
 
                     <div style={{ display: "flex", alignItems: "flex-start", gap: 14, marginBottom: 14 }}>
-                        <span style={{ fontSize: 28 }}>{getTypeMeta(selected.type).icon}</span>
                         <div style={{ minWidth: 0 }}>
                             <h3 style={{ fontSize: 18, fontWeight: 800, color: "#111827", margin: 0 }}>
                                 {selected.title}
@@ -172,8 +170,8 @@ export default function NewsPanel() {
                                 }}
                             >
                                 <span className="sd-badge info">{getTypeMeta(selected.type).label}</span>
-                                <span>👤 {selected.senderId?.username || "Ban quản lý"}</span>
-                                <span>🕐 {fmtDatetime(selected.createdAt)}</span>
+                                <span>{selected.senderId?.username || "Ban quản lý"}</span>
+                                <span>{fmtDatetime(selected.createdAt)}</span>
                             </div>
                         </div>
                     </div>

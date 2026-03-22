@@ -54,7 +54,7 @@ function UsersPanel() {
             <section className="ad-section-hero ad-section-hero-users">
                 <div className="ad-section-copy">
                     <span className="ad-section-eyebrow">User Operations</span>
-                    <h2 className="ad-section-title">👥 Quản lý tài khoản</h2>
+                    <h2 className="ad-section-title">Quản lý tài khoản</h2>
                     <p className="ad-section-subtitle">
                         Tạo, kích hoạt, khóa và phân quyền người dùng theo cùng một quy chuẩn hiển thị rõ ràng cho admin.
                     </p>
@@ -73,7 +73,7 @@ function UsersPanel() {
 
             {alert.msg && (
                 <div className={`au-alert ${alert.type}`} style={{ marginBottom: 16 }}>
-                    {alert.type === "success" ? "✓" : "⚠️"} {alert.msg}
+                    {alert.msg}
                 </div>
             )}
 
@@ -120,7 +120,7 @@ function UsersPanel() {
                     </p>
                 </div>
                 <div className="ad-toolbar-controls ad-toolbar-controls-wide">
-                    <input className="au-search ad-input-enhanced" placeholder="🔍 Tìm theo username hoặc email..." value={search} onChange={e => setSearch(e.target.value)} />
+                    <input className="au-search ad-input-enhanced" placeholder="Tìm theo username hoặc email..." value={search} onChange={e => setSearch(e.target.value)} />
                     <select className="au-role-filter ad-select-enhanced" value={roleFilter} onChange={e => setRoleFilter(e.target.value)}>
                         <option value="">Tất cả role</option>
                         <option value="admin">Admin</option>
@@ -163,14 +163,14 @@ function UsersPanel() {
                                     </td>
                                     <td>
                                         <button className={`status-toggle ${u.isActive ? "active" : "inactive"}`} onClick={() => handleToggle(u)}>
-                                            {u.isActive ? "✅ Hoạt động" : "⛔ Bị khóa"}
+                                            {u.isActive ? "Hoạt động" : "Bị khóa"}
                                         </button>
                                     </td>
                                     <td>
                                         <span className="perm-count">{u.permissions?.length || 0} quyền</span>
                                         <button className="btn-perm" onClick={() => { setSelected(u); setModal("perm"); }}>Chỉnh sửa</button>
                                     </td>
-                                    <td><button className="btn-del" onClick={() => handleDelete(u)}>🗑️ Xóa</button></td>
+                                    <td><button className="btn-del" onClick={() => handleDelete(u)}>Xóa</button></td>
                                 </tr>
                             ))}
                         </tbody>

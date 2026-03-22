@@ -25,13 +25,13 @@ export default function ElectricityPanel() {
     return (
         <>
             <div className="sd-panel-header">
-                <h2 className="sd-panel-title">⚡ Điện nước</h2>
+                <h2 className="sd-panel-title">Điện nước</h2>
                 <p className="sd-panel-subtitle">Chỉ số điện phòng hiện tại (12 tháng gần nhất)</p>
             </div>
 
             {msg && (
                 <div className="sd-alert error" style={{ marginBottom: 16 }}>
-                    ℹ️ {msg}
+                    {msg}
                 </div>
             )}
 

@@ -6,20 +6,20 @@
 }
 
 .ad-stat-card {
-    background: #fff;
-    border: 1px solid #eceef2;
-    border-radius: 18px;
+    background: var(--surface-primary);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-lg);
     padding: 18px 20px;
     display: flex;
     align-items: flex-start;
-    gap: 14px;
+    gap: 0;
     min-height: 132px;
     transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
 
 .ad-stat-card:hover {
-    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
-    border-color: rgba(232, 84, 10, 0.15);
+    box-shadow: var(--shadow-card-hover);
+    border-color: rgba(229, 103, 31, 0.12);
     transform: translateY(-2px);
 }
 
@@ -32,6 +32,7 @@
     justify-content: center;
     font-size: 22px;
     flex-shrink: 0;
+    display: none;
 }
 
 .ad-stat-copy {
@@ -58,12 +59,12 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
+    gap: 8px;
     min-height: 148px;
     padding: 20px 18px;
-    background: #fff;
-    border: 1px solid rgba(148, 163, 184, 0.18);
-    border-radius: 18px;
+    background: var(--surface-primary);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-lg);
     cursor: pointer;
     text-align: left;
     color: #0f172a;
@@ -71,9 +72,9 @@
 }
 
 .ad-quick-link:hover {
-    border-color: rgba(232, 84, 10, 0.28);
-    background: rgba(232, 84, 10, 0.04);
-    box-shadow: 0 18px 36px rgba(15, 23, 42, 0.09);
+    border-color: rgba(229, 103, 31, 0.18);
+    background: var(--bg-soft);
+    box-shadow: var(--shadow-card);
     transform: translateY(-2px);
 }
 
@@ -86,6 +87,7 @@
     justify-content: center;
     font-size: 24px;
     background: linear-gradient(135deg, rgba(232, 84, 10, 0.12), rgba(255, 124, 58, 0.18));
+    display: none;
 }
 
 .ad-quick-label {
@@ -93,6 +95,7 @@
     font-weight: 700;
     line-height: 1.35;
     letter-spacing: -0.02em;
+    color: var(--text-primary);
 }
 
 @media (max-width: 768px) {
@@ -104,4 +107,13 @@
     .ad-stat-num {
         font-size: 26px;
     }
+}
+
+.ad-stat-card,
+.ad-quick-link {
+    animation: uiFadeInUp var(--motion-slow) var(--ease-standard);
+}
+
+.ad-stat-card {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(251, 252, 254, 0.98));
 }

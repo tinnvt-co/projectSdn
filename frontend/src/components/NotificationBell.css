@@ -6,9 +6,9 @@
 
 .nb-btn {
     position: relative;
-    background: #fff5f0;
-    border: 1.5px solid rgba(232, 84, 10, 0.2);
-    border-radius: 12px;
+    background: var(--surface-overlay);
+    border: 1px solid var(--border-soft);
+    border-radius: 14px;
     width: 44px;
     height: 44px;
     display: flex;
@@ -20,10 +20,10 @@
 }
 
 .nb-btn:hover {
-    background: rgba(232, 84, 10, 0.1);
-    border-color: rgba(232, 84, 10, 0.45);
+    background: var(--bg-soft);
+    border-color: rgba(229, 103, 31, 0.18);
     transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(232, 84, 10, 0.2);
+    box-shadow: var(--shadow-soft);
 }
 
 .nb-icon {
@@ -92,10 +92,10 @@
     top: calc(100% + 10px);
     right: 0;
     width: 360px;
-    background: #fff;
-    border: 1px solid rgba(232, 84, 10, 0.15);
-    border-radius: 16px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(232, 84, 10, 0.08);
+    background: var(--surface-primary);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-float);
     z-index: 9999;
     overflow: hidden;
     animation: dropIn 0.2s ease;
@@ -118,21 +118,21 @@
     align-items: center;
     justify-content: space-between;
     padding: 16px 18px;
-    border-bottom: 1px solid #f5f5f5;
-    background: rgba(232, 84, 10, 0.04);
+    border-bottom: 1px solid var(--border-muted);
+    background: var(--bg-soft);
 }
 
 .nb-header-title {
     font-size: 15px;
     font-weight: 700;
-    color: #1a1a1a;
+    color: var(--text-primary);
     letter-spacing: 0.3px;
 }
 
 .nb-mark-all {
-    background: rgba(232, 84, 10, 0.08);
-    border: 1px solid rgba(232, 84, 10, 0.2);
-    color: #e8540a;
+    background: var(--surface-primary);
+    border: 1px solid var(--border-soft);
+    color: var(--accent-600);
     font-size: 12px;
     font-weight: 600;
     padding: 4px 10px;
@@ -142,7 +142,7 @@
 }
 
 .nb-mark-all:hover {
-    background: rgba(232, 84, 10, 0.15);
+    background: var(--accent-soft);
 }
 
 /* List */
@@ -168,9 +168,9 @@
 .nb-item {
     display: flex;
     align-items: flex-start;
-    gap: 12px;
+    gap: 0;
     padding: 14px 18px;
-    border-bottom: 1px solid #f5f5f5;
+    border-bottom: 1px solid var(--border-muted);
     cursor: pointer;
     transition: background 0.15s;
     position: relative;
@@ -181,15 +181,15 @@
 }
 
 .nb-item:hover {
-    background: #fff5f0;
+    background: var(--bg-soft);
 }
 
 .nb-item.unread {
-    background: rgba(232, 84, 10, 0.04);
+    background: rgba(229, 103, 31, 0.04);
 }
 
 .nb-item.unread:hover {
-    background: rgba(232, 84, 10, 0.09);
+    background: rgba(229, 103, 31, 0.08);
 }
 
 .nb-item-icon {
@@ -202,6 +202,7 @@
     justify-content: center;
     font-size: 18px;
     flex-shrink: 0;
+    display: none;
 }
 
 .nb-item-content {
@@ -212,7 +213,7 @@
 .nb-item-title {
     font-size: 13px;
     font-weight: 700;
-    color: #1a1a1a;
+    color: var(--text-primary);
     margin-bottom: 3px;
     white-space: nowrap;
     overflow: hidden;
@@ -256,6 +257,47 @@
 .nb-item-time {
     font-size: 11px;
     color: #bbb;
+}
+
+.nb-dropdown {
+    animation: uiFadeInUp var(--motion-base) var(--ease-standard);
+}
+
+.nb-loading,
+.nb-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    min-height: 136px;
+    padding: 22px 20px;
+    margin: 14px;
+    border-radius: 18px;
+    border: 1px dashed rgba(203, 213, 225, 0.92);
+    background:
+        radial-gradient(circle at top right, rgba(229, 103, 31, 0.05), transparent 40%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.96));
+    color: var(--text-secondary);
+    text-align: center;
+}
+
+.nb-item {
+    transition:
+        transform var(--motion-fast) var(--ease-standard),
+        background-color var(--motion-fast) var(--ease-standard),
+        box-shadow var(--motion-fast) var(--ease-standard);
+}
+
+.nb-item:hover {
+    transform: translateY(-1px);
+    box-shadow: inset 0 0 0 1px rgba(229, 103, 31, 0.08);
+}
+
+.nb-item-type {
+    min-height: 24px;
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
 }
 
 .nb-dot {

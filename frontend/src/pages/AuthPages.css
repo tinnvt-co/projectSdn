@@ -18,16 +18,16 @@
     gap: 8px;
     padding: 13px 26px;
     /* tăng từ 9px 18px */
-    background: linear-gradient(135deg, #e8540a, #ff7c3a);
+    background: linear-gradient(135deg, var(--accent-500), #ff9152);
     color: #fff;
     font-size: 15px;
     /* tăng từ 13px */
     font-weight: 600;
     font-family: var(--font-sans);
     text-decoration: none;
-    border-radius: 12px;
+    border-radius: 14px;
     /* tăng nhẹ cho cân đối */
-    box-shadow: 0 4px 16px rgba(232, 84, 10, 0.3);
+    box-shadow: 0 12px 28px rgba(229, 103, 31, 0.18);
     transition: all 0.2s;
     z-index: 10;
 }
@@ -39,15 +39,15 @@
 
 .auth-back-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(232, 84, 10, 0.45);
+    box-shadow: 0 16px 32px rgba(229, 103, 31, 0.24);
     color: #fff;
 }
 
 .auth-back-btn-secondary {
     background: rgba(255, 255, 255, 0.86);
-    color: #c2410c;
-    border: 1px solid rgba(232, 84, 10, 0.16);
-    box-shadow: 0 10px 24px rgba(232, 84, 10, 0.12);
+    color: var(--accent-600);
+    border: 1px solid var(--border-soft);
+    box-shadow: var(--shadow-soft);
 }
 
 .auth-back-btn-secondary:hover {
@@ -66,7 +66,7 @@ body {
     align-items: center;
     justify-content: center;
     padding: 24px;
-    background: linear-gradient(135deg, #fff5f0 0%, #ffe8dc 40%, #fff 100%);
+    background: linear-gradient(135deg, #fff6ef 0%, #fdf0e7 34%, #fbfcfe 100%);
     position: relative;
     overflow: hidden;
 }
@@ -115,11 +115,11 @@ body {
 .auth-card {
     width: 100%;
     max-width: 420px;
-    background: #fff;
-    border: 1px solid rgba(232, 84, 10, 0.12);
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(229, 103, 31, 0.1);
     border-radius: 28px;
     padding: 44px 40px 36px;
-    box-shadow: 0 8px 48px rgba(232, 84, 10, 0.12), 0 2px 12px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 18px 44px rgba(15, 23, 42, 0.08), 0 8px 26px rgba(229, 103, 31, 0.08);
     position: relative;
     z-index: 1;
     animation: cardIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -229,9 +229,9 @@ body {
     align-items: center;
     padding: 8px 14px;
     border-radius: 999px;
-    background: rgba(232, 84, 10, 0.1);
-    border: 1px solid rgba(232, 84, 10, 0.18);
-    color: #c2410c;
+    background: rgba(229, 103, 31, 0.1);
+    border: 1px solid rgba(229, 103, 31, 0.16);
+    color: var(--accent-600);
     font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.12em;
@@ -250,7 +250,7 @@ body {
 .login-showcase-copy {
     margin-top: 18px;
     max-width: 640px;
-    color: #5b6473;
+    color: var(--text-secondary);
     font-size: 1.08rem;
     line-height: 1.8;
 }
@@ -266,10 +266,10 @@ body {
     align-items: flex-start;
     gap: 16px;
     padding: 18px 20px;
-    background: rgba(255, 255, 255, 0.64);
-    border: 1px solid rgba(255, 255, 255, 0.75);
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.82);
     border-radius: 22px;
-    box-shadow: 0 12px 28px rgba(232, 84, 10, 0.08);
+    box-shadow: 0 16px 32px rgba(15, 23, 42, 0.06);
 }
 
 .login-feature-icon {
@@ -284,6 +284,7 @@ body {
     border: 1px solid rgba(232, 84, 10, 0.14);
     font-size: 22px;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    display: none;
 }
 
 .login-feature-icon svg {
@@ -301,7 +302,7 @@ body {
 }
 
 .login-feature-card p {
-    color: #6b7280;
+    color: var(--text-tertiary);
     font-size: 0.95rem;
     line-height: 1.65;
 }
@@ -319,11 +320,11 @@ body {
     padding: 10px 16px;
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.72);
-    border: 1px solid rgba(232, 84, 10, 0.16);
-    color: #9a3412;
+    border: 1px solid rgba(229, 103, 31, 0.12);
+    color: var(--accent-600);
     font-size: 13px;
     font-weight: 700;
-    box-shadow: 0 10px 24px rgba(232, 84, 10, 0.08);
+    box-shadow: var(--shadow-soft);
 }
 
 .login-card {
@@ -387,7 +388,7 @@ body {
 }
 
 .login-brand-sub {
-    color: #6b7280;
+    color: var(--text-tertiary);
     font-size: 0.92rem;
     line-height: 1.5;
 }
@@ -399,7 +400,7 @@ body {
 
 .login-subtitle {
     margin-top: 8px;
-    color: #6b7280;
+    color: var(--text-tertiary);
     font-size: 0.98rem;
     line-height: 1.7;
 }
@@ -410,10 +411,10 @@ body {
 
 .login-input-box input {
     min-height: 56px;
-    padding-left: 46px;
+    padding-left: 18px;
     border-radius: 16px;
-    background: #fcfcfd;
-    border-color: rgba(226, 232, 240, 0.92);
+    background: var(--surface-secondary);
+    border-color: var(--border-soft);
 }
 
 .login-submit-btn {
@@ -563,6 +564,7 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    display: none;
 }
 
 .input-box .icon svg {
@@ -572,11 +574,11 @@ body {
 
 .input-box input {
     width: 100%;
-    padding: 13px 14px 13px 42px;
-    background: #fafafa;
-    border: 1.5px solid #e8e8e8;
+    padding: 13px 14px 13px 16px;
+    background: var(--surface-secondary);
+    border: 1px solid var(--border-soft);
     border-radius: 14px;
-    color: #1a1a1a;
+    color: var(--text-primary);
     font-size: 14.5px;
     font-family: var(--font-sans);
     outline: none;
@@ -588,8 +590,8 @@ body {
 }
 
 .input-box input:focus {
-    border-color: #e8540a;
-    box-shadow: 0 0 0 3px rgba(232, 84, 10, 0.12);
+    border-color: rgba(229, 103, 31, 0.24);
+    box-shadow: 0 0 0 4px rgba(229, 103, 31, 0.08);
     background: #fff;
 }
 
@@ -631,6 +633,7 @@ body {
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    display: none;
 }
 
 .auth-alert-icon svg {

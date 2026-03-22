@@ -1,6 +1,5 @@
 ﻿import {
     NOTIFICATION_SEARCH_ROLE_OPTIONS,
-    NOTIFICATION_TYPE_ICONS,
     NOTIFICATION_TYPE_OPTIONS,
     formatNotificationDate,
 } from "./constants";
@@ -29,9 +28,9 @@ function RecipientPicker({
             <div className="ad-search-shell">
                 <input
                     className="an-input"
-                    placeholder="🔍 Tìm username hoặc email..."
+                    placeholder="Tìm username hoặc email..."
                     value={userSearch}
-                    onChange={(e) => onUserSearchChange(e.target.value)}
+                    onChange={(event) => onUserSearchChange(event.target.value)}
                 />
                 {userSearching && <span className="ad-search-indicator">Đang tìm...</span>}
                 {userResults.length > 0 && (
@@ -52,7 +51,7 @@ function RecipientPicker({
                                         <div className="ad-search-title">{user.username}</div>
                                         <div className="ad-search-meta">{user.email}</div>
                                     </div>
-                                    {isSelected && <span className="ad-search-check">✓</span>}
+                                    {isSelected && <span className="ad-search-check">Đã chọn</span>}
                                 </button>
                             );
                         })}
@@ -64,7 +63,7 @@ function RecipientPicker({
                 <div className="ad-chip-list">
                     {receiverIds.map((user) => (
                         <span key={user._id} className="ad-chip">
-                            <span>👤 {user.username}</span>
+                            <span>{user.username}</span>
                             <button
                                 type="button"
                                 className="ad-chip-remove"
@@ -76,7 +75,7 @@ function RecipientPicker({
                     ))}
                 </div>
             ) : (
-                <p className="ad-inline-note warning">⚠️ Chưa chọn người nhận nào</p>
+                <p className="ad-inline-note warning">Chưa chọn người nhận nào</p>
             )}
         </div>
     );
@@ -112,7 +111,6 @@ function ComposerSummary({ latestSent, loadingList, audienceLabel, selectedTypeL
                 <div className="ad-mini-list">
                     {latestSent.map((item) => (
                         <div key={item._id} className="ad-mini-item">
-                            <div className="ad-mini-icon">{NOTIFICATION_TYPE_ICONS[item.type] || "📢"}</div>
                             <div className="ad-mini-copy">
                                 <div className="ad-mini-title">{item.title}</div>
                                 <div className="ad-mini-meta">
@@ -192,9 +190,9 @@ function NotificationComposer({
                                 </select>
                                 {form.receiverType === "role" && (
                                     <select name="targetRole" value={form.targetRole} onChange={onFieldChange} className="an-select">
-                                        <option value="student">🎓 Tất cả sinh viên</option>
-                                        <option value="manager">📋 Tất cả quản lý</option>
-                                        <option value="all">👥 Tất cả người dùng</option>
+                                        <option value="student">Tất cả sinh viên</option>
+                                        <option value="manager">Tất cả quản lý</option>
+                                        <option value="all">Tất cả người dùng</option>
                                     </select>
                                 )}
                             </div>
@@ -213,7 +211,7 @@ function NotificationComposer({
                                 />
                             )}
 
-                            <p className="an-receiver-hint">📤 Sẽ gửi tới: <strong>{audienceLabel}</strong></p>
+                            <p className="an-receiver-hint">Sẽ gửi tới: <strong>{audienceLabel}</strong></p>
                         </div>
 
                         <div className="an-field">
@@ -230,9 +228,8 @@ function NotificationComposer({
 
                         {(form.title || form.message) && (
                             <div className="an-preview">
-                                <p className="an-preview-label">👁️ Xem trước</p>
-                                <div className="an-preview-card">
-                                    <div className="an-preview-icon">{NOTIFICATION_TYPE_ICONS[form.type]}</div>
+                                <p className="an-preview-label">Xem trước</p>
+                                <div className="an-preview-card an-preview-card-minimal">
                                     <div>
                                         <div className="an-preview-title">{form.title || "Tiêu đề..."}</div>
                                         <div className="an-preview-msg">{form.message || "Nội dung..."}</div>
@@ -242,9 +239,9 @@ function NotificationComposer({
                         )}
 
                         <div className="an-form-actions">
-                            <button type="button" className="an-btn-reset" onClick={onReset}>🔄 Đặt lại</button>
+                            <button type="button" className="an-btn-reset" onClick={onReset}>Đặt lại</button>
                             <button type="submit" className="an-btn-send" disabled={sending}>
-                                {sending ? <><span className="an-spinner" /> Đang gửi...</> : "📤 Gửi thông báo"}
+                                {sending ? <><span className="an-spinner" /> Đang gửi...</> : "Gửi thông báo"}
                             </button>
                         </div>
                     </form>

@@ -9,10 +9,10 @@
     position: relative;
     overflow: hidden;
     background: linear-gradient(145deg, #fff6ef 0%, #ffffff 58%, #fff4e8 100%);
-    border: 1px solid rgba(232, 84, 10, 0.12);
-    border-radius: 24px;
+    border: 1px solid rgba(229, 103, 31, 0.1);
+    border-radius: var(--radius-xl);
     padding: 28px;
-    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+    box-shadow: var(--shadow-card);
 }
 
 .ad-overview-hero::after {
@@ -31,10 +31,10 @@
     align-items: center;
     gap: 8px;
     padding: 6px 12px;
-    background: rgba(232, 84, 10, 0.08);
-    border: 1px solid rgba(232, 84, 10, 0.12);
+    background: rgba(229, 103, 31, 0.08);
+    border: 1px solid rgba(229, 103, 31, 0.12);
     border-radius: 999px;
-    color: #b45309;
+    color: var(--accent-600);
     font-size: 11px;
     font-weight: 800;
     letter-spacing: 0.08em;
@@ -44,7 +44,7 @@
 .ad-overview-title {
     margin: 16px 0 10px;
     max-width: 720px;
-    color: #111827;
+    color: var(--text-primary);
     font-family: var(--font-sans);
     font-size: clamp(28px, 4vw, 38px);
     line-height: 1.08;
@@ -54,7 +54,7 @@
 .ad-overview-description {
     margin: 0;
     max-width: 640px;
-    color: #4b5563;
+    color: var(--text-secondary);
     font-size: 15px;
     line-height: 1.7;
 }
@@ -78,21 +78,21 @@
 }
 
 .ad-overview-pill.success {
-    background: rgba(34, 197, 94, 0.12);
+    background: var(--success-soft);
     color: #15803d;
-    border-color: rgba(34, 197, 94, 0.2);
+    border-color: var(--success-border);
 }
 
 .ad-overview-pill.danger {
-    background: rgba(239, 68, 68, 0.1);
+    background: var(--danger-soft);
     color: #b91c1c;
-    border-color: rgba(239, 68, 68, 0.18);
+    border-color: var(--danger-border);
 }
 
 .ad-overview-pill.neutral {
     background: rgba(15, 23, 42, 0.05);
-    color: #475569;
-    border-color: rgba(148, 163, 184, 0.22);
+    color: var(--text-secondary);
+    border-color: var(--border-soft);
 }
 
 .ad-overview-actions {
@@ -115,17 +115,17 @@
     min-height: 132px;
     padding: 18px;
     border-radius: 20px;
-    border: 1px solid #e5e7eb;
-    background: #fff;
+    border: 1px solid var(--border-soft);
+    background: var(--surface-primary);
     text-align: left;
     cursor: pointer;
-    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.05);
+    box-shadow: var(--shadow-soft);
     transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
 }
 
 .ad-focus-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 18px 36px rgba(15, 23, 42, 0.1);
+    box-shadow: var(--shadow-card);
 }
 
 .ad-focus-card.warning {
@@ -149,7 +149,7 @@
 }
 
 .ad-focus-label {
-    color: #475569;
+    color: var(--text-secondary);
     font-size: 12px;
     font-weight: 700;
     text-transform: uppercase;
@@ -157,7 +157,7 @@
 }
 
 .ad-focus-value {
-    color: #0f172a;
+    color: var(--text-primary);
     font-family: var(--font-sans);
     font-size: 24px;
     font-weight: 800;
@@ -165,7 +165,7 @@
 }
 
 .ad-focus-caption {
-    color: #64748b;
+    color: var(--text-secondary);
     font-size: 13px;
     line-height: 1.5;
 }
@@ -180,15 +180,15 @@
 }
 
 .ad-overview-banner.warning {
-    background: rgba(245, 158, 11, 0.12);
+    background: var(--warning-soft);
     color: #b45309;
-    border: 1px solid rgba(245, 158, 11, 0.16);
+    border: 1px solid var(--warning-border);
 }
 
 .ad-overview-banner.error {
-    background: rgba(239, 68, 68, 0.1);
+    background: var(--danger-soft);
     color: #b91c1c;
-    border: 1px solid rgba(239, 68, 68, 0.16);
+    border: 1px solid var(--danger-border);
 }
 
 .ad-quick-grid {
@@ -203,12 +203,12 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 10px;
+    gap: 8px;
     min-height: 164px;
     padding: 20px 18px;
-    background: #fff;
-    border: 1px solid rgba(148, 163, 184, 0.18);
-    border-radius: 18px;
+    background: var(--surface-primary);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-lg);
     cursor: pointer;
     text-align: left;
     transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background 0.18s ease;
@@ -217,7 +217,7 @@
 .ad-quick-link:hover {
     border-color: color-mix(in srgb, var(--ad-accent) 35%, white);
     background: color-mix(in srgb, var(--ad-accent) 6%, white);
-    box-shadow: 0 18px 36px rgba(15, 23, 42, 0.09);
+    box-shadow: var(--shadow-card);
     transform: translateY(-2px);
 }
 
@@ -231,10 +231,11 @@
     background: color-mix(in srgb, var(--ad-accent) 14%, white);
     color: var(--ad-accent);
     font-size: 22px;
+    display: none;
 }
 
 .ad-quick-title {
-    color: #0f172a;
+    color: var(--text-primary);
     font-family: var(--font-sans);
     font-size: 16px;
     font-weight: 800;
@@ -242,7 +243,7 @@
 }
 
 .ad-quick-caption {
-    color: #64748b;
+    color: var(--text-secondary);
     font-size: 13px;
     line-height: 1.6;
 }
@@ -252,12 +253,13 @@
     color: var(--ad-accent);
     font-size: 18px;
     font-weight: 800;
+    display: none;
 }
 
 .ad-notify-cta {
-    background: #fff;
-    border: 1px solid #efefef;
-    border-radius: 16px;
+    background: var(--surface-primary);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-lg);
     padding: 48px 32px;
     text-align: center;
 }

@@ -21,7 +21,7 @@ export default function RoomHistoryPanel() {
     return (
         <>
             <div className="sd-panel-header">
-                <h2 className="sd-panel-title">🏠 Lịch sử phòng</h2>
+                <h2 className="sd-panel-title">Lịch sử phòng</h2>
                 <p className="sd-panel-subtitle">Lịch sử các phòng đã ở tại KTX FPT</p>
             </div>
 

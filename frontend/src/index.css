@@ -14,6 +14,47 @@
   --font-body: "Be Vietnam Pro", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --font-mono: "Monaco", "Courier New", monospace;
 
+  --bg-canvas: #f4f7fb;
+  --bg-subtle: #f8fafc;
+  --bg-soft: #fffaf6;
+  --surface-primary: #ffffff;
+  --surface-secondary: #fbfcfe;
+  --surface-overlay: rgba(255, 255, 255, 0.8);
+
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary: #8b97a8;
+  --text-quaternary: #a3afbf;
+
+  --border-soft: #e6ebf2;
+  --border-muted: #edf1f6;
+  --border-strong: #d9e1ec;
+
+  --accent-500: #e5671f;
+  --accent-600: #ca4f15;
+  --accent-700: #a93f11;
+  --accent-soft: rgba(229, 103, 31, 0.08);
+  --accent-soft-strong: rgba(229, 103, 31, 0.14);
+
+  --success-soft: rgba(34, 197, 94, 0.1);
+  --success-border: rgba(34, 197, 94, 0.2);
+  --warning-soft: rgba(245, 158, 11, 0.1);
+  --warning-border: rgba(245, 158, 11, 0.2);
+  --danger-soft: rgba(239, 68, 68, 0.1);
+  --danger-border: rgba(239, 68, 68, 0.2);
+  --info-soft: rgba(59, 130, 246, 0.1);
+  --info-border: rgba(59, 130, 246, 0.18);
+
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+
+  --shadow-soft: 0 10px 28px rgba(15, 23, 42, 0.06);
+  --shadow-card: 0 16px 34px rgba(15, 23, 42, 0.06);
+  --shadow-card-hover: 0 22px 46px rgba(15, 23, 42, 0.08);
+  --shadow-float: 0 24px 60px rgba(15, 23, 42, 0.12);
+
   --text-xs: 12px;
   --text-sm: 13px;
   --text-base: 14px;
@@ -28,6 +69,12 @@
   --leading-normal: 1.5;
   --leading-relaxed: 1.625;
   --leading-loose: 1.75;
+
+  --motion-fast: 160ms;
+  --motion-base: 220ms;
+  --motion-slow: 320ms;
+  --ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
+  --focus-ring: 0 0 0 4px rgba(229, 103, 31, 0.12);
 }
 
 html,
@@ -42,9 +89,127 @@ body {
   font-family: var(--font-body);
   font-size: 16px;
   line-height: 1.6;
+  background: var(--bg-canvas);
+  color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background: rgba(229, 103, 31, 0.18);
+  color: var(--text-primary);
+}
+
+button,
+input,
+textarea,
+select,
+a,
+[role="button"] {
+  transition:
+    transform var(--motion-fast) var(--ease-standard),
+    box-shadow var(--motion-fast) var(--ease-standard),
+    border-color var(--motion-fast) var(--ease-standard),
+    background-color var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard),
+    opacity var(--motion-fast) var(--ease-standard);
+}
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.ui-surface-enter {
+  animation: uiFadeInUp var(--motion-slow) var(--ease-standard);
+}
+
+.ui-state-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 140px;
+  padding: 24px 20px;
+  border-radius: 18px;
+  border: 1px dashed var(--border-soft);
+  background:
+    radial-gradient(circle at top right, rgba(229, 103, 31, 0.05), transparent 38%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(249, 251, 255, 0.92));
+  color: var(--text-tertiary);
+  text-align: center;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.ui-state-card.compact {
+  min-height: 96px;
+  padding: 18px 16px;
+}
+
+.ui-state-card.success {
+  border-style: solid;
+  border-color: var(--success-border);
+  background: linear-gradient(180deg, rgba(240, 253, 244, 0.96), rgba(255, 255, 255, 0.94));
+  color: #15803d;
+}
+
+.ui-state-card.error {
+  border-style: solid;
+  border-color: var(--danger-border);
+  background: linear-gradient(180deg, rgba(254, 242, 242, 0.96), rgba(255, 255, 255, 0.94));
+  color: #dc2626;
+}
+
+.ui-inline-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(229, 103, 31, 0.18);
+  border-top-color: var(--accent-500);
+  border-radius: 999px;
+  animation: uiSpin 0.8s linear infinite;
+}
+
+@keyframes uiFadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes uiSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 h1,

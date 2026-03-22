@@ -75,12 +75,12 @@ export default function ChangePasswordModal({ onClose }) {
                         <h2 className="cpw-title">Doi mat khau</h2>
                         <p className="cpw-subtitle">Nhap mat khau hien tai va mat khau moi</p>
                     </div>
-                    <button className="cpw-close" onClick={onClose} aria-label="Dong">✕</button>
+                    <button className="cpw-close" onClick={onClose} aria-label="Dong">×</button>
                 </div>
 
                 {alert && (
                     <div className={`cpw-alert ${alert.type}`}>
-                        {alert.type === "error" ? "⚠️" : "✅"} {alert.msg}
+                        {alert.msg}
                     </div>
                 )}
 
@@ -98,7 +98,7 @@ export default function ChangePasswordModal({ onClose }) {
                                 autoComplete="current-password"
                             />
                             <button type="button" className="cpw-eye" onClick={() => toggleShow("current")}>
-                                {show.current ? "🙈" : "👁️"}
+                                {show.current ? "Ẩn" : "Hiện"}
                             </button>
                         </div>
                     </div>
@@ -116,7 +116,7 @@ export default function ChangePasswordModal({ onClose }) {
                                 autoComplete="new-password"
                             />
                             <button type="button" className="cpw-eye" onClick={() => toggleShow("newPw")}>
-                                {show.newPw ? "🙈" : "👁️"}
+                                {show.newPw ? "Ẩn" : "Hiện"}
                             </button>
                         </div>
                     </div>
@@ -134,7 +134,7 @@ export default function ChangePasswordModal({ onClose }) {
                                 autoComplete="new-password"
                             />
                             <button type="button" className="cpw-eye" onClick={() => toggleShow("confirm")}>
-                                {show.confirm ? "🙈" : "👁️"}
+                                {show.confirm ? "Ẩn" : "Hiện"}
                             </button>
                         </div>
                     </div>
@@ -148,7 +148,7 @@ export default function ChangePasswordModal({ onClose }) {
                                 { test: /[^A-Za-z0-9]/.test(form.newPassword), label: "Co ky tu dac biet" },
                             ].map(({ test, label }) => (
                                 <div key={label} className={`cpw-rule ${test ? "pass" : "fail"}`}>
-                                    <span className="cpw-rule-icon">{test ? "✔" : "○"}</span>
+                                    <span className="cpw-rule-icon">{test ? "Đạt" : "Chưa"}</span>
                                     {label}
                                 </div>
                             ))}

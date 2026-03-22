@@ -30,9 +30,9 @@ function StudentSearch({
         <div className="ad-search-shell">
             <input
                 className="an-input"
-                placeholder="🔍 Tìm theo tên hoặc mã sinh viên..."
+                placeholder="Tìm theo tên hoặc mã sinh viên..."
                 value={bill.studentSearch}
-                onChange={(e) => onBillChange("studentSearch", e.target.value)}
+                onChange={(event) => onBillChange("studentSearch", event.target.value)}
             />
             {studentSearching && <span className="ad-search-indicator">Đang tìm...</span>}
             {studentResults.length > 0 && (
@@ -46,7 +46,7 @@ function StudentSearch({
                         >
                             <span className="ad-search-title">{student.fullName}</span>
                             <span className="ad-search-meta">
-                                MSSV: {student.studentCode} {!student.currentRoomId ? "⚠️ Chưa có phòng" : ""}
+                                MSSV: {student.studentCode} {!student.currentRoomId ? "• Chưa có phòng" : ""}
                             </span>
                         </button>
                     ))}
@@ -59,7 +59,7 @@ function StudentSearch({
 function ElectricityAmountPreview({ bill, prices }) {
     if (!(bill.excessKwh > 0)) return null;
     if (!prices.electricity_excess_rate) {
-        return <p className="ad-inline-note danger">⚠️ Chưa cài đặt giá điện — vui lòng cấu hình trước</p>;
+        return <p className="ad-inline-note danger">Chưa cài đặt giá điện. Vui lòng cấu hình trước khi tạo bill.</p>;
     }
 
     const { total, occupants, perPerson } = calculateElectricityPreview(bill, prices);
@@ -72,7 +72,7 @@ function ElectricityAmountPreview({ bill, prices }) {
             </div>
             {occupants > 1 && (
                 <div className="ad-bill-preview-row split">
-                    <span className="ad-bill-preview-success">÷ {occupants} người trong phòng</span>
+                    <span className="ad-bill-preview-success">Chia cho {occupants} người trong phòng</span>
                     <span className="ad-bill-preview-per">{fmtSettingsMoney(perPerson)}/người</span>
                 </div>
             )}
@@ -91,7 +91,7 @@ function MoneyAmountField({ bill, onBillChange, prices }) {
                     min="0"
                     placeholder="VD: 500000"
                     value={bill.amount}
-                    onChange={(e) => onBillChange("amount", e.target.value)}
+                    onChange={(event) => onBillChange("amount", event.target.value)}
                 />
                 {bill.type === "violation_fine" && prices.violation_fine_rate && (
                     <button
@@ -104,7 +104,7 @@ function MoneyAmountField({ bill, onBillChange, prices }) {
                 )}
             </div>
             {bill.type === "damage_compensation" && (
-                <p className="ad-inline-note">💡 Bồi thường thiệt hại — nhập số tiền cụ thể theo mức độ thiệt hại thực tế</p>
+                <p className="ad-inline-note">Bồi thường thiệt hại: nhập số tiền thực tế tương ứng với mức độ hư hỏng.</p>
             )}
         </div>
     );
@@ -133,12 +133,12 @@ function BillComposer({
 
             {billAlert.msg && (
                 <div className={`an-alert ${billAlert.type} ad-inline-alert ad-inline-alert-sm`}>
-                    {billAlert.type === "success" ? "✓" : "⚠️"} {billAlert.msg}
+                    {billAlert.msg}
                 </div>
             )}
 
             <div className="an-field">
-                <label className="an-label">🎓 Sinh viên *</label>
+                <label className="an-label">Sinh viên *</label>
                 {bill.selectedStudent ? (
                     <SelectedStudentCard student={bill.selectedStudent} onClear={onClearSelectedStudent} />
                 ) : (
@@ -154,7 +154,7 @@ function BillComposer({
 
             <div className="an-field">
                 <label className="an-label">Loại hóa đơn *</label>
-                <select className="an-select" value={bill.type} onChange={(e) => onBillChange("type", e.target.value)}>
+                <select className="an-select" value={bill.type} onChange={(event) => onBillChange("type", event.target.value)}>
                     {INVOICE_TYPE_OPTIONS.map((option) => (
                         <option key={option.value} value={option.value}>{option.label}</option>
                     ))}
@@ -163,7 +163,7 @@ function BillComposer({
 
             {bill.type === "electricity" ? (
                 <div className="an-field">
-                    <label className="an-label">⚡ Số kWh vượt mức *</label>
+                    <label className="an-label">Số kWh vượt mức *</label>
                     <div className="ad-inline-row">
                         <input
                             className="an-input ad-inline-input"
@@ -172,7 +172,7 @@ function BillComposer({
                             step="0.1"
                             placeholder="VD: 15"
                             value={bill.excessKwh}
-                            onChange={(e) => onBillChange("excessKwh", e.target.value)}
+                            onChange={(event) => onBillChange("excessKwh", event.target.value)}
                         />
                         <span className="ad-inline-suffix">kWh</span>
                     </div>
@@ -187,9 +187,9 @@ function BillComposer({
                 <textarea
                     className="an-textarea"
                     rows={2}
-                    placeholder="Lý do / chi tiết..."
+                    placeholder="Lý do hoặc ghi chú chi tiết..."
                     value={bill.description}
-                    onChange={(e) => onBillChange("description", e.target.value)}
+                    onChange={(event) => onBillChange("description", event.target.value)}
                 />
             </div>
 
@@ -201,7 +201,7 @@ function BillComposer({
                         type="date"
                         value={bill.dueDate}
                         min={new Date().toISOString().slice(0, 10)}
-                        onChange={(e) => onBillChange("dueDate", e.target.value)}
+                        onChange={(event) => onBillChange("dueDate", event.target.value)}
                     />
                 </div>
                 <div className="an-field ad-form-grow">
@@ -210,13 +210,13 @@ function BillComposer({
                         className="an-input"
                         placeholder="VD: 2024-1"
                         value={bill.termCode}
-                        onChange={(e) => onBillChange("termCode", e.target.value)}
+                        onChange={(event) => onBillChange("termCode", event.target.value)}
                     />
                 </div>
             </div>
 
             <button type="button" onClick={onSendBill} disabled={billSending} className="an-btn-send ad-full-width-btn">
-                {billSending ? <><span className="an-spinner" /> Đang tạo...</> : "💻 Tạo & gửi hóa đơn"}
+                {billSending ? <><span className="an-spinner" /> Đang tạo...</> : "Tạo và gửi hóa đơn"}
             </button>
         </section>
     );

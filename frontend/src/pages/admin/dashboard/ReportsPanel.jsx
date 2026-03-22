@@ -43,7 +43,7 @@ function ReportsPanel() {
             <section className="ad-section-hero ad-section-hero-reports">
                 <div className="ad-section-copy">
                     <span className="ad-section-eyebrow">Report Review Queue</span>
-                    <h2 className="ad-section-title">📑 Duyệt báo cáo</h2>
+                    <h2 className="ad-section-title">Duyệt báo cáo</h2>
                     <p className="ad-section-subtitle">
                         Xem xét nhanh báo cáo từ quản lý, nhận diện sự cố ưu tiên và giữ luồng phản hồi của admin nhất quán.
                     </p>
@@ -72,7 +72,7 @@ function ReportsPanel() {
 
             {alert.msg && (
                 <div className={`ar-alert ${alert.type}`} style={{ marginBottom: 16 }}>
-                    {alert.type === "success" ? "✓" : "⚠️"} {alert.msg}
+                    {alert.msg}
                 </div>
             )}
 
@@ -121,9 +121,9 @@ function ReportsPanel() {
                 <div className="ad-toolbar-controls">
                     <div className="ar-tabs">
                         <button className={`ar-tab ${tab === "pending" ? "active" : ""}`} onClick={() => setTab("pending")}>
-                            ⏳ Chờ duyệt {pending > 0 && <span className="ar-badge">{pending}</span>}
+                            Chờ duyệt {pending > 0 && <span className="ar-badge">{pending}</span>}
                         </button>
-                        <button className={`ar-tab ${tab === "reviewed" ? "active" : ""}`} onClick={() => setTab("reviewed")}>✅ Đã duyệt</button>
+                        <button className={`ar-tab ${tab === "reviewed" ? "active" : ""}`} onClick={() => setTab("reviewed")}>Đã duyệt</button>
                     </div>
                     <select className="ar-select ad-select-enhanced" value={filterType} onChange={e => setFilterType(e.target.value)}>
                         <option value="">Tất cả loại</option>
@@ -152,7 +152,7 @@ function ReportsPanel() {
                     {loading ? (
                         <div className="ar-empty">Đang tải...</div>
                     ) : reports.length === 0 ? (
-                        <div className="ar-empty">{tab === "pending" ? "🎉 Không có báo cáo nào chờ duyệt!" : "Chưa có báo cáo nào được duyệt"}</div>
+                        <div className="ar-empty">{tab === "pending" ? "Không có báo cáo nào chờ duyệt" : "Chưa có báo cáo nào được duyệt"}</div>
                     ) : (
                         reports.map(r => {
                             const col = R_TYPE_COLORS[r.type] || "#6366f1";
@@ -162,17 +162,17 @@ function ReportsPanel() {
                                     <div className="ar-row-body">
                                         <div className="ar-row-top">
                                             <span className="ar-type" style={{ background: col + "20", color: col, border: `1px solid ${col}40` }}>{R_TYPE_LABELS[r.type]}</span>
-                                            <span className="ar-sender">👤 {r.managerId?.username} &nbsp;·&nbsp; 🏢 {r.buildingId?.name}</span>
+                                            <span className="ar-sender">{r.managerId?.username} &nbsp;·&nbsp; {r.buildingId?.name}</span>
                                             <span className="ar-date">{new Date(r.createdAt).toLocaleDateString("vi-VN")}</span>
                                         </div>
                                         <h3 className="ar-row-title">{r.title}</h3>
                                         <p className="ar-row-preview">{r.content?.slice(0, 120)}{r.content?.length > 120 ? "..." : ""}</p>
-                                        {r.adminReview?.note && <div className="ar-note">💬 Phản hồi: {r.adminReview.note}</div>}
+                                        {r.adminReview?.note && <div className="ar-note">Phản hồi: {r.adminReview.note}</div>}
                                     </div>
                                     <div className="ar-row-actions">
-                                        <button className="btn-view" onClick={() => { setSelected(r); setModal("detail"); }}>👁️ Xem</button>
+                                        <button className="btn-view" onClick={() => { setSelected(r); setModal("detail"); }}>Xem</button>
                                         {r.status === "pending" && (
-                                            <button className="btn-approve" onClick={() => { setSelected(r); setModal("review"); }}>✅ Duyệt</button>
+                                            <button className="btn-approve" onClick={() => { setSelected(r); setModal("review"); }}>Duyệt</button>
                                         )}
                                     </div>
                                 </div>

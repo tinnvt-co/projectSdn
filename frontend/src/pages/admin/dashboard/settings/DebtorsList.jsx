@@ -13,7 +13,7 @@ function DebtorsList({ debtorLoading, debtors, onSelectDebtor, totalDebt }) {
             {debtorLoading ? (
                 <div className="ad-empty-inline"><div className="ab-spinner" />Đang tải danh sách công nợ...</div>
             ) : debtors.length === 0 ? (
-                <div className="ad-empty-inline">🎉 Không có sinh viên nào còn nợ!</div>
+                <div className="ad-empty-inline">Hiện không có sinh viên nào còn nợ.</div>
             ) : (
                 <div className="ad-side-scroll">
                     <div className="ad-kv-list ad-kv-list-spaced">

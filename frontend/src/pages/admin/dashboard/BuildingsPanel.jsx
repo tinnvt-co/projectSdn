@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+﻿import { useCallback, useEffect, useState } from "react";
 import api from "../../../services/api";
 import { StatCard } from "./cards";
 import BBuildingCard from "./buildings/BBuildingCard";
@@ -11,36 +11,46 @@ function BuildingsPanel() {
     const [alert, setAlert] = useState(null);
     const [modal, setModal] = useState(null);
 
-    const showAlert = useCallback((type, msg) => { setAlert({ type, msg }); setTimeout(() => setAlert(null), 4000); }, []);
+    const showAlert = useCallback((type, msg) => {
+        setAlert({ type, msg });
+        setTimeout(() => setAlert(null), 4000);
+    }, []);
 
     const load = useCallback(() => {
         setLoading(true);
         api.get("/buildings")
-            .then(r => setBuildings(r.data.data || []))
+            .then((response) => setBuildings(response.data.data || []))
             .catch(() => showAlert("error", "Không thể tải danh sách tòa nhà"))
             .finally(() => setLoading(false));
     }, [showAlert]);
 
-    useEffect(() => { load(); }, [load]);
+    useEffect(() => {
+        load();
+    }, [load]);
 
     const handleDelete = async (building) => {
         if (!window.confirm(`Xóa tòa nhà "${building.name}"?`)) return;
-        try { await api.delete(`/buildings/${building._id}`); showAlert("success", `Đã xóa tòa nhà ${building.name}`); load(); }
-        catch (err) { showAlert("error", err.response?.data?.message || "Xóa thất bại"); }
+        try {
+            await api.delete(`/buildings/${building._id}`);
+            showAlert("success", `Đã xóa tòa nhà ${building.name}`);
+            load();
+        } catch (err) {
+            showAlert("error", err.response?.data?.message || "Xóa thất bại");
+        }
     };
 
-    const activeBuildings = buildings.filter((b) => b.status === "active").length;
-    const maintenanceBuildings = buildings.filter((b) => b.status === "maintenance").length;
-    const inactiveBuildings = buildings.filter((b) => b.status === "inactive").length;
-    const assignedManagers = buildings.filter((b) => !!b.managerId).length;
-    const totalFloors = buildings.reduce((sum, b) => sum + Number(b.totalFloors || 0), 0);
+    const activeBuildings = buildings.filter((building) => building.status === "active").length;
+    const maintenanceBuildings = buildings.filter((building) => building.status === "maintenance").length;
+    const inactiveBuildings = buildings.filter((building) => building.status === "inactive").length;
+    const assignedManagers = buildings.filter((building) => !!building.managerId).length;
+    const totalFloors = buildings.reduce((sum, building) => sum + Number(building.totalFloors || 0), 0);
 
     return (
         <div className="ad-panel-stack">
             <section className="ad-section-hero ad-section-hero-buildings">
                 <div className="ad-section-copy">
                     <span className="ad-section-eyebrow">Dormitory Assets</span>
-                    <h2 className="ad-section-title">🏢 Quản lý tòa nhà & phòng</h2>
+                    <h2 className="ad-section-title">Quản lý tòa nhà và phòng</h2>
                     <p className="ad-section-subtitle">
                         Theo dõi hạ tầng KTX theo cùng một nhịp thiết kế với dashboard admin: rõ số liệu, rõ trạng thái và dễ thao tác khi cần cập nhật.
                     </p>
@@ -53,17 +63,17 @@ function BuildingsPanel() {
                     </div>
                 </div>
                 <div className="ad-section-actions">
-                    <button className="ad-hero-btn primary" onClick={() => setModal({ type: "building" })}>＋ Tạo tòa nhà</button>
+                    <button className="ad-hero-btn primary" onClick={() => setModal({ type: "building" })}>Tạo tòa nhà</button>
                 </div>
             </section>
 
-            {alert && <div className={`ab-alert ${alert.type}`} style={{ marginBottom: 0 }}>{alert.type === "success" ? "✓" : "⚠️"} {alert.msg}</div>}
+            {alert && <div className={`ab-alert ${alert.type}`} style={{ marginBottom: 0 }}>{alert.msg}</div>}
 
             <div className="ad-stats-grid">
-                <StatCard icon="🏢" label="Tòa nhà" value={buildings.length} meta={`${totalFloors} tầng trên toàn hệ thống`} color="#e8540a" loading={loading} />
-                <StatCard icon="🟢" label="Đang hoạt động" value={activeBuildings} meta={`${assignedManagers} tòa đã có quản lý phụ trách`} color="#16a34a" loading={loading} />
-                <StatCard icon="🛠️" label="Bảo trì" value={maintenanceBuildings} meta="Những khu vực cần theo dõi kỹ hơn" color="#d97706" loading={loading} />
-                <StatCard icon="⏸️" label="Tạm đóng" value={inactiveBuildings} meta="Khu vực chưa mở cho vận hành" color="#64748b" loading={loading} />
+                <StatCard icon="T" label="Tòa nhà" value={buildings.length} meta={`${totalFloors} tầng trên toàn hệ thống`} color="#e8540a" loading={loading} />
+                <StatCard icon="A" label="Đang hoạt động" value={activeBuildings} meta={`${assignedManagers} tòa đã có quản lý phụ trách`} color="#16a34a" loading={loading} />
+                <StatCard icon="B" label="Bảo trì" value={maintenanceBuildings} meta="Những khu vực cần theo dõi kỹ hơn" color="#d97706" loading={loading} />
+                <StatCard icon="T" label="Tạm đóng" value={inactiveBuildings} meta="Khu vực chưa mở cho vận hành" color="#64748b" loading={loading} />
             </div>
 
             <div className="ad-context-line">
@@ -77,7 +87,7 @@ function BuildingsPanel() {
                 </div>
             ) : buildings.length === 0 ? (
                 <div className="ad-surface-panel">
-                    <div className="ab-empty-page"><span className="ab-empty-icon">🏗️</span><p>Chưa có tòa nhà nào. Nhấn “Tạo tòa nhà” để bắt đầu thiết lập KTX.</p></div>
+                    <div className="ab-empty-page"><p>Chưa có tòa nhà nào. Hãy tạo tòa nhà đầu tiên để bắt đầu thiết lập KTX.</p></div>
                 </div>
             ) : (
                 <div className="ad-surface-panel">
@@ -88,13 +98,13 @@ function BuildingsPanel() {
                         </div>
                     </div>
                     <div className="ab-building-list">
-                        {buildings.map(b => (
+                        {buildings.map((building) => (
                             <BBuildingCard
-                                key={b._id}
-                                building={b}
-                                onEdit={building => setModal({ type: "building-edit", data: building })}
+                                key={building._id}
+                                building={building}
+                                onEdit={(item) => setModal({ type: "building-edit", data: item })}
                                 onDelete={handleDelete}
-                                onAddRoom={(building, refresh) => setModal({ type: "room", data: building, onRoomSuccess: refresh })}
+                                onAddRoom={(item, refresh) => setModal({ type: "room", data: item, onRoomSuccess: refresh })}
                                 showAlert={showAlert}
                             />
                         ))}
