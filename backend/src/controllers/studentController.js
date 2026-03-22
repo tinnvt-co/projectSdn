@@ -1,4 +1,4 @@
-﻿const Student = require("../models/Student");
+﻿﻿const Student = require("../models/Student");
 const Notification = require("../models/Notification");
 const RoomAssignment = require("../models/RoomAssignment");
 const RoomRegistration = require("../models/RoomRegistration");
@@ -795,5 +795,3 @@ exports.approveRetentionRequest = async (req, res) => {
         res.status(500).json({ success: false, message: err.message });
     }
 };
-
-

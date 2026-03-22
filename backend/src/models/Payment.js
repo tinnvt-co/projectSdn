@@ -1,43 +1,60 @@
 const mongoose = require("mongoose");
 
-const paymentSchema = new mongoose.Schema(
+const paymentSessionSchema = new mongoose.Schema(
     {
-        invoiceId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Invoice",
-            required: true,
-        },
         studentId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Student",
             required: true,
         },
-        amount: {
+        invoiceIds: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Invoice",
+                required: true,
+            },
+        ],
+        totalAmount: {
             type: Number,
-            required: [true, "Số tiền là bắt buộc"],
+            required: true,
             min: 0,
         },
         paymentMethod: {
             type: String,
-            enum: ["cash", "bank_transfer", "e_wallet"],
-            default: "cash",
+            enum: ["bank_transfer"],
+            default: "bank_transfer",
         },
-        transactionCode: {
+        status: {
             type: String,
+            enum: ["pending", "completed", "expired", "cancelled"],
+            default: "pending",
+        },
+        transferContent: {
+            type: String,
+            required: true,
             trim: true,
         },
-        note: {
+        qrUrl: {
             type: String,
+            required: true,
             trim: true,
         },
-        paidAt: {
+        sessionCode: {
+            type: String,
+            required: true,
+            trim: true,
+            unique: true,
+        },
+        expiresAt: {
             type: Date,
             required: true,
+        },
+        confirmedAt: {
+            type: Date,
+            default: null,
         },
     },
     {
         timestamps: true,
     }
 );
-
-module.exports = mongoose.model("Payment", paymentSchema);

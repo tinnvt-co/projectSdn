@@ -194,4 +194,3 @@ exports.logout = async (req, res) => {
     console.log(`👋 User ${req.user?.username || req.user?.id} logged out`);
     res.json({ success: true, message: "Đăng xuất thành công" });
 };
-

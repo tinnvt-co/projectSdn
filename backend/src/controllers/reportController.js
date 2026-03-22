@@ -1,128 +1,134 @@
-const Report = require("../models/Report");
-const Building = require("../models/Building");
+const crypto = require("crypto");
+const PaymentSession = require("../models/PaymentSession");
+const { completeQrPaymentSession } = require("../services/paymentService");
 
-// ── Lấy danh sách báo cáo (manager chỉ thấy báo cáo của mình) ──────────────
-exports.getReports = async (req, res) => {
-    try {
-        const { status, type } = req.query;
-        const filter = {};
+const normalizeText = (value) => String(value || "").trim();
 
-        // Manager chỉ thấy báo cáo của mình, Admin thấy tất cả
-        if (req.user.role === "manager") filter.managerId = req.user._id;
-        if (status) filter.status = status;
-        if (type) filter.type = type;
+const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-        const reports = await Report.find(filter)
-            .populate("managerId", "username email")
-            .populate("buildingId", "name address")
-            .populate("adminReview.reviewedBy", "username")
-            .sort({ createdAt: -1 });
+const getWebhookSecret = () => normalizeText(process.env.CASSO_WEBHOOK_SECRET);
 
-        res.json({ success: true, count: reports.length, reports });
-    } catch (err) {
-        res.status(500).json({ success: false, message: "Lỗi server" });
+const verifyCassoSignature = (req) => {
+    const secret = getWebhookSecret();
+    if (!secret) return true;
+
+    const secureToken = normalizeText(req.headers["secure-token"]);
+    if (secureToken) {
+        return secureToken === secret;
     }
+
+    const signature = normalizeText(req.headers["x-casso-signature"]);
+    if (!signature) return false;
+
+    const raw = req.rawBody || JSON.stringify(req.body || {});
+    const digest = crypto
+        .createHmac("sha256", secret)
+        .update(raw)
+        .digest("hex");
+
+    return digest === signature;
 };
 
-// ── Lấy 1 báo cáo ────────────────────────────────────────────────────────────
-exports.getReportById = async (req, res) => {
-    try {
-        const report = await Report.findById(req.params.id)
-            .populate("managerId", "username email")
-            .populate("buildingId", "name address")
-            .populate("adminReview.reviewedBy", "username");
+const toArray = (value) => (Array.isArray(value) ? value : value ? [value] : []);
 
-        if (!report) return res.status(404).json({ success: false, message: "Không tìm thấy báo cáo" });
-
-        // Manager chỉ được xem báo cáo của mình
-        if (req.user.role === "manager" && report.managerId._id.toString() !== req.user._id.toString())
-            return res.status(403).json({ success: false, message: "Không có quyền truy cập" });
-
-        res.json({ success: true, report });
-    } catch (err) {
-        res.status(500).json({ success: false, message: "Lỗi server" });
-    }
+const extractTransactions = (body) => {
+    const data = body?.data;
+    return [
+        ...toArray(data?.records),
+        ...toArray(data?.transactions),
+        ...toArray(data?.items),
+        ...((!data?.records && !data?.transactions && !data?.items) ? toArray(data) : []),
+    ];
 };
 
-// ── Tạo báo cáo mới (manager) ─────────────────────────────────────────────
-exports.createReport = async (req, res) => {
+const parseTransaction = (item) => {
+    const description = normalizeText(
+        item?.description ||
+        item?.content ||
+        item?.transactionContent ||
+        item?.transaction_content ||
+        item?.remark
+    );
+
+    const amount = Number(
+        item?.amount ??
+        item?.creditAmount ??
+        item?.credit_amount ??
+        item?.amountNumber ??
+        0
+    );
+
+    const transactionCode = normalizeText(
+        item?.tid ||
+        item?.transactionID ||
+        item?.transactionId ||
+        item?.referenceCode ||
+        item?.reference ||
+        item?.id
+    );
+
+    const paidAt = item?.when || item?.transactionDate || item?.createdAt || item?.bookingDate;
+
+    return {
+        description,
+        amount,
+        transactionCode,
+        paidAt: paidAt ? new Date(paidAt) : new Date(),
+    };
+};
+
+exports.handleCassoWebhook = async (req, res) => {
     try {
-        const { title, content, type, buildingId } = req.body;
+        if (!verifyCassoSignature(req)) {
+            return res.status(401).json({ success: false, message: "Chu ky webhook khong hop le" });
+        }
 
-        if (!title || !content || !buildingId)
-            return res.status(400).json({ success: false, message: "Vui lòng điền đầy đủ thông tin" });
+        const transactions = extractTransactions(req.body);
+        if (transactions.length === 0) {
+            return res.json({ success: true, message: "Khong co giao dich nao de xu ly", data: { matched: 0 } });
+        }
 
-        // Verify building tồn tại và thuộc quyền quản lý của manager
-        const building = await Building.findById(buildingId);
-        if (!building) return res.status(404).json({ success: false, message: "Tòa nhà không tồn tại" });
+        let matched = 0;
+        let completed = 0;
 
-        if (req.user.role === "manager" && building.managerId?.toString() !== req.user._id.toString())
-            return res.status(403).json({ success: false, message: "Bạn không quản lý tòa nhà này" });
+        for (const rawItem of transactions) {
+            const item = parseTransaction(rawItem);
+            if (!item.description || !Number.isFinite(item.amount) || item.amount <= 0) continue;
 
-        const report = await Report.create({
-            managerId: req.user._id,
-            buildingId,
-            title: title.trim(),
-            content: content.trim(),
-            type: type || "general",
+            const pendingSessions = await PaymentSession.find({
+                status: "pending",
+                totalAmount: item.amount,
+            }).sort({ createdAt: -1 });
+
+            const session = pendingSessions.find((candidate) => {
+                if (!candidate.transferContent) return false;
+                const pattern = new RegExp(escapeRegex(candidate.transferContent), "i");
+                return pattern.test(item.description);
+            });
+
+            if (!session) continue;
+            matched += 1;
+
+            try {
+                const result = await completeQrPaymentSession({
+                    session,
+                    transactionCode: item.transactionCode || session.sessionCode,
+                    note: `Thanh toan Casso - ${item.description}`,
+                    paidAt: Number.isNaN(item.paidAt?.getTime?.()) ? new Date() : item.paidAt,
+                });
+                if (!result.alreadyCompleted) completed += 1;
+            } catch (err) {
+                console.error("handleCassoWebhook confirm error:", err.message);
+            }
+        }
+
+        return res.json({
+            success: true,
+            message: "Da xu ly webhook Casso",
+            data: { received: transactions.length, matched, completed },
         });
-
-        await report.populate("buildingId", "name address");
-        res.status(201).json({ success: true, message: "Gửi báo cáo thành công", report });
     } catch (err) {
-        res.status(500).json({ success: false, message: "Lỗi server", error: err.message });
-    }
-};
-
-// ── Duyệt báo cáo (admin) ─────────────────────────────────────────────────
-exports.reviewReport = async (req, res) => {
-    try {
-        const { note } = req.body;
-        const report = await Report.findById(req.params.id);
-        if (!report) return res.status(404).json({ success: false, message: "Không tìm thấy báo cáo" });
-
-        report.status = "reviewed";
-        report.adminReview = {
-            reviewedBy: req.user._id,
-            note: note || "",
-            reviewedAt: new Date(),
-        };
-        await report.save();
-        await report.populate("managerId", "username email");
-        await report.populate("buildingId", "name");
-        await report.populate("adminReview.reviewedBy", "username");
-
-        res.json({ success: true, message: "Đã duyệt báo cáo", report });
-    } catch (err) {
-        res.status(500).json({ success: false, message: "Lỗi server" });
-    }
-};
-
-// ── Xóa báo cáo (chỉ pending + manager tự xóa) ───────────────────────────
-exports.deleteReport = async (req, res) => {
-    try {
-        const report = await Report.findById(req.params.id);
-        if (!report) return res.status(404).json({ success: false, message: "Không tìm thấy báo cáo" });
-
-        if (report.managerId.toString() !== req.user._id.toString())
-            return res.status(403).json({ success: false, message: "Không có quyền xóa báo cáo này" });
-
-        if (report.status === "reviewed")
-            return res.status(400).json({ success: false, message: "Không thể xóa báo cáo đã được duyệt" });
-
-        await report.deleteOne();
-        res.json({ success: true, message: "Đã xóa báo cáo" });
-    } catch (err) {
-        res.status(500).json({ success: false, message: "Lỗi server" });
-    }
-};
-
-// ── Lấy tòa nhà manager quản lý để điền form ─────────────────────────────
-exports.getMyBuildings = async (req, res) => {
-    try {
-        const buildings = await Building.find({ managerId: req.user._id }).select("name address");
-        res.json({ success: true, buildings });
-    } catch (err) {
-        res.status(500).json({ success: false, message: "Lỗi server" });
+        console.error("handleCassoWebhook error:", err);
+        return res.status(500).json({ success: false, message: err.message || "Loi server" });
     }
 };
