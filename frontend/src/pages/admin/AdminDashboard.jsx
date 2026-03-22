@@ -3,6 +3,9 @@ import { useNavigate, useLocation } from "react-router-dom";
 import api from "../../services/api";
 import "../student/StudentDashboard.css"; // reuse same CSS variables
 import "./AdminDashboard.css";
+import "./AdminDashboardOverview.css";
+import "./AdminDashboardFinance.css";
+import "./AdminDashboardTabs.css";
 import ChangePasswordModal from "../../components/ChangePasswordModal";
 import "../AdminNotifications.css";
 import "../AdminUsers.css";

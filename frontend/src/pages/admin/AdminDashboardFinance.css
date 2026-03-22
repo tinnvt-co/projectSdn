@@ -1,0 +1,229 @@
+.ad-finance-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.95fr);
+    gap: 16px;
+}
+
+.ad-fin-status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 12px;
+}
+
+.ad-fin-status-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 16px 18px;
+    border-radius: 18px;
+    border: 1px solid var(--ad-tone-border);
+    background: #fff;
+    color: #0f172a;
+    text-align: left;
+    cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+
+.ad-fin-status-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 26px rgba(15, 23, 42, 0.08);
+}
+
+.ad-fin-status-card.active {
+    background: var(--ad-tone-soft);
+    border-color: var(--ad-tone);
+    box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08);
+}
+
+.ad-fin-status-top {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.ad-fin-status-label {
+    color: #475569;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.ad-fin-status-pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    padding: 0 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.82);
+    color: var(--ad-tone);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.ad-fin-status-value {
+    color: var(--ad-tone);
+    font-family: "Manrope", "Inter", sans-serif;
+    font-size: 30px;
+    line-height: 1;
+}
+
+.ad-fin-status-note {
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+.ad-fin-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    height: 184px;
+    overflow-x: auto;
+    padding: 8px 2px 4px;
+}
+
+.ad-fin-bar-item {
+    display: flex;
+    flex: 1;
+    min-width: 48px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+}
+
+.ad-fin-bar-value {
+    min-height: 12px;
+    color: #94a3b8;
+    font-size: 9px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.ad-fin-bar {
+    width: min(42px, 100%);
+    min-height: 6px;
+    border-radius: 8px 8px 2px 2px;
+    transition: height 0.3s ease;
+}
+
+.ad-fin-bar-label {
+    color: #64748b;
+    font-size: 10px;
+    font-weight: 600;
+    white-space: nowrap;
+    transform: rotate(-28deg);
+    transform-origin: top left;
+    padding-top: 10px;
+}
+
+.ad-fin-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.ad-fin-breakdown-row {
+    display: grid;
+    grid-template-columns: minmax(110px, 130px) minmax(0, 1fr) 96px 42px;
+    align-items: center;
+    gap: 10px;
+}
+
+.ad-fin-breakdown-label {
+    color: #475569;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.ad-fin-progress {
+    height: 10px;
+    border-radius: 999px;
+    background: #eef2f7;
+    overflow: hidden;
+}
+
+.ad-fin-progress-fill {
+    height: 100%;
+    border-radius: 999px;
+}
+
+.ad-fin-breakdown-amount {
+    color: #475569;
+    font-size: 12px;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.ad-fin-breakdown-percent {
+    font-size: 12px;
+    font-weight: 800;
+    text-align: right;
+}
+
+.ad-fin-table-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+}
+
+.ad-filter-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.ad-filter-pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    padding: 0 12px;
+    border-radius: 999px;
+    border: 1px solid #dbe3ee;
+    background: var(--ad-pill-bg);
+    color: var(--ad-pill-color);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+}
+
+.ad-filter-pill:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 18px rgba(15, 23, 42, 0.06);
+}
+
+.ad-filter-pill.active {
+    color: #fff;
+    background: var(--ad-pill-color);
+    border-color: var(--ad-pill-color);
+}
+
+.ad-finance-table-wrap {
+    position: relative;
+}
+
+.ad-surface-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(1px);
+}
+
+.ad-empty-inline {
+    padding: 26px 12px;
+    color: #94a3b8;
+    font-size: 14px;
+    text-align: center;
+}
