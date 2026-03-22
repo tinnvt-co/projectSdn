@@ -142,6 +142,72 @@ body {
     padding: 54px 56px;
 }
 
+.login-showcase-media {
+    position: relative;
+    min-height: 276px;
+    border-radius: 30px;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 22px 44px rgba(15, 23, 42, 0.16);
+    margin: 22px 0 28px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 22px;
+}
+
+.login-showcase-media::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    pointer-events: none;
+}
+
+.login-showcase-media-badge {
+    position: relative;
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    backdrop-filter: blur(10px);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.login-showcase-media-caption {
+    position: relative;
+    display: grid;
+    gap: 6px;
+    align-self: flex-start;
+    max-width: 82%;
+    padding: 16px 18px;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(12px);
+    color: #fff;
+}
+
+.login-showcase-media-caption strong {
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.login-showcase-media-caption span {
+    font-size: 0.92rem;
+    line-height: 1.65;
+    color: rgba(255, 255, 255, 0.88);
+}
+
 .login-kicker {
     display: inline-flex;
     align-items: center;
@@ -712,6 +778,11 @@ body {
         padding: 34px 32px;
     }
 
+    .login-showcase-media {
+        min-height: 240px;
+        margin: 18px 0 24px;
+    }
+
     .login-showcase-title {
         max-width: 100%;
         font-size: clamp(2.1rem, 8vw, 3.2rem);
@@ -736,6 +807,17 @@ body {
 
     .login-showcase-inner {
         padding: 28px 22px;
+    }
+
+    .login-showcase-media {
+        min-height: 220px;
+        padding: 16px;
+        border-radius: 24px;
+    }
+
+    .login-showcase-media-caption {
+        max-width: 100%;
+        padding: 14px 16px;
     }
 
     .login-feature-list {

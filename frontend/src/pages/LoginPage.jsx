@@ -18,6 +18,8 @@ const ROLE_DASHBOARD = {
     },
 };
 
+const LOGIN_SHOWCASE_IMAGE = "https://ocd.fpt.edu.vn/css/images/landing/bg5.jpg";
+
 export default function LoginPage() {
     const navigate = useNavigate();
     const [form, setForm] = useState({ username: "", password: "" });
@@ -61,6 +63,16 @@ export default function LoginPage() {
                 <section className="login-showcase">
                     <div className="login-showcase-inner">
                         <span className="login-kicker">Khu nội trú đại học</span>
+                        <div
+                            className="login-showcase-media"
+                            style={{ backgroundImage: `linear-gradient(180deg, rgba(17, 24, 39, 0.08), rgba(17, 24, 39, 0.34)), url(${LOGIN_SHOWCASE_IMAGE})` }}
+                        >
+                            <div className="login-showcase-media-badge">FPT CAMPUS LIFE</div>
+                            <div className="login-showcase-media-caption">
+                                <strong>Kênh thông tin nội trú</strong>
+                                <span>Một điểm truy cập cho phòng ở, tài chính và hỗ trợ sinh viên.</span>
+                            </div>
+                        </div>
                         <h1 className="login-showcase-title">Không gian quản lý ký túc xá gọn gàng, hiện đại và dễ dùng.</h1>
                         <p className="login-showcase-copy">
                             Theo dõi phòng ở, thanh toán, yêu cầu hỗ trợ và vận hành hệ thống KTX trong cùng một trải nghiệm thống nhất.
