@@ -201,7 +201,7 @@ export default function PaymentHistoryPanel() {
                     : current
             );
             setSelectedIds([]);
-            setMessage({ type: "success", text: res.data.message || "Thanh toan QR thanh cong" });
+            setMessage({ type: "success", text: res.data.message || "Thanh toán QR thành công" });
             await loadData({ keepLoading: false });
         } catch (error) {
             setMessage({
@@ -300,12 +300,12 @@ export default function PaymentHistoryPanel() {
                                     <th style={{ width: 44 }}>
                                         <input type="checkbox" checked={allSelected} onChange={toggleSelectAll} />
                                     </th>
-                                    <th>Ma hoa don</th>
-                                    <th>Loai</th>
-                                    <th>Mo ta</th>
-                                    <th>Han thanh toan</th>
-                                    <th>Con no</th>
-                                    <th>Trang thai</th>
+                                    <th>Mã hóa đơn</th>
+                                    <th>Loại</th>
+                                    <th>Mô tả</th>
+                                    <th>Hạn thanh toán</th>
+                                    <th>Còn nợ</th>
+                                    <th>Trạng thái</th>
                                     <th />
                                 </tr>
                             </thead>
@@ -330,7 +330,7 @@ export default function PaymentHistoryPanel() {
                                         </td>
                                         <td>
                                             <span className={`sd-badge ${item.status === "overdue" ? "rejected" : "pending"}`}>
-                                                {item.status}
+                                                {STATUS_LABEL[item.status] || item.status}
                                             </span>
                                         </td>
                                         <td>
@@ -399,7 +399,7 @@ export default function PaymentHistoryPanel() {
                                         <span
                                             className={`sd-badge ${STATUS_BADGE_CLASS[item.invoiceId?.status] || "approved"}`}
                                         >
-                                            {STATUS_LABEL[item.invoiceId?.status] || "Da thanh toan"}
+                                            {STATUS_LABEL[item.invoiceId?.status] || "Đã thanh toán"}
                                         </span>
                                     </td>
                                     <td style={{ color: "#777", fontSize: 13 }}>{item.note || "-"}</td>
@@ -429,7 +429,7 @@ export default function PaymentHistoryPanel() {
                             <img
                                 className="sd-qr-image"
                                 src={qrSession.qrUrl}
-                                alt="QR thanh toan"
+                                alt="QR thanh toán"
                             />
 
                             <div className="sd-qr-details">

@@ -378,7 +378,7 @@ export default function ManagerDashboard() {
         const handleCreateReport = async (e) => {
             e.preventDefault();
             if (!reportForm.buildingId || !reportForm.title.trim() || !reportForm.content.trim()) {
-                showReportAlert("error", "Vui long chon toa nha va nhap day du tieu de, noi dung");
+                    showReportAlert("error", "Vui lòng chọn tòa nhà và nhập đầy đủ tiêu đề, nội dung");
                 return;
             }
 
@@ -390,7 +390,7 @@ export default function ManagerDashboard() {
                     title: reportForm.title.trim(),
                     content: reportForm.content.trim(),
                 });
-                showReportAlert("success", "Da gui bao cao cho admin thanh cong");
+                showReportAlert("success", "Đã gửi báo cáo cho admin thành công");
                 setReportForm((prev) => ({
                     ...prev,
                     type: "general",
@@ -399,7 +399,7 @@ export default function ManagerDashboard() {
                 }));
                 setReportsView("recent");
             } catch (err) {
-                showReportAlert("error", err.response?.data?.message || "Khong the gui bao cao luc nay");
+                showReportAlert("error", err.response?.data?.message || "Không thể gửi báo cáo lúc này");
             } finally {
                 setSendingReport(false);
             }
@@ -409,8 +409,8 @@ export default function ManagerDashboard() {
             <>
                 <div className="sd-panel-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <div>
-                        <h2 className="sd-panel-title">{isComposeView ? "Gui bao cao cho admin" : "📋 Báo cáo gần đây"}</h2>
-                        <p className="sd-panel-subtitle">{isComposeView ? "Nhap noi dung bao cao de gui cho admin" : "5 báo cáo mới nhất"}</p>
+                        <h2 className="sd-panel-title">{isComposeView ? "Gửi báo cáo cho admin" : "📋 Báo cáo gần đây"}</h2>
+                        <p className="sd-panel-subtitle">{isComposeView ? "Nhập nội dung báo cáo để gửi cho admin" : "5 báo cáo mới nhất"}</p>
                     </div>
                     <button
                         style={{
@@ -425,7 +425,7 @@ export default function ManagerDashboard() {
                         }}
                         onClick={() => setReportsView((prev) => (prev === "compose" ? "recent" : "compose"))}
                     >
-                        {isComposeView ? "Quay lai danh sach <-" : "Gửi báo cáo →"}
+                        {isComposeView ? "Quay lại danh sách ←" : "Gửi báo cáo →"}
                     </button>
                 </div>
 
@@ -447,7 +447,7 @@ export default function ManagerDashboard() {
                 {isComposeView ? (
                     <form onSubmit={handleCreateReport} style={{ background: "#fff", border: "1px solid #f1e6df", borderRadius: 14, padding: 20, display: "grid", gap: 14 }}>
                         <div>
-                            <label style={{ fontSize: 13, fontWeight: 600, color: "#374151", display: "block", marginBottom: 6 }}>Toa nha</label>
+                            <label style={{ fontSize: 13, fontWeight: 600, color: "#374151", display: "block", marginBottom: 6 }}>Tòa nhà</label>
                             <select
                                 name="buildingId"
                                 value={reportForm.buildingId}
@@ -455,7 +455,7 @@ export default function ManagerDashboard() {
                                 disabled={loadingBuildings || buildings.length === 0}
                                 style={{ width: "100%", padding: "10px 12px", borderRadius: 10, border: "1.5px solid #e2e8f0", fontSize: 14, outline: "none" }}
                             >
-                                <option value="">{loadingBuildings ? "Dang tai toa nha..." : "Chon toa nha"}</option>
+                                <option value="">{loadingBuildings ? "Đang tải tòa nhà..." : "Chọn tòa nhà"}</option>
                                 {buildings.map((building) => (
                                     <option key={building._id} value={building._id}>{building.name}</option>
                                 ))}
@@ -463,39 +463,39 @@ export default function ManagerDashboard() {
                         </div>
 
                         <div>
-                            <label style={{ fontSize: 13, fontWeight: 600, color: "#374151", display: "block", marginBottom: 6 }}>Loai bao cao</label>
+                            <label style={{ fontSize: 13, fontWeight: 600, color: "#374151", display: "block", marginBottom: 6 }}>Loại báo cáo</label>
                             <select
                                 name="type"
                                 value={reportForm.type}
                                 onChange={handleReportChange}
                                 style={{ width: "100%", padding: "10px 12px", borderRadius: 10, border: "1.5px solid #e2e8f0", fontSize: 14, outline: "none" }}
                             >
-                                <option value="general">Tong hop</option>
-                                <option value="maintenance">Bao tri</option>
-                                <option value="incident">Su co</option>
-                                <option value="monthly">Bao cao thang</option>
+                                <option value="general">Tổng hợp</option>
+                                <option value="maintenance">Bảo trì</option>
+                                <option value="incident">Sự cố</option>
+                                <option value="monthly">Báo cáo tháng</option>
                             </select>
                         </div>
 
                         <div>
-                            <label style={{ fontSize: 13, fontWeight: 600, color: "#374151", display: "block", marginBottom: 6 }}>Tieu de</label>
+                            <label style={{ fontSize: 13, fontWeight: 600, color: "#374151", display: "block", marginBottom: 6 }}>Tiêu đề</label>
                             <input
                                 name="title"
                                 value={reportForm.title}
                                 onChange={handleReportChange}
-                                placeholder="Vi du: Bao cao tinh trang toa nha"
+                                placeholder="Ví dụ: Báo cáo tình trạng tòa nhà"
                                 style={{ width: "100%", padding: "10px 12px", borderRadius: 10, border: "1.5px solid #e2e8f0", fontSize: 14, outline: "none", boxSizing: "border-box" }}
                             />
                         </div>
 
                         <div>
-                            <label style={{ fontSize: 13, fontWeight: 600, color: "#374151", display: "block", marginBottom: 6 }}>Noi dung</label>
+                            <label style={{ fontSize: 13, fontWeight: 600, color: "#374151", display: "block", marginBottom: 6 }}>Nội dung</label>
                             <textarea
                                 name="content"
                                 value={reportForm.content}
                                 onChange={handleReportChange}
                                 rows={6}
-                                placeholder="Mo ta chi tiet noi dung can gui admin"
+                                placeholder="Mô tả chi tiết nội dung cần gửi admin"
                                 style={{ width: "100%", padding: "10px 12px", borderRadius: 10, border: "1.5px solid #e2e8f0", fontSize: 14, outline: "none", resize: "vertical", boxSizing: "border-box" }}
                             />
                         </div>
@@ -506,14 +506,14 @@ export default function ManagerDashboard() {
                                 onClick={() => setReportsView("recent")}
                                 style={{ padding: "10px 16px", borderRadius: 10, border: "1.5px solid #e2e8f0", background: "#fff", color: "#475569", fontWeight: 600, cursor: "pointer" }}
                             >
-                                Huy
+                                Hủy
                             </button>
                             <button
                                 type="submit"
                                 disabled={sendingReport || loadingBuildings || buildings.length === 0}
                                 style={{ padding: "10px 16px", borderRadius: 10, border: "none", background: sendingReport ? "#cbd5e1" : "#e8540a", color: "#fff", fontWeight: 700, cursor: sendingReport ? "not-allowed" : "pointer" }}
                             >
-                                {sendingReport ? "Dang gui..." : "Gui bao cao"}
+                                {sendingReport ? "Đang gửi..." : "Gửi báo cáo"}
                             </button>
                         </div>
                     </form>

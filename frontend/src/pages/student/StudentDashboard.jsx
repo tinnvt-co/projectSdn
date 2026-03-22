@@ -100,13 +100,13 @@ export default function StudentDashboard() {
                         </span>
                     </div>
                     <div className="sd-sidebar-meta">
-                        Phong:
+                        Phòng:
                         {" "}
                         <strong>{roomState.text}</strong>
                     </div>
                     {!profile?.currentRoomId && latestReservedBooking && (
                         <div className="sd-sidebar-meta" style={{ color: "#b45309" }}>
-                            Thanh toan hoa don tien phong de duoc luu vao phong.
+                            Thanh toán hóa đơn tiền phòng để được lưu vào phòng.
                         </div>
                     )}
                 </div>

@@ -130,11 +130,11 @@ export default function BookingsPanel() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!selectedRoom) {
-            setAlert({ type: "error", msg: "Vui long chon mot phong" });
+            setAlert({ type: "error", msg: "Vui lòng chọn một phòng" });
             return;
         }
         if (!termCode) {
-            setAlert({ type: "error", msg: "Vui long nhap ky hoc" });
+            setAlert({ type: "error", msg: "Vui lòng nhập kỳ học" });
             return;
         }
 
@@ -143,14 +143,14 @@ export default function BookingsPanel() {
             await studentApi.createBooking({ roomId: selectedRoom._id, termCode, note });
             setAlert({
                 type: "success",
-                msg: "Dang ky phong thanh cong, da giu cho va tao 1 hoa don tien phong cho ca ky. Thanh toan de kich hoat phong.",
+                msg: "Đăng ký phòng thành công, đã giữ chỗ và tạo 1 hóa đơn tiền phòng cho cả kỳ. Thanh toán để kích hoạt phòng.",
             });
             setShowForm(false);
             setSelectedRoom(null);
             setNote("");
             load();
         } catch (err) {
-            setAlert({ type: "error", msg: err.response?.data?.message || "Dang ky that bai" });
+            setAlert({ type: "error", msg: err.response?.data?.message || "Đăng ký thất bại" });
         }
         setSubmitting(false);
     };
@@ -377,7 +377,7 @@ export default function BookingsPanel() {
                                         <td style={{ color: "#777", fontSize: 13 }}>
                                             {(item.activatedAt || isCurrentRoomBooking(item))
                                                 ? `${item.reviewNote || "-"}${item.reviewNote ? " · " : ""}Đã vào phòng`
-                                            : (item.reviewNote || "Cho thanh toan hoa don tien phong de kich hoat")}
+                                            : (item.reviewNote || "Chờ thanh toán hóa đơn tiền phòng để kích hoạt")}
                                         </td>
                                         <td><span className={`sd-badge ${s.cls}`}>{s.label}</span></td>
                                     </tr>
