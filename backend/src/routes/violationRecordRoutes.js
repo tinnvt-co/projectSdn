@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { protect, authorize } = require("../middleware/authMiddleware");
 // Routes cho quản lý vi phạm của sinh viên
 // Bao gồm tạo, đọc, cập nhật, xóa bản ghi vi phạm liên quan đến sinh viên và phòng ở
 
@@ -11,6 +12,8 @@ const {
   updateViolationRecordStatus,
   deleteViolationRecord,
 } = require("../controllers/ViolationRecord.controller");
+
+router.use(protect, authorize("admin"));
 
 router.post("/", createViolationRecord);
 router.get("/", getAllViolationRecords);
