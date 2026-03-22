@@ -3,6 +3,7 @@ import api from "../services/api";
 
 import "./ManagerReports.css";
 
+
 const TYPE_LABELS = {
     general: "📋 Tổng quát",
     maintenance: "🔧 Bảo trì",
