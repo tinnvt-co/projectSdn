@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import api from "../../services/api";
 import "../student/StudentDashboard.css"; // reuse same CSS variables
 import "./AdminDashboard.css";
@@ -41,15 +41,19 @@ function OverviewPanel() {
 
     useEffect(() => {
         Promise.all([
-            api.get("/users").catch(() => ({ data: { data: [] } })),
+            api.get("/users").catch(() => ({ data: { users: [] } })),
             api.get("/buildings").catch(() => ({ data: { data: [] } })),
-            api.get("/reports").catch(() => ({ data: { data: [] } })),
+            api.get("/reports").catch(() => ({ data: { reports: [] } })),
         ]).then(([users, buildings, reports]) => {
+            const userList = users.data.users || [];
+            const buildingList = buildings.data.data || [];
+            const reportList = reports.data.reports || [];
+
             setStats({
-                totalUsers: users.data.data?.length || 0,
-                totalStudents: users.data.data?.filter(u => u.role === "student").length || 0,
-                totalBuildings: buildings.data.data?.length || 0,
-                pendingReports: reports.data.data?.filter(r => r.status === "pending").length || 0,
+                totalUsers: userList.length || 0,
+                totalStudents: userList.filter(u => u.role === "student").length || 0,
+                totalBuildings: buildingList.length || 0,
+                pendingReports: reportList.filter(r => r.status === "pending").length || 0,
             });
         });
     }, []);
@@ -74,10 +78,10 @@ function OverviewPanel() {
                 <h3 style={{ fontSize: 16, fontWeight: 700, color: "#1a1a1a" }}>⚡ Truy cập nhanh</h3>
             </div>
             <div className="ad-quick-grid">
-                <QuickLink icon="👥" label="Quản lý tài khoản" href="/admin/users" />
-                <QuickLink icon="🏢" label="Quản lý KTX" href="/admin/buildings" />
-                <QuickLink icon="📑" label="Duyệt báo cáo" href="/admin/reports" />
-                <QuickLink icon="🔔" label="Gửi thông báo" href="/admin/notifications" />
+                <QuickLink icon="👥" label="Quản lý tài khoản" href="/admin/dashboard?tab=users" />
+                <QuickLink icon="🏢" label="Quản lý KTX" href="/admin/dashboard?tab=buildings" />
+                <QuickLink icon="📑" label="Duyệt báo cáo" href="/admin/dashboard?tab=reports" />
+                <QuickLink icon="🔔" label="Gửi thông báo" href="/admin/dashboard?tab=notifications" />
             </div>
         </>
     );
@@ -1764,11 +1768,30 @@ const MENU = [
     { id: "notifications", icon: "🔔", label: "Thông báo" },
 ];
 
+const ADMIN_TABS = new Set(MENU.map((item) => item.id));
+
+function getAdminTabFromSearch(search) {
+    const params = new URLSearchParams(search);
+    const tab = params.get("tab");
+    return ADMIN_TABS.has(tab) ? tab : "overview";
+}
+
 export default function AdminDashboard() {
-    const [active, setActive] = useState("overview");
+    const location = useLocation();
+    const navigate = useNavigate();
+    const [active, setActive] = useState(() => getAdminTabFromSearch(window.location.search));
     const [showChangePw, setShowChangePw] = useState(false);
     const user = JSON.parse(localStorage.getItem("user") || "{}");
     const initials = (user.username || "AD").slice(0, 2).toUpperCase();
+
+    useEffect(() => {
+        setActive(getAdminTabFromSearch(location.search));
+    }, [location.search]);
+
+    const handleTabChange = (tabId) => {
+        setActive(tabId);
+        navigate(`/admin/dashboard?tab=${tabId}`, { replace: true });
+    };
 
     const panels = {
         overview: <OverviewPanel />,
@@ -1794,7 +1817,7 @@ export default function AdminDashboard() {
                         <button
                             key={item.id}
                             className={`sd-menu-item${active === item.id ? " active" : ""}`}
-                            onClick={() => setActive(item.id)}
+                            onClick={() => handleTabChange(item.id)}
                         >
                             <span className="sd-menu-icon">{item.icon}</span>
                             {item.label}
