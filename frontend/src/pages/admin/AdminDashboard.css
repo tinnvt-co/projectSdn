@@ -425,3 +425,519 @@
         min-height: unset;
     }
 }
+
+.ad-panel-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.ad-section-hero {
+    --ad-hero-glow: rgba(232, 84, 10, 0.14);
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 20px;
+    align-items: flex-start;
+    padding: 24px 26px;
+    border-radius: 24px;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.08);
+}
+
+.ad-section-hero::after {
+    content: "";
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    right: -72px;
+    top: -78px;
+    background: radial-gradient(circle, var(--ad-hero-glow) 0%, rgba(255, 255, 255, 0) 72%);
+    pointer-events: none;
+}
+
+.ad-section-hero-users {
+    --ad-hero-glow: rgba(37, 99, 235, 0.18);
+    background: linear-gradient(140deg, #eff6ff 0%, #ffffff 56%, #eef4ff 100%);
+}
+
+.ad-section-hero-reports {
+    --ad-hero-glow: rgba(217, 119, 6, 0.18);
+    background: linear-gradient(140deg, #fff7ed 0%, #ffffff 56%, #fff4e6 100%);
+}
+
+.ad-section-hero-finance {
+    --ad-hero-glow: rgba(8, 145, 178, 0.18);
+    background: linear-gradient(140deg, #ecfeff 0%, #ffffff 56%, #eff6ff 100%);
+}
+
+.ad-section-copy,
+.ad-section-actions {
+    position: relative;
+    z-index: 1;
+}
+
+.ad-section-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 760px;
+}
+
+.ad-section-title {
+    margin: 0;
+    color: #0f172a;
+    font-family: "Manrope", "Inter", sans-serif;
+    font-size: clamp(28px, 4vw, 34px);
+    line-height: 1.08;
+    font-weight: 800;
+}
+
+.ad-section-subtitle {
+    margin: 0;
+    color: #475569;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.ad-section-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.ad-section-pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    border: 1px solid transparent;
+}
+
+.ad-section-pill.neutral {
+    background: rgba(255, 255, 255, 0.78);
+    color: #475569;
+    border-color: rgba(148, 163, 184, 0.22);
+}
+
+.ad-section-pill.success {
+    background: rgba(34, 197, 94, 0.12);
+    color: #15803d;
+    border-color: rgba(34, 197, 94, 0.2);
+}
+
+.ad-section-pill.danger {
+    background: rgba(239, 68, 68, 0.1);
+    color: #b91c1c;
+    border-color: rgba(239, 68, 68, 0.18);
+}
+
+.ad-section-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.ad-toolbar-shell {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    flex-wrap: wrap;
+    padding: 18px 20px;
+    background: #fff;
+    border: 1px solid #eceef2;
+    border-radius: 20px;
+    box-shadow: 0 10px 26px rgba(15, 23, 42, 0.05);
+}
+
+.ad-toolbar-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-width: 420px;
+}
+
+.ad-toolbar-title {
+    margin: 0;
+    color: #0f172a;
+    font-size: 15px;
+    font-family: "Manrope", "Inter", sans-serif;
+    font-weight: 800;
+}
+
+.ad-toolbar-text {
+    margin: 0;
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.ad-toolbar-controls {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+    flex: 1;
+}
+
+.ad-toolbar-controls-wide .au-search {
+    min-width: min(100%, 320px);
+}
+
+.ad-input-enhanced,
+.ad-select-enhanced {
+    min-height: 44px;
+    border-color: #dbe3ee;
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.03);
+}
+
+.ad-context-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.ad-context-text {
+    margin: 0;
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.ad-surface-card {
+    background: #fff;
+    border: 1px solid #eceef2;
+    border-radius: 20px;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.05);
+    overflow: hidden;
+}
+
+.ad-surface-panel {
+    position: relative;
+    background: #fff;
+    border: 1px solid #eceef2;
+    border-radius: 22px;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.05);
+    padding: 20px;
+}
+
+.ad-surface-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 14px;
+}
+
+.ad-surface-title {
+    margin: 0;
+    color: #0f172a;
+    font-size: 16px;
+    font-family: "Manrope", "Inter", sans-serif;
+    font-weight: 800;
+}
+
+.ad-surface-text {
+    margin: 6px 0 0;
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.ad-surface-count {
+    margin-left: 6px;
+    color: #94a3b8;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.ad-report-row {
+    box-shadow: 0 10px 26px rgba(15, 23, 42, 0.04);
+}
+
+.ad-finance-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.95fr);
+    gap: 16px;
+}
+
+.ad-fin-status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 12px;
+}
+
+.ad-fin-status-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 16px 18px;
+    border-radius: 18px;
+    border: 1px solid var(--ad-tone-border);
+    background: #fff;
+    color: #0f172a;
+    text-align: left;
+    cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+
+.ad-fin-status-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 26px rgba(15, 23, 42, 0.08);
+}
+
+.ad-fin-status-card.active {
+    background: var(--ad-tone-soft);
+    border-color: var(--ad-tone);
+    box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08);
+}
+
+.ad-fin-status-top {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.ad-fin-status-label {
+    color: #475569;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.ad-fin-status-pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    padding: 0 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.82);
+    color: var(--ad-tone);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.ad-fin-status-value {
+    color: var(--ad-tone);
+    font-family: "Manrope", "Inter", sans-serif;
+    font-size: 30px;
+    line-height: 1;
+}
+
+.ad-fin-status-note {
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+.ad-fin-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    height: 184px;
+    overflow-x: auto;
+    padding: 8px 2px 4px;
+}
+
+.ad-fin-bar-item {
+    display: flex;
+    flex: 1;
+    min-width: 48px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+}
+
+.ad-fin-bar-value {
+    min-height: 12px;
+    color: #94a3b8;
+    font-size: 9px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.ad-fin-bar {
+    width: min(42px, 100%);
+    min-height: 6px;
+    border-radius: 8px 8px 2px 2px;
+    transition: height 0.3s ease;
+}
+
+.ad-fin-bar-label {
+    color: #64748b;
+    font-size: 10px;
+    font-weight: 600;
+    white-space: nowrap;
+    transform: rotate(-28deg);
+    transform-origin: top left;
+    padding-top: 10px;
+}
+
+.ad-fin-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.ad-fin-breakdown-row {
+    display: grid;
+    grid-template-columns: minmax(110px, 130px) minmax(0, 1fr) 96px 42px;
+    align-items: center;
+    gap: 10px;
+}
+
+.ad-fin-breakdown-label {
+    color: #475569;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.ad-fin-progress {
+    height: 10px;
+    border-radius: 999px;
+    background: #eef2f7;
+    overflow: hidden;
+}
+
+.ad-fin-progress-fill {
+    height: 100%;
+    border-radius: 999px;
+}
+
+.ad-fin-breakdown-amount {
+    color: #475569;
+    font-size: 12px;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.ad-fin-breakdown-percent {
+    font-size: 12px;
+    font-weight: 800;
+    text-align: right;
+}
+
+.ad-fin-table-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+}
+
+.ad-filter-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.ad-filter-pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    padding: 0 12px;
+    border-radius: 999px;
+    border: 1px solid #dbe3ee;
+    background: var(--ad-pill-bg);
+    color: var(--ad-pill-color);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+}
+
+.ad-filter-pill:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 18px rgba(15, 23, 42, 0.06);
+}
+
+.ad-filter-pill.active {
+    color: #fff;
+    background: var(--ad-pill-color);
+    border-color: var(--ad-pill-color);
+}
+
+.ad-finance-table-wrap {
+    position: relative;
+}
+
+.ad-surface-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(1px);
+}
+
+.ad-empty-inline {
+    padding: 26px 12px;
+    color: #94a3b8;
+    font-size: 14px;
+    text-align: center;
+}
+
+@media (max-width: 1100px) {
+    .ad-section-hero {
+        grid-template-columns: 1fr;
+    }
+
+    .ad-section-actions {
+        justify-content: flex-start;
+    }
+
+    .ad-finance-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 780px) {
+    .ad-toolbar-shell,
+    .ad-surface-panel,
+    .ad-section-hero {
+        padding: 18px;
+    }
+
+    .ad-toolbar-controls {
+        width: 100%;
+        justify-content: stretch;
+    }
+
+    .ad-toolbar-controls .ar-tabs,
+    .ad-toolbar-controls .ar-select,
+    .ad-toolbar-controls .au-search,
+    .ad-toolbar-controls .au-role-filter {
+        width: 100%;
+    }
+
+    .ad-fin-breakdown-row {
+        grid-template-columns: 1fr;
+    }
+
+    .ad-fin-breakdown-amount,
+    .ad-fin-breakdown-percent {
+        text-align: left;
+    }
+
+    .ad-fin-bar-label {
+        transform: none;
+        padding-top: 0;
+    }
+}

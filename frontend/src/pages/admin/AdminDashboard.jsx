@@ -490,59 +490,127 @@ function UsersPanel() {
             if (search) params.search = search;
             const { data } = await api.get("/users", { params });
             setUsers(data.users || []);
-        } catch { showAlert("error", "KhÃ´ng thá»ƒ táº£i danh sÃ¡ch ngÆ°á»i dÃ¹ng"); }
+        } catch { showAlert("error", "Không thể tải danh sách người dùng"); }
         finally { setLoading(false); }
     }, [roleFilter, search]);
 
     useEffect(() => { loadUsers(); }, [loadUsers]);
 
     const handleDelete = async (u) => {
-        if (!window.confirm(`XÃ³a tÃ i khoáº£n "${u.username}"? KhÃ´ng thá»ƒ hoÃ n tÃ¡c.`)) return;
-        try { await api.delete(`/users/${u._id}`); showAlert("success", "ÄÃ£ xÃ³a tÃ i khoáº£n"); loadUsers(); }
-        catch (err) { showAlert("error", err.response?.data?.message || "XÃ³a tháº¥t báº¡i"); }
+        if (!window.confirm(`Xóa tài khoản "${u.username}"? Không thể hoàn tác.`)) return;
+        try { await api.delete(`/users/${u._id}`); showAlert("success", "Đã xóa tài khoản"); loadUsers(); }
+        catch (err) { showAlert("error", err.response?.data?.message || "Xóa thất bại"); }
     };
 
     const handleToggle = async (u) => {
-        try { await api.put(`/users/${u._id}`, { isActive: !u.isActive }); showAlert("success", u.isActive ? "ÄÃ£ vÃ´ hiá»‡u hÃ³a" : "ÄÃ£ kÃ­ch hoáº¡t"); loadUsers(); }
-        catch (err) { showAlert("error", err.response?.data?.message || "Cáº­p nháº­t tháº¥t báº¡i"); }
+        try { await api.put(`/users/${u._id}`, { isActive: !u.isActive }); showAlert("success", u.isActive ? "Đã vô hiệu hóa" : "Đã kích hoạt"); loadUsers(); }
+        catch (err) { showAlert("error", err.response?.data?.message || "Cập nhật thất bại"); }
     };
 
+    const activeUsers = users.filter((u) => u.isActive).length;
+    const managerCount = users.filter((u) => u.role === "manager").length;
+    const studentCount = users.filter((u) => u.role === "student").length;
+    const adminCount = users.filter((u) => u.role === "admin").length;
+    const lockedCount = Math.max(users.length - activeUsers, 0);
+    const scopeLabel = roleFilter ? (U_ROLE_LABELS[roleFilter] || roleFilter) : "Tất cả vai trò";
+    const searchLabel = search.trim() ? `Từ khóa: "${search.trim()}"` : "Không dùng bộ lọc tìm kiếm";
+
     return (
-        <>
-            <div className="sd-panel-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                <div>
-                    <h2 className="sd-panel-title">ðŸ‘¥ Quáº£n lÃ½ tÃ i khoáº£n</h2>
-                    <p className="sd-panel-subtitle">Táº¡o, chá»‰nh sá»­a vÃ  cáº¥p quyá»n cho ngÆ°á»i dÃ¹ng</p>
+        <div className="ad-panel-stack">
+            <section className="ad-section-hero ad-section-hero-users">
+                <div className="ad-section-copy">
+                    <span className="ad-section-eyebrow">User Operations</span>
+                    <h2 className="ad-section-title">👥 Quản lý tài khoản</h2>
+                    <p className="ad-section-subtitle">
+                        Tạo, kích hoạt, khóa và phân quyền người dùng theo cùng một quy chuẩn hiển thị rõ ràng cho admin.
+                    </p>
+                    <div className="ad-section-pills">
+                        <span className="ad-section-pill neutral">Phạm vi: {scopeLabel}</span>
+                        <span className="ad-section-pill neutral">{searchLabel}</span>
+                        <span className={`ad-section-pill ${lockedCount > 0 ? "danger" : "success"}`}>
+                            {lockedCount > 0 ? `${lockedCount} tài khoản đang bị khóa` : "Không có tài khoản bị khóa"}
+                        </span>
+                    </div>
                 </div>
-                <button className="btn-create" onClick={() => setModal("create")}>+ Táº¡o tÃ i khoáº£n</button>
-            </div>
+                <div className="ad-section-actions">
+                    <button type="button" className="ad-hero-btn primary" onClick={() => setModal("create")}>+ Tạo tài khoản</button>
+                </div>
+            </section>
 
             {alert.msg && (
                 <div className={`au-alert ${alert.type}`} style={{ marginBottom: 16 }}>
-                    {alert.type === "success" ? "âœ…" : "âš ï¸"} {alert.msg}
+                    {alert.type === "success" ? "✓" : "⚠️"} {alert.msg}
                 </div>
             )}
 
-            <div className="au-filters" style={{ marginBottom: 16 }}>
-                <input className="au-search" placeholder="ðŸ” TÃ¬m theo username hoáº·c email..." value={search} onChange={e => setSearch(e.target.value)} />
-                <select className="au-role-filter" value={roleFilter} onChange={e => setRoleFilter(e.target.value)}>
-                    <option value="">Táº¥t cáº£ role</option>
-                    <option value="admin">Admin</option>
-                    <option value="manager">Quáº£n lÃ½</option>
-                    <option value="student">Sinh viÃªn</option>
-                </select>
+            <div className="ad-stats-grid">
+                <StatCard
+                    icon="🧭"
+                    label="Đang hiển thị"
+                    value={users.length}
+                    meta={`Bộ lọc hiện tại: ${scopeLabel}`}
+                    color="#e8540a"
+                    loading={loading}
+                />
+                <StatCard
+                    icon="✅"
+                    label="Đang hoạt động"
+                    value={activeUsers}
+                    meta={`${lockedCount} tài khoản đang bị khóa`}
+                    color="#16a34a"
+                    loading={loading}
+                />
+                <StatCard
+                    icon="👔"
+                    label="Quản lý"
+                    value={managerCount}
+                    meta={`${adminCount} admin trong danh sách`}
+                    color="#6366f1"
+                    loading={loading}
+                />
+                <StatCard
+                    icon="🎓"
+                    label="Sinh viên"
+                    value={studentCount}
+                    meta="Nhóm người dùng đông nhất hệ thống"
+                    color="#2563eb"
+                    loading={loading}
+                />
             </div>
 
-            <div className="au-table-wrap">
+            <div className="ad-toolbar-shell">
+                <div className="ad-toolbar-copy">
+                    <h3 className="ad-toolbar-title">Lọc nhanh và tìm kiếm</h3>
+                    <p className="ad-toolbar-text">
+                        Thu hẹp đúng nhóm người dùng trước khi cấp quyền, khóa tài khoản hoặc kiểm tra trạng thái.
+                    </p>
+                </div>
+                <div className="ad-toolbar-controls ad-toolbar-controls-wide">
+                    <input className="au-search ad-input-enhanced" placeholder="🔍 Tìm theo username hoặc email..." value={search} onChange={e => setSearch(e.target.value)} />
+                    <select className="au-role-filter ad-select-enhanced" value={roleFilter} onChange={e => setRoleFilter(e.target.value)}>
+                        <option value="">Tất cả role</option>
+                        <option value="admin">Admin</option>
+                        <option value="manager">Quản lý</option>
+                        <option value="student">Sinh viên</option>
+                    </select>
+                </div>
+            </div>
+
+            <div className="ad-context-line">
+                <p className="ad-context-text">Hiện đang hiển thị {users.length} tài khoản theo bộ lọc hiện tại.</p>
+                <p className="ad-context-text">Mẹo nhỏ: kiểm tra quyền trước khi khóa tài khoản để tránh ảnh hưởng phần việc của nhóm.</p>
+            </div>
+
+            <div className="au-table-wrap ad-surface-card">
                 {loading ? (
-                    <div className="au-loading">Äang táº£i...</div>
+                    <div className="au-loading">Đang tải...</div>
                 ) : users.length === 0 ? (
-                    <div className="au-empty">KhÃ´ng tÃ¬m tháº¥y tÃ i khoáº£n nÃ o</div>
+                    <div className="au-empty">Không tìm thấy tài khoản nào</div>
                 ) : (
                     <table className="au-table">
                         <thead>
                             <tr>
-                                <th>NgÆ°á»i dÃ¹ng</th><th>Role</th><th>Tráº¡ng thÃ¡i</th><th>PhÃ¢n quyá»n</th><th>HÃ nh Ä‘á»™ng</th>
+                                <th>Người dùng</th><th>Role</th><th>Trạng thái</th><th>Phân quyền</th><th>Hành động</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -561,14 +629,14 @@ function UsersPanel() {
                                     </td>
                                     <td>
                                         <button className={`status-toggle ${u.isActive ? "active" : "inactive"}`} onClick={() => handleToggle(u)}>
-                                            {u.isActive ? "âœ… Hoáº¡t Ä‘á»™ng" : "â›” Bá»‹ khÃ³a"}
+                                            {u.isActive ? "✅ Hoạt động" : "⛔ Bị khóa"}
                                         </button>
                                     </td>
                                     <td>
-                                        <span className="perm-count">{u.permissions?.length || 0} quyá»n</span>
-                                        <button className="btn-perm" onClick={() => { setSelected(u); setModal("perm"); }}>Chá»‰nh sá»­a</button>
+                                        <span className="perm-count">{u.permissions?.length || 0} quyền</span>
+                                        <button className="btn-perm" onClick={() => { setSelected(u); setModal("perm"); }}>Chỉnh sửa</button>
                                     </td>
-                                    <td><button className="btn-del" onClick={() => handleDelete(u)}>ðŸ—‘ï¸ XÃ³a</button></td>
+                                    <td><button className="btn-del" onClick={() => handleDelete(u)}>🗑️ Xóa</button></td>
                                 </tr>
                             ))}
                         </tbody>
@@ -579,7 +647,7 @@ function UsersPanel() {
             {modal === "create" && (
                 <UCreateModal
                     onClose={() => setModal(null)}
-                    onSuccess={() => { setModal(null); loadUsers(); showAlert("success", "Táº¡o tÃ i khoáº£n thÃ nh cÃ´ng"); }}
+                    onSuccess={() => { setModal(null); loadUsers(); showAlert("success", "Tạo tài khoản thành công"); }}
                     onError={msg => showAlert("error", msg)}
                 />
             )}
@@ -587,15 +655,13 @@ function UsersPanel() {
                 <UPermModal
                     user={selected}
                     onClose={() => { setModal(null); setSelected(null); }}
-                    onSuccess={() => { setModal(null); setSelected(null); loadUsers(); showAlert("success", "Cáº­p nháº­t quyá»n thÃ nh cÃ´ng"); }}
+                    onSuccess={() => { setModal(null); setSelected(null); loadUsers(); showAlert("success", "Cập nhật quyền thành công"); }}
                     onError={msg => showAlert("error", msg)}
                 />
             )}
-        </>
+        </div>
     );
 }
-
-/* â”€â”€ Buildings helpers â”€â”€ */
 const B_fmtNum = (n) => Number(n || 0).toLocaleString("vi-VN");
 const B_ROOM_STATUS = { available: "CÃ²n chá»—", partial: "CÃ²n chá»—", full: "Háº¿t chá»—", maintenance: "Báº£o trÃ¬" };
 const B_TYPE_LABEL = { standard: "TiÃªu chuáº©n", vip: "VIP", premium: "Premium" };
@@ -988,7 +1054,7 @@ function ReportsPanel() {
             if (filterType) params.type = filterType;
             const { data } = await api.get("/reports", { params });
             setReports(data.reports || []);
-        } catch { showAlert("error", "KhÃ´ng thá»ƒ táº£i danh sÃ¡ch bÃ¡o cÃ¡o"); }
+        } catch { showAlert("error", "Không thể tải danh sách báo cáo"); }
         finally { setLoading(false); }
     }, [tab, filterType]);
 
@@ -996,84 +1062,171 @@ function ReportsPanel() {
 
     const closeModal = () => { setSelected(null); setModal(null); };
     const pending = reports.filter(r => r.status === "pending").length;
+    const reviewedCount = reports.filter(r => r.status === "reviewed").length;
+    const maintenanceCount = reports.filter(r => r.type === "maintenance").length;
+    const incidentCount = reports.filter(r => r.type === "incident").length;
+    const repliedCount = reports.filter(r => !!r.adminReview?.note).length;
+    const activeTabLabel = tab === "pending" ? "Hàng chờ duyệt" : "Kho đã duyệt";
+    const activeTypeLabel = filterType ? (R_TYPE_LABELS[filterType] || filterType) : "Tất cả loại báo cáo";
 
     return (
-        <>
-            <div className="sd-panel-header">
-                <h2 className="sd-panel-title">ðŸ“‘ Duyá»‡t bÃ¡o cÃ¡o</h2>
-                <p className="sd-panel-subtitle">Xem xÃ©t vÃ  pháº£n há»“i bÃ¡o cÃ¡o tá»« quáº£n lÃ½</p>
-            </div>
+        <div className="ad-panel-stack">
+            <section className="ad-section-hero ad-section-hero-reports">
+                <div className="ad-section-copy">
+                    <span className="ad-section-eyebrow">Report Review Queue</span>
+                    <h2 className="ad-section-title">📑 Duyệt báo cáo</h2>
+                    <p className="ad-section-subtitle">
+                        Xem xét nhanh báo cáo từ quản lý, nhận diện sự cố ưu tiên và giữ luồng phản hồi của admin nhất quán.
+                    </p>
+                    <div className="ad-section-pills">
+                        <span className="ad-section-pill neutral">Tab hiện tại: {activeTabLabel}</span>
+                        <span className="ad-section-pill neutral">Lọc loại: {activeTypeLabel}</span>
+                        <span className={`ad-section-pill ${tab === "pending" ? "danger" : "success"}`}>
+                            {tab === "pending" ? `${reports.length} báo cáo đang chờ duyệt` : `${reports.length} báo cáo đã xử lý`}
+                        </span>
+                    </div>
+                </div>
+                <div className="ad-section-actions">
+                    <button type="button" className={`ad-hero-btn ${tab === "pending" ? "primary" : ""}`} onClick={() => setTab("pending")}>
+                        Chờ duyệt
+                    </button>
+                    <button type="button" className={`ad-hero-btn ${tab === "reviewed" ? "primary" : ""}`} onClick={() => setTab("reviewed")}>
+                        Đã duyệt
+                    </button>
+                    {filterType && (
+                        <button type="button" className="ad-hero-btn" onClick={() => setFilterType("")}>
+                            Bỏ lọc loại
+                        </button>
+                    )}
+                </div>
+            </section>
 
             {alert.msg && (
                 <div className={`ar-alert ${alert.type}`} style={{ marginBottom: 16 }}>
-                    {alert.type === "success" ? "âœ…" : "âš ï¸"} {alert.msg}
+                    {alert.type === "success" ? "✓" : "⚠️"} {alert.msg}
                 </div>
             )}
 
-            <div className="ar-toolbar" style={{ marginBottom: 16 }}>
-                <div className="ar-tabs">
-                    <button className={`ar-tab ${tab === "pending" ? "active" : ""}`} onClick={() => setTab("pending")}>
-                        â³ Chá» duyá»‡t {pending > 0 && <span className="ar-badge">{pending}</span>}
-                    </button>
-                    <button className={`ar-tab ${tab === "reviewed" ? "active" : ""}`} onClick={() => setTab("reviewed")}>âœ… ÄÃ£ duyá»‡t</button>
-                </div>
-                <select className="ar-select" value={filterType} onChange={e => setFilterType(e.target.value)}>
-                    <option value="">Táº¥t cáº£ loáº¡i</option>
-                    <option value="general">Tá»•ng quÃ¡t</option>
-                    <option value="maintenance">Báº£o trÃ¬</option>
-                    <option value="incident">Sá»± cá»‘</option>
-                    <option value="monthly">HÃ ng thÃ¡ng</option>
-                </select>
+            <div className="ad-stats-grid">
+                <StatCard
+                    icon="🗂️"
+                    label="Đang hiển thị"
+                    value={reports.length}
+                    meta={activeTabLabel}
+                    color="#d97706"
+                    loading={loading}
+                />
+                <StatCard
+                    icon="⚠️"
+                    label="Sự cố"
+                    value={incidentCount}
+                    meta="Cần ưu tiên kiểm tra"
+                    color="#dc2626"
+                    loading={loading}
+                />
+                <StatCard
+                    icon="🔧"
+                    label="Bảo trì"
+                    value={maintenanceCount}
+                    meta="Vấn đề hạ tầng và phòng ở"
+                    color="#2563eb"
+                    loading={loading}
+                />
+                <StatCard
+                    icon="💬"
+                    label="Đã phản hồi"
+                    value={repliedCount}
+                    meta={`${reviewedCount} báo cáo ở trạng thái reviewed`}
+                    color="#16a34a"
+                    loading={loading}
+                />
             </div>
 
-            <div className="ar-list">
-                {loading ? (
-                    <div className="ar-empty">Äang táº£i...</div>
-                ) : reports.length === 0 ? (
-                    <div className="ar-empty">{tab === "pending" ? "ðŸŽ‰ KhÃ´ng cÃ³ bÃ¡o cÃ¡o nÃ o chá» duyá»‡t!" : "ChÆ°a cÃ³ bÃ¡o cÃ¡o nÃ o Ä‘Æ°á»£c duyá»‡t"}</div>
-                ) : (
-                    reports.map(r => {
-                        const col = R_TYPE_COLORS[r.type] || "#6366f1";
-                        return (
-                            <div key={r._id} className="ar-row">
-                                <div className="ar-row-accent" style={{ background: col }} />
-                                <div className="ar-row-body">
-                                    <div className="ar-row-top">
-                                        <span className="ar-type" style={{ background: col + "20", color: col, border: `1px solid ${col}40` }}>{R_TYPE_LABELS[r.type]}</span>
-                                        <span className="ar-sender">ðŸ‘¤ {r.managerId?.username} &nbsp;Â·&nbsp; ðŸ¢ {r.buildingId?.name}</span>
-                                        <span className="ar-date">{new Date(r.createdAt).toLocaleDateString("vi-VN")}</span>
+            <div className="ad-toolbar-shell">
+                <div className="ad-toolbar-copy">
+                    <h3 className="ad-toolbar-title">Bộ lọc hàng chờ</h3>
+                    <p className="ad-toolbar-text">
+                        Chọn trạng thái xử lý và loại báo cáo để admin nhìn đúng nhóm công việc cần ưu tiên.
+                    </p>
+                </div>
+                <div className="ad-toolbar-controls">
+                    <div className="ar-tabs">
+                        <button className={`ar-tab ${tab === "pending" ? "active" : ""}`} onClick={() => setTab("pending")}>
+                            ⏳ Chờ duyệt {pending > 0 && <span className="ar-badge">{pending}</span>}
+                        </button>
+                        <button className={`ar-tab ${tab === "reviewed" ? "active" : ""}`} onClick={() => setTab("reviewed")}>✅ Đã duyệt</button>
+                    </div>
+                    <select className="ar-select ad-select-enhanced" value={filterType} onChange={e => setFilterType(e.target.value)}>
+                        <option value="">Tất cả loại</option>
+                        <option value="general">Tổng quát</option>
+                        <option value="maintenance">Bảo trì</option>
+                        <option value="incident">Sự cố</option>
+                        <option value="monthly">Hàng tháng</option>
+                    </select>
+                </div>
+            </div>
+
+            <div className="ad-context-line">
+                <p className="ad-context-text">Danh sách hiện có {reports.length} báo cáo theo bộ lọc đang áp dụng.</p>
+                <p className="ad-context-text">Ưu tiên: bắt đầu từ báo cáo sự cố hoặc các mục trong trạng thái chờ duyệt.</p>
+            </div>
+
+            <div className="ad-surface-panel">
+                <div className="ad-surface-head">
+                    <div>
+                        <h3 className="ad-surface-title">Danh sách báo cáo</h3>
+                        <p className="ad-surface-text">Tổng hợp theo thứ tự để admin duyệt, xem chi tiết hoặc phản hồi ngay trong cùng luồng công việc.</p>
+                    </div>
+                </div>
+
+                <div className="ar-list">
+                    {loading ? (
+                        <div className="ar-empty">Đang tải...</div>
+                    ) : reports.length === 0 ? (
+                        <div className="ar-empty">{tab === "pending" ? "🎉 Không có báo cáo nào chờ duyệt!" : "Chưa có báo cáo nào được duyệt"}</div>
+                    ) : (
+                        reports.map(r => {
+                            const col = R_TYPE_COLORS[r.type] || "#6366f1";
+                            return (
+                                <div key={r._id} className="ar-row ad-report-row">
+                                    <div className="ar-row-accent" style={{ background: col }} />
+                                    <div className="ar-row-body">
+                                        <div className="ar-row-top">
+                                            <span className="ar-type" style={{ background: col + "20", color: col, border: `1px solid ${col}40` }}>{R_TYPE_LABELS[r.type]}</span>
+                                            <span className="ar-sender">👤 {r.managerId?.username} &nbsp;·&nbsp; 🏢 {r.buildingId?.name}</span>
+                                            <span className="ar-date">{new Date(r.createdAt).toLocaleDateString("vi-VN")}</span>
+                                        </div>
+                                        <h3 className="ar-row-title">{r.title}</h3>
+                                        <p className="ar-row-preview">{r.content?.slice(0, 120)}{r.content?.length > 120 ? "..." : ""}</p>
+                                        {r.adminReview?.note && <div className="ar-note">💬 Phản hồi: {r.adminReview.note}</div>}
                                     </div>
-                                    <h3 className="ar-row-title">{r.title}</h3>
-                                    <p className="ar-row-preview">{r.content?.slice(0, 120)}{r.content?.length > 120 ? "..." : ""}</p>
-                                    {r.adminReview?.note && <div className="ar-note">ðŸ’¬ Pháº£n há»“i: {r.adminReview.note}</div>}
+                                    <div className="ar-row-actions">
+                                        <button className="btn-view" onClick={() => { setSelected(r); setModal("detail"); }}>👁️ Xem</button>
+                                        {r.status === "pending" && (
+                                            <button className="btn-approve" onClick={() => { setSelected(r); setModal("review"); }}>✅ Duyệt</button>
+                                        )}
+                                    </div>
                                 </div>
-                                <div className="ar-row-actions">
-                                    <button className="btn-view" onClick={() => { setSelected(r); setModal("detail"); }}>ðŸ‘ï¸ Xem</button>
-                                    {r.status === "pending" && (
-                                        <button className="btn-approve" onClick={() => { setSelected(r); setModal("review"); }}>âœ… Duyá»‡t</button>
-                                    )}
-                                </div>
-                            </div>
-                        );
-                    })
-                )}
+                            );
+                        })
+                    )}
+                </div>
             </div>
 
             {modal === "review" && selected && (
                 <RReviewModal
                     report={selected}
                     onClose={closeModal}
-                    onSuccess={() => { closeModal(); load(); showAlert("success", "ÄÃ£ duyá»‡t bÃ¡o cÃ¡o thÃ nh cÃ´ng!"); }}
+                    onSuccess={() => { closeModal(); load(); showAlert("success", "Đã duyệt báo cáo thành công!"); }}
                     onError={msg => showAlert("error", msg)}
                 />
             )}
             {modal === "detail" && selected && (
                 <RDetailModal report={selected} onClose={closeModal} />
             )}
-        </>
+        </div>
     );
 }
-
 const AN_TYPE_OPTIONS = [
     { value: "general", label: "ðŸ“¢ ThÃ´ng bÃ¡o chung" },
     { value: "payment_reminder", label: "ðŸ’³ Nháº¯c thanh toÃ¡n" },
@@ -1101,10 +1254,11 @@ function FinancePanel() {
     const [invoices, setInvoices] = useState([]);
     const [loading, setLoading] = useState(true);
     const [invoiceLoading, setInvoiceLoading] = useState(false);
-    const [invoiceStatus, setInvoiceStatus] = useState(""); // "" = all
+    const [invoiceStatus, setInvoiceStatus] = useState("");
     const [alertMsg, setAlertMsg] = useState("");
+    const [lastUpdated, setLastUpdated] = useState(null);
+    const navigate = useNavigate();
 
-    // Load overview + chart data once
     useEffect(() => {
         setLoading(true);
         api.get("/finance/summary")
@@ -1114,167 +1268,201 @@ function FinancePanel() {
                 setMonthlyData(d.monthlyData || []);
                 setByType(d.byType || []);
                 setInvoices(d.recentInvoices || []);
+                setLastUpdated(new Date().toISOString());
             })
-            .catch(() => setAlertMsg("KhÃ´ng thá»ƒ táº£i dá»¯ liá»‡u tÃ i chÃ­nh"))
+            .catch(() => setAlertMsg("Không thể tải dữ liệu tài chính"))
             .finally(() => setLoading(false));
     }, []);
 
-    // Reload only invoices when filter changes (skip initial load)
-    const isFirstRender = useCallback(() => { }, []);
     useEffect(() => {
-        if (loading) return; // wait for initial load
+        if (loading) return;
         setInvoiceLoading(true);
         const params = invoiceStatus ? { status: invoiceStatus } : {};
         api.get("/finance/summary", { params })
-            .then(r => setInvoices(r.data.data?.recentInvoices || []))
+            .then(r => {
+                setInvoices(r.data.data?.recentInvoices || []);
+                setLastUpdated(new Date().toISOString());
+            })
             .catch(() => { })
             .finally(() => setInvoiceLoading(false));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [invoiceStatus]);
 
-    if (loading) return <div style={{ textAlign: "center", padding: "60px", color: "#bbb" }}><div className="ab-spinner" /><p>Äang táº£i...</p></div>;
+    if (loading) return <div style={{ textAlign: "center", padding: "60px", color: "#bbb" }}><div className="ab-spinner" /><p>Đang tải...</p></div>;
 
     const ov = overview || {};
     const maxRev = Math.max(...monthlyData.map(m => m.revenue), 1);
 
     const STATUS_FILTERS = [
-        { value: "", label: "Táº¥t cáº£", color: "#64748b" },
-        { value: "paid", label: "ÄÃ£ thanh toÃ¡n", color: "#22c55e" },
-        { value: "unpaid", label: "ChÆ°a thanh toÃ¡n", color: "#ef4444" },
-        { value: "partial", label: "Má»™t pháº§n", color: "#f59e0b" },
-        { value: "overdue", label: "QuÃ¡ háº¡n", color: "#dc2626" },
+        { value: "", label: "Tất cả", color: "#64748b" },
+        { value: "paid", label: "Đã thanh toán", color: "#22c55e" },
+        { value: "unpaid", label: "Chưa thanh toán", color: "#ef4444" },
+        { value: "partial", label: "Một phần", color: "#f59e0b" },
+        { value: "overdue", label: "Quá hạn", color: "#dc2626" },
+    ];
+    const activeStatusLabel = STATUS_FILTERS.find((item) => item.value === invoiceStatus)?.label || "Tất cả";
+    const financeSignals = [
+        { label: "Đã thanh toán", count: ov.paidCount, color: "#22c55e", val: "paid", note: "Khoản thu đã khép sổ" },
+        { label: "Chưa thanh toán", count: ov.unpaidCount, color: "#ef4444", val: "unpaid", note: "Cần nhắc đôn đốc" },
+        { label: "Một phần", count: ov.partialCount, color: "#f59e0b", val: "partial", note: "Đang thu dang dở" },
+        { label: "Quá hạn", count: ov.overdueCount, color: "#dc2626", val: "overdue", note: "Ưu tiên xử lý ngay" },
     ];
 
     return (
-        <>
-            <div className="sd-panel-header">
-                <h2 className="sd-panel-title">ðŸ’° BÃ¡o cÃ¡o TÃ i chÃ­nh</h2>
-                <p className="sd-panel-subtitle">Tá»•ng há»£p doanh thu vÃ  hÃ³a Ä‘Æ¡n toÃ n há»‡ thá»‘ng</p>
-            </div>
+        <div className="ad-panel-stack">
+            <section className="ad-section-hero ad-section-hero-finance">
+                <div className="ad-section-copy">
+                    <span className="ad-section-eyebrow">Finance Console</span>
+                    <h2 className="ad-section-title">💰 Báo cáo tài chính</h2>
+                    <p className="ad-section-subtitle">
+                        Theo dõi doanh thu, công nợ và trạng thái hóa đơn trong một dashboard có cùng ngôn ngữ thiết kế với các tab admin khác.
+                    </p>
+                    <div className="ad-section-pills">
+                        <span className="ad-section-pill neutral">Bộ lọc hóa đơn: {activeStatusLabel}</span>
+                        <span className="ad-section-pill neutral">Cập nhật: {fmtOverviewTime(lastUpdated)}</span>
+                        <span className={`ad-section-pill ${Number(ov.unpaidAmount || 0) > 0 ? "danger" : "success"}`}>
+                            {Number(ov.unpaidAmount || 0) > 0 ? `Còn ${fmtMoney(ov.unpaidAmount)} chưa thu` : "Không còn công nợ tồn"}
+                        </span>
+                    </div>
+                </div>
+                <div className="ad-section-actions">
+                    <button type="button" className="ad-hero-btn primary" onClick={() => navigate("/admin/dashboard?tab=settings")}>
+                        Cài đặt & gửi bill
+                    </button>
+                    <button type="button" className="ad-hero-btn" onClick={() => setInvoiceStatus("")}>
+                        Xem tất cả hóa đơn
+                    </button>
+                </div>
+            </section>
 
             {alertMsg && <div className="ab-alert error" style={{ marginBottom: 16 }}>{alertMsg}</div>}
 
-            {/* Overview stats */}
-            <div className="ad-stats-grid" style={{ marginBottom: 24 }}>
-                <div className="ad-stat-card">
-                    <div className="ad-stat-icon" style={{ background: "#22c55e18" }}>ðŸ’µ</div>
-                    <div>
-                        <div className="ad-stat-num" style={{ color: "#22c55e" }}>{fmtMoney(ov.totalRevenue)}</div>
-                        <div className="sd-stat-label">ÄÃ£ thu vá»</div>
-                    </div>
-                </div>
-                <div className="ad-stat-card">
-                    <div className="ad-stat-icon" style={{ background: "#ef444418" }}>âš ï¸</div>
-                    <div>
-                        <div className="ad-stat-num" style={{ color: "#ef4444" }}>{fmtMoney(ov.unpaidAmount)}</div>
-                        <div className="sd-stat-label">ChÆ°a thu</div>
-                    </div>
-                </div>
-                <div className="ad-stat-card">
-                    <div className="ad-stat-icon" style={{ background: "#6366f118" }}>ðŸ“Š</div>
-                    <div>
-                        <div className="ad-stat-num" style={{ color: "#6366f1" }}>{ov.totalInvoices || 0}</div>
-                        <div className="sd-stat-label">Tá»•ng hÃ³a Ä‘Æ¡n</div>
-                    </div>
-                </div>
-                <div className="ad-stat-card">
-                    <div className="ad-stat-icon" style={{ background: "#f59e0b18" }}>ðŸŽ¯</div>
-                    <div>
-                        <div className="ad-stat-num" style={{ color: "#f59e0b" }}>{ov.collectionRate || 0}%</div>
-                        <div className="sd-stat-label">Tá»· lá»‡ thu</div>
-                    </div>
-                </div>
+            <div className="ad-stats-grid">
+                <StatCard
+                    icon="💵"
+                    label="Đã thu về"
+                    value={fmtMoney(ov.totalRevenue)}
+                    meta={`${ov.paidCount || 0} hóa đơn đã thanh toán`}
+                    color="#22c55e"
+                />
+                <StatCard
+                    icon="⚠️"
+                    label="Chưa thu"
+                    value={fmtMoney(ov.unpaidAmount)}
+                    meta={`${ov.overdueCount || 0} hóa đơn quá hạn`}
+                    color="#ef4444"
+                />
+                <StatCard
+                    icon="📊"
+                    label="Tổng hóa đơn"
+                    value={ov.totalInvoices || 0}
+                    meta={`${ov.partialCount || 0} hóa đơn thanh toán một phần`}
+                    color="#6366f1"
+                />
+                <StatCard
+                    icon="🎯"
+                    label="Tỷ lệ thu"
+                    value={`${ov.collectionRate || 0}%`}
+                    meta={`Tổng giá trị phải thu: ${fmtMoney(ov.totalBilled)}`}
+                    color="#f59e0b"
+                />
             </div>
 
-            {/* Invoice status breakdown â€” click to filter */}
-            <div style={{ display: "flex", gap: 10, marginBottom: 24, flexWrap: "wrap" }}>
-                {[
-                    { label: "ÄÃ£ thanh toÃ¡n", count: ov.paidCount, color: "#22c55e", val: "paid" },
-                    { label: "ChÆ°a thanh toÃ¡n", count: ov.unpaidCount, color: "#ef4444", val: "unpaid" },
-                    { label: "Thanh toÃ¡n má»™t pháº§n", count: ov.partialCount, color: "#f59e0b", val: "partial" },
-                    { label: "QuÃ¡ háº¡n", count: ov.overdueCount, color: "#dc2626", val: "overdue" },
-                ].map(s => (
-                    <div
-                        key={s.label}
-                        onClick={() => setInvoiceStatus(prev => prev === s.val ? "" : s.val)}
-                        title="Click Ä‘á»ƒ lá»c hÃ³a Ä‘Æ¡n"
-                        style={{
-                            flex: "1 1 130px", borderRadius: 10, padding: "12px 16px", textAlign: "center",
-                            cursor: "pointer", transition: "all .2s",
-                            background: invoiceStatus === s.val ? s.color : s.color + "12",
-                            border: `2px solid ${invoiceStatus === s.val ? s.color : s.color + "40"}`,
-                            color: invoiceStatus === s.val ? "#fff" : "inherit",
-                        }}
+            <div className="ad-fin-status-grid">
+                {financeSignals.map((item) => (
+                    <button
+                        key={item.val}
+                        type="button"
+                        className={`ad-fin-status-card${invoiceStatus === item.val ? " active" : ""}`}
+                        style={{ "--ad-tone": item.color, "--ad-tone-soft": item.color + "14", "--ad-tone-border": item.color + "33" }}
+                        onClick={() => setInvoiceStatus((prev) => prev === item.val ? "" : item.val)}
+                        title="Click để lọc hóa đơn"
                     >
-                        <div style={{ fontSize: 22, fontWeight: 800, color: invoiceStatus === s.val ? "#fff" : s.color }}>{s.count || 0}</div>
-                        <div style={{ fontSize: 12, marginTop: 2 }}>{s.label}</div>
-                    </div>
+                        <div className="ad-fin-status-top">
+                            <span className="ad-fin-status-label">{item.label}</span>
+                            <span className="ad-fin-status-pill">{invoiceStatus === item.val ? "Đang xem" : "Lọc"}</span>
+                        </div>
+                        <strong className="ad-fin-status-value">{item.count || 0}</strong>
+                        <span className="ad-fin-status-note">{item.note}</span>
+                    </button>
                 ))}
             </div>
 
-            {/* Monthly bar chart */}
-            <div style={{ marginBottom: 24 }}>
-                <h3 style={{ fontSize: 14, fontWeight: 700, color: "#444", marginBottom: 12 }}>ðŸ“… Doanh thu 12 thÃ¡ng gáº§n nháº¥t</h3>
-                <div style={{ display: "flex", alignItems: "flex-end", gap: 6, height: 140, overflowX: "auto", paddingBottom: 8 }}>
-                    {monthlyData.map(m => {
-                        const pct = Math.round((m.revenue / maxRev) * 100);
-                        return (
-                            <div key={`${m.year}-${m.month}`} style={{ display: "flex", flexDirection: "column", alignItems: "center", minWidth: 48, flex: 1 }}>
-                                <div style={{ fontSize: 9, color: "#888", marginBottom: 3, whiteSpace: "nowrap" }}>
-                                    {m.revenue > 0 ? (m.revenue / 1e6).toFixed(1) + "M" : ""}
-                                </div>
-                                <div title={`${m.label}: ${fmtMoney(m.revenue)}`} style={{ width: "100%", maxWidth: 40, height: `${Math.max(pct, 3)}%`, background: pct > 0 ? "linear-gradient(180deg,#6366f1,#818cf8)" : "#e5e7eb", borderRadius: "4px 4px 0 0", transition: "height .3s" }} />
-                                <div style={{ fontSize: 9, color: "#888", marginTop: 4, transform: "rotate(-30deg)", transformOrigin: "top left", whiteSpace: "nowrap", paddingTop: 8 }}>{m.label}</div>
-                            </div>
-                        );
-                    })}
-                </div>
-            </div>
-
-            {/* By type */}
-            {byType.length > 0 && (
-                <div style={{ marginBottom: 24 }}>
-                    <h3 style={{ fontSize: 14, fontWeight: 700, color: "#444", marginBottom: 12 }}>ðŸ·ï¸ PhÃ¢n loáº¡i doanh thu</h3>
-                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                        {byType.map(t => {
-                            const col = FIN_TYPE_COLORS[t.type] || "#94a3b8";
-                            const pct = ov.totalBilled > 0 ? Math.round((t.totalBilled / ov.totalBilled) * 100) : 0;
+            <div className="ad-finance-layout">
+                <section className="ad-surface-panel">
+                    <div className="ad-surface-head">
+                        <div>
+                            <h3 className="ad-surface-title">Doanh thu 12 tháng gần nhất</h3>
+                            <p className="ad-surface-text">Theo dõi xu hướng thu về theo tháng để nhận ra giai đoạn tăng giảm rất nhanh.</p>
+                        </div>
+                    </div>
+                    <div className="ad-fin-chart">
+                        {monthlyData.map(m => {
+                            const pct = Math.round((m.revenue / maxRev) * 100);
                             return (
-                                <div key={t.type} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                                    <div style={{ width: 110, fontSize: 12, color: "#555", flexShrink: 0 }}>{t.label}</div>
-                                    <div style={{ flex: 1, height: 10, background: "#f1f5f9", borderRadius: 5, overflow: "hidden" }}>
-                                        <div style={{ width: `${pct}%`, height: "100%", background: col, borderRadius: 5 }} />
+                                <div key={`${m.year}-${m.month}`} className="ad-fin-bar-item">
+                                    <div className="ad-fin-bar-value">
+                                        {m.revenue > 0 ? (m.revenue / 1e6).toFixed(1) + "M" : ""}
                                     </div>
-                                    <div style={{ width: 90, fontSize: 11, color: "#777", textAlign: "right", flexShrink: 0 }}>{fmtMoney(t.totalBilled)}</div>
-                                    <div style={{ width: 36, fontSize: 11, color: col, fontWeight: 700, flexShrink: 0 }}>{pct}%</div>
+                                    <div
+                                        title={`${m.label}: ${fmtMoney(m.revenue)}`}
+                                        className="ad-fin-bar"
+                                        style={{ height: `${Math.max(pct, 3)}%`, background: pct > 0 ? "linear-gradient(180deg,#2563eb,#60a5fa)" : "#e5e7eb" }}
+                                    />
+                                    <div className="ad-fin-bar-label">{m.label}</div>
                                 </div>
                             );
                         })}
                     </div>
-                </div>
-            )}
+                </section>
 
-            {/* Recent invoices with filter */}
-            <div>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10, marginBottom: 12 }}>
-                    <h3 style={{ fontSize: 14, fontWeight: 700, color: "#444", margin: 0 }}>
-                        ðŸ“œ HÃ³a Ä‘Æ¡n {invoiceStatus ? `â€” ${STATUS_FILTERS.find(f => f.value === invoiceStatus)?.label}` : "gáº§n nháº¥t"}
-                        <span style={{ fontSize: 12, fontWeight: 400, color: "#94a3b8", marginLeft: 6 }}>({invoices.length})</span>
-                    </h3>
-                    {/* Filter pills */}
-                    <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                <section className="ad-surface-panel">
+                    <div className="ad-surface-head">
+                        <div>
+                            <h3 className="ad-surface-title">Phân loại doanh thu</h3>
+                            <p className="ad-surface-text">So sánh nhanh tỷ trọng doanh thu theo từng loại hóa đơn trong toàn hệ thống.</p>
+                        </div>
+                    </div>
+                    {byType.length > 0 ? (
+                        <div className="ad-fin-breakdown">
+                            {byType.map(t => {
+                                const col = FIN_TYPE_COLORS[t.type] || "#94a3b8";
+                                const pct = ov.totalBilled > 0 ? Math.round((t.totalBilled / ov.totalBilled) * 100) : 0;
+                                return (
+                                    <div key={t.type} className="ad-fin-breakdown-row">
+                                        <div className="ad-fin-breakdown-label">{t.label}</div>
+                                        <div className="ad-fin-progress">
+                                            <div className="ad-fin-progress-fill" style={{ width: `${pct}%`, background: col }} />
+                                        </div>
+                                        <div className="ad-fin-breakdown-amount">{fmtMoney(t.totalBilled)}</div>
+                                        <div className="ad-fin-breakdown-percent" style={{ color: col }}>{pct}%</div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <div className="ad-empty-inline">Chưa có dữ liệu phân loại doanh thu.</div>
+                    )}
+                </section>
+            </div>
+
+            <section className="ad-surface-panel">
+                <div className="ad-fin-table-header">
+                    <div>
+                        <h3 className="ad-surface-title">
+                            Hóa đơn {invoiceStatus ? `— ${activeStatusLabel}` : "gần nhất"}
+                            <span className="ad-surface-count">({invoices.length})</span>
+                        </h3>
+                        <p className="ad-surface-text">Dùng các chip trạng thái để đi thẳng tới nhóm hóa đơn admin cần theo dõi.</p>
+                    </div>
+                    <div className="ad-filter-pills">
                         {STATUS_FILTERS.map(f => (
                             <button
-                                key={f.value}
+                                key={f.value || "all"}
+                                type="button"
+                                className={`ad-filter-pill${invoiceStatus === f.value ? " active" : ""}`}
+                                style={{ "--ad-pill-color": f.color, "--ad-pill-bg": f.color + "12" }}
                                 onClick={() => setInvoiceStatus(f.value)}
-                                style={{
-                                    padding: "4px 12px", fontSize: 12, borderRadius: 20, cursor: "pointer", border: "1.5px solid",
-                                    borderColor: invoiceStatus === f.value ? f.color : "#e2e8f0",
-                                    background: invoiceStatus === f.value ? f.color : "#f8fafc",
-                                    color: invoiceStatus === f.value ? "#fff" : "#555",
-                                    fontWeight: invoiceStatus === f.value ? 700 : 400,
-                                    transition: "all .15s",
-                                }}
                             >
                                 {f.label}
                             </button>
@@ -1282,31 +1470,31 @@ function FinancePanel() {
                     </div>
                 </div>
 
-                <div className="sd-table-wrap" style={{ position: "relative" }}>
+                <div className="sd-table-wrap ad-finance-table-wrap">
                     {invoiceLoading && (
-                        <div style={{ position: "absolute", inset: 0, background: "#fff9", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2, borderRadius: 8 }}>
+                        <div className="ad-surface-overlay">
                             <div className="ab-spinner" />
                         </div>
                     )}
                     {invoices.length === 0 && !invoiceLoading ? (
-                        <div style={{ textAlign: "center", padding: 32, color: "#94a3b8", fontSize: 14 }}>
-                            ðŸŽ‰ KhÃ´ng cÃ³ hÃ³a Ä‘Æ¡n nÃ o {invoiceStatus ? `vá»›i tráº¡ng thÃ¡i "${STATUS_FILTERS.find(f => f.value === invoiceStatus)?.label}"` : ""}
+                        <div className="ad-empty-inline">
+                            🎉 Không có hóa đơn nào {invoiceStatus ? `với trạng thái "${activeStatusLabel}"` : ""}
                         </div>
                     ) : (
                         <table className="sd-table">
                             <thead>
-                                <tr><th>MÃ£ HD</th><th>Sinh viÃªn</th><th>Loáº¡i</th><th>Sá»‘ tiá»n</th><th>Tráº¡ng thÃ¡i</th></tr>
+                                <tr><th>Mã HD</th><th>Sinh viên</th><th>Loại</th><th>Số tiền</th><th>Trạng thái</th></tr>
                             </thead>
                             <tbody>
                                 {invoices.map(inv => (
                                     <tr key={inv._id}>
                                         <td style={{ fontFamily: "monospace", fontSize: 11 }}>{inv.invoiceCode}</td>
-                                        <td>{inv.studentId?.fullName || "â€”"}<br /><span style={{ fontSize: 11, color: "#999" }}>{inv.studentId?.studentCode}</span></td>
+                                        <td>{inv.studentId?.fullName || "—"}<br /><span style={{ fontSize: 11, color: "#999" }}>{inv.studentId?.studentCode}</span></td>
                                         <td><span style={{ fontSize: 11, background: (FIN_TYPE_COLORS[inv.type] || "#94a3b8") + "20", color: FIN_TYPE_COLORS[inv.type] || "#94a3b8", padding: "2px 8px", borderRadius: 10 }}>{FIN_TYPE_LABELS[inv.type] || inv.type}</span></td>
                                         <td style={{ fontWeight: 700 }}>{fmtMoney(inv.amount)}</td>
                                         <td>
                                             <span className={`sd-badge ${inv.status === "paid" ? "approved" : inv.status === "unpaid" || inv.status === "overdue" ? "rejected" : "pending"}`}>
-                                                {{ paid: "ÄÃ£ TT", unpaid: "ChÆ°a TT", overdue: "QuÃ¡ háº¡n", partial: "Má»™t pháº§n" }[inv.status] || inv.status}
+                                                {{ paid: "Đã TT", unpaid: "Chưa TT", overdue: "Quá hạn", partial: "Một phần" }[inv.status] || inv.status}
                                             </span>
                                         </td>
                                     </tr>
@@ -1315,11 +1503,10 @@ function FinancePanel() {
                         </table>
                     )}
                 </div>
-            </div>
-        </>
+            </section>
+        </div>
     );
 }
-
 function NotificationsPanel() {
     const [form, setForm] = useState(AN_INIT_FORM);
     const [sending, setSending] = useState(false);
@@ -2123,3 +2310,4 @@ export default function AdminDashboard() {
         </div>
     );
 }
+
