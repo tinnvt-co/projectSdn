@@ -52,6 +52,17 @@ function GuestRoute({ children }) {
   return children;
 }
 
+function HomeRoute() {
+  const token = localStorage.getItem("token");
+  const user = getStoredUser();
+
+  if (token && user) {
+    return <Navigate to={DASHBOARD_MAP[user.role] || "/"} replace />;
+  }
+
+  return <LandingPage />;
+}
+
 function RouteLoader() {
   return (
     <div
@@ -101,7 +112,7 @@ function AppShell() {
       <Header />
       <Suspense fallback={<RouteLoader />}>
         <Routes>
-          <Route path="/" element={<LandingPage />} />
+          <Route path="/" element={<HomeRoute />} />
           <Route
             path="/login"
             element={
