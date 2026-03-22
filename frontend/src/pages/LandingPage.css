@@ -1,10 +1,11 @@
 /* ─── Landing Page — FPT Dormitory ─── */
-@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap");
+
 
 .lp-root {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", "Helvetica Neue", Arial, sans-serif;
+    font-family: var(--font-sans);
     background: #fff;
-    color: #222;
+    color: #1f2933;
+    line-height: 1.65;
 }
 
 /* ══════════════════════════════════════
@@ -48,16 +49,18 @@
 }
 
 .lp-ql-title {
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 700;
-    line-height: 1.3;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
     margin-bottom: 4px;
 }
 
 .lp-ql-sub {
-    font-size: 12px;
+    font-size: 13px;
     opacity: 0.85;
     font-weight: 500;
+    line-height: 1.5;
 }
 
 /* ── Carousel ── */
@@ -96,24 +99,27 @@
     position: absolute;
     bottom: 52px;
     left: 44px;
+    max-width: 620px;
     color: #fff;
     text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
     z-index: 2;
 }
 
 .lp-slide-title {
-    font-size: 36px;
+    font-size: clamp(40px, 4vw, 54px);
     font-weight: 800;
-    margin: 0 0 8px 0;
-    line-height: 1.2;
-    letter-spacing: -0.5px;
+    margin: 0 0 10px 0;
+    line-height: 1.05;
+    letter-spacing: -0.05em;
 }
 
 .lp-slide-subtitle {
-    font-size: 18px;
-    font-weight: 500;
+    font-size: 19px;
+    font-weight: 600;
+    line-height: 1.65;
     margin: 0;
     opacity: 0.92;
+    max-width: 34ch;
 }
 
 /* Arrow buttons */
@@ -188,10 +194,12 @@
 }
 
 .lp-section-title h2 {
-    font-size: 28px;
+    font-size: clamp(31px, 3vw, 40px);
     font-weight: 800;
     color: #e8540a;
     margin: 0 0 12px;
+    line-height: 1.12;
+    letter-spacing: -0.04em;
 }
 
 .lp-divider {
@@ -203,10 +211,12 @@
 }
 
 .lp-section-lead {
-    font-size: 16px;
-    color: #444;
+    max-width: 760px;
+    font-size: 17px;
+    color: #475569;
     font-weight: 500;
-    margin: 0;
+    line-height: 1.85;
+    margin: 0 auto;
 }
 
 .lp-link-pdf {
@@ -229,10 +239,10 @@
 }
 
 .lp-block-text p {
-    font-size: 15px;
-    line-height: 1.8;
-    color: #444;
-    margin: 0 0 14px 0;
+    font-size: 16px;
+    line-height: 1.95;
+    color: #475569;
+    margin: 0 0 16px 0;
 }
 
 .lp-block-img img {
@@ -253,11 +263,12 @@
 }
 
 .lp-highlight-lead {
-    font-size: 15px;
+    font-size: 17px;
     font-weight: 700;
     color: #e8540a;
-    line-height: 1.5;
-    margin-bottom: 14px !important;
+    line-height: 1.75;
+    letter-spacing: -0.01em;
+    margin-bottom: 16px !important;
     font-style: italic;
 }
 
@@ -269,18 +280,19 @@
 }
 
 .lp-text-section-lead {
-    font-size: 15px;
+    font-size: 17px;
     font-weight: 700;
     color: #e8540a;
     font-style: italic;
-    margin: 0 0 12px 0;
-    line-height: 1.6;
+    margin: 0 0 14px 0;
+    line-height: 1.75;
+    letter-spacing: -0.01em;
 }
 
 .lp-text-section p {
-    font-size: 15px;
-    line-height: 1.8;
-    color: #444;
+    font-size: 16px;
+    line-height: 1.95;
+    color: #475569;
     margin: 0;
     text-indent: 2em;
 }
@@ -316,12 +328,13 @@
 }
 
 .lp-faq-title {
-    font-size: 28px;
+    font-size: clamp(31px, 3vw, 38px);
     font-weight: 800;
     color: #e8540a;
     text-align: center;
     margin: 0 0 12px;
-    letter-spacing: 2px;
+    line-height: 1.12;
+    letter-spacing: -0.03em;
 }
 
 .lp-faq-divider {
@@ -353,10 +366,12 @@
     background: #e8540a;
     color: #fff;
     border: none;
-    padding: 16px 20px;
-    font-size: 15px;
+    padding: 18px 22px;
+    font-size: 16px;
     font-weight: 700;
     font-family: inherit;
+    line-height: 1.55;
+    letter-spacing: -0.01em;
     cursor: pointer;
     text-align: left;
     transition: background 0.2s;
@@ -382,9 +397,9 @@
     border: 1px solid #f0e0d8;
     border-top: none;
     padding: 18px 24px;
-    font-size: 14px;
-    line-height: 1.8;
-    color: #444;
+    font-size: 15px;
+    line-height: 1.9;
+    color: #475569;
 }
 
 .lp-faq-answer p {
@@ -425,15 +440,19 @@
 }
 
 .lp-cta-inner h2 {
-    font-size: 30px;
+    font-size: clamp(33px, 3vw, 42px);
     font-weight: 800;
     margin: 0 0 12px;
+    line-height: 1.1;
+    letter-spacing: -0.04em;
 }
 
 .lp-cta-inner p {
-    font-size: 16px;
+    max-width: 560px;
+    font-size: 17px;
+    line-height: 1.8;
     opacity: 0.9;
-    margin: 0 0 28px;
+    margin: 0 auto 28px;
 }
 
 .lp-cta-btn {
@@ -441,8 +460,10 @@
     padding: 14px 38px;
     background: #fff;
     color: #e8540a;
-    font-size: 16px;
-    font-weight: 700;
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: 0.01em;
     border-radius: 10px;
     border: none;
     cursor: pointer;
@@ -465,7 +486,12 @@
     }
 
     .lp-slide-title {
-        font-size: 26px;
+        font-size: 34px;
+    }
+
+    .lp-slide-subtitle {
+        font-size: 17px;
+        line-height: 1.6;
     }
 
     .lp-slide-text {
@@ -481,6 +507,12 @@
     .lp-block-left-img .lp-block-img {
         order: -1;
     }
+
+    .lp-section-title h2,
+    .lp-faq-title,
+    .lp-cta-inner h2 {
+        font-size: 30px;
+    }
 }
 
 @media (max-width: 640px) {
@@ -493,15 +525,49 @@
         height: 240px;
     }
 
+    .lp-slide-text {
+        left: 18px;
+        right: 18px;
+        bottom: 26px;
+    }
+
     .lp-slide-title {
-        font-size: 20px;
+        font-size: 28px;
+        line-height: 1.08;
+    }
+
+    .lp-slide-subtitle {
+        font-size: 15.5px;
+        line-height: 1.55;
     }
 
     .lp-section-title h2 {
-        font-size: 22px;
+        font-size: 27px;
     }
 
     .lp-cta-inner h2 {
-        font-size: 22px;
+        font-size: 27px;
+    }
+
+    .lp-section-lead,
+    .lp-block-text p,
+    .lp-text-section p,
+    .lp-cta-inner p {
+        font-size: 15.5px;
+        line-height: 1.85;
+    }
+
+    .lp-highlight-lead,
+    .lp-text-section-lead,
+    .lp-faq-question {
+        font-size: 15.5px;
+    }
+
+    .lp-faq-title {
+        font-size: 27px;
+    }
+
+    .lp-faq-answer {
+        font-size: 14.5px;
     }
 }

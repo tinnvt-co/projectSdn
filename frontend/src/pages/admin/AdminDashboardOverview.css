@@ -45,7 +45,7 @@
     margin: 16px 0 10px;
     max-width: 720px;
     color: #111827;
-    font-family: "Manrope", "Inter", sans-serif;
+    font-family: var(--font-sans);
     font-size: clamp(28px, 4vw, 38px);
     line-height: 1.08;
     font-weight: 800;
@@ -158,7 +158,7 @@
 
 .ad-focus-value {
     color: #0f172a;
-    font-family: "Manrope", "Inter", sans-serif;
+    font-family: var(--font-sans);
     font-size: 24px;
     font-weight: 800;
     line-height: 1.1;
@@ -235,7 +235,7 @@
 
 .ad-quick-title {
     color: #0f172a;
-    font-family: "Manrope", "Inter", sans-serif;
+    font-family: var(--font-sans);
     font-size: 16px;
     font-weight: 800;
     line-height: 1.25;

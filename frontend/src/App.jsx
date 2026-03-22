@@ -1,5 +1,5 @@
 import { Suspense, lazy } from "react";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 
@@ -25,6 +25,8 @@ const DASHBOARD_MAP = {
   manager: "/manager/dashboard",
   student: "/student/dashboard",
 };
+
+const PUBLIC_FOOTER_PATHS = new Set(["/", "/login", "/forgot-password"]);
 
 function PrivateRoute({ children, roles }) {
   const token = localStorage.getItem("token");
@@ -84,15 +86,18 @@ function RouteLoader() {
             boxShadow: "0 0 0 6px rgba(249, 115, 22, 0.16)",
           }}
         />
-        Dang tai trang...
+        Đang tải trang...
       </div>
     </div>
   );
 }
 
-export default function App() {
+function AppShell() {
+  const location = useLocation();
+  const showFooter = PUBLIC_FOOTER_PATHS.has(location.pathname);
+
   return (
-    <BrowserRouter>
+    <>
       <Header />
       <Suspense fallback={<RouteLoader />}>
         <Routes>
@@ -172,7 +177,15 @@ export default function App() {
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </Suspense>
-      <Footer />
+      {showFooter && <Footer />}
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AppShell />
     </BrowserRouter>
   );
 }

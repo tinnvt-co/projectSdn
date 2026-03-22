@@ -1,5 +1,4 @@
-﻿@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap");
-
+﻿
 .ad-hero-btn,
 .ad-refresh-btn {
     display: inline-flex;
@@ -94,7 +93,7 @@
     font-size: 29px;
     font-weight: 800;
     line-height: 1;
-    font-family: "Manrope", "Inter", sans-serif;
+    font-family: var(--font-sans);
 }
 
 .ad-stat-meta {
@@ -224,7 +223,7 @@
 .ad-section-title {
     margin: 0;
     color: #0f172a;
-    font-family: "Manrope", "Inter", sans-serif;
+    font-family: var(--font-sans);
     font-size: clamp(28px, 4vw, 34px);
     line-height: 1.08;
     font-weight: 800;
@@ -303,7 +302,7 @@
     margin: 0;
     color: #0f172a;
     font-size: 15px;
-    font-family: "Manrope", "Inter", sans-serif;
+    font-family: var(--font-sans);
     font-weight: 800;
 }
 
@@ -378,7 +377,7 @@
     margin: 0;
     color: #0f172a;
     font-size: 16px;
-    font-family: "Manrope", "Inter", sans-serif;
+    font-family: var(--font-sans);
     font-weight: 800;
 }
 

@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap");
+
 
 /* ── Wrapper ── */
 .sd-wrapper {
@@ -6,7 +6,7 @@
     min-height: calc(100vh - 64px);
     /* minus header height */
     background: #f8f9fb;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", "Helvetica Neue", Arial, sans-serif;
+    font-family: var(--font-sans);
 }
 
 /* ── Sidebar ── */
@@ -196,6 +196,92 @@
     margin-top: 6px;
 }
 
+.sd-request-item {
+    align-items: center;
+    gap: 16px;
+}
+
+.sd-request-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 1px solid transparent;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.sd-request-icon--danger {
+    color: #c2410c;
+    background: linear-gradient(135deg, #fff1ea, #ffe4d6);
+    border-color: rgba(234, 88, 12, 0.16);
+}
+
+.sd-request-icon--primary {
+    color: #2563eb;
+    background: linear-gradient(135deg, #eff6ff, #dbeafe);
+    border-color: rgba(37, 99, 235, 0.16);
+}
+
+.sd-request-icon--success {
+    color: #15803d;
+    background: linear-gradient(135deg, #ecfdf3, #dcfce7);
+    border-color: rgba(21, 128, 61, 0.16);
+}
+
+.sd-request-icon--warning {
+    color: #b45309;
+    background: linear-gradient(135deg, #fff7ed, #ffedd5);
+    border-color: rgba(180, 83, 9, 0.18);
+}
+
+.sd-request-icon--neutral {
+    color: #475569;
+    background: linear-gradient(135deg, #f8fafc, #eef2f7);
+    border-color: rgba(71, 85, 105, 0.14);
+}
+
+.sd-request-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+}
+
+.sd-request-title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.sd-request-type {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: #fff6f1;
+    border: 1px solid rgba(232, 84, 10, 0.14);
+    color: #c2410c;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.sd-request-meta {
+    color: #98a2b3;
+    margin-top: 8px;
+}
+
 /* ── Badge ── */
 .sd-badge {
     display: inline-block;
@@ -372,7 +458,7 @@
     color: #1a1a1a;
     padding: 11px 14px;
     font-size: 14px;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", "Helvetica Neue", Arial, sans-serif;
+    font-family: var(--font-sans);
     outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
     width: 100%;
@@ -415,7 +501,7 @@
     border-radius: 10px;
     font-size: 14px;
     font-weight: 600;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", "Helvetica Neue", Arial, sans-serif;
+    font-family: var(--font-sans);
     cursor: pointer;
     transition: transform 0.18s, box-shadow 0.18s;
 }
@@ -437,7 +523,7 @@
     border: 1.5px solid #e8e8e8;
     border-radius: 10px;
     font-size: 14px;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", "Helvetica Neue", Arial, sans-serif;
+    font-family: var(--font-sans);
     cursor: pointer;
     transition: background 0.18s;
 }
@@ -508,7 +594,7 @@
     border-radius: 10px;
     font-size: 14px;
     font-weight: 600;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", "Helvetica Neue", Arial, sans-serif;
+    font-family: var(--font-sans);
     cursor: pointer;
     transition: all 0.2s;
     margin-bottom: 16px;
@@ -648,6 +734,17 @@
 
     .sd-payment-actions {
         width: 100%;
+    }
+
+    .sd-request-item {
+        align-items: flex-start;
+    }
+
+    .sd-request-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 14px;
+        font-size: 12px;
     }
 
     .sd-payment-method,

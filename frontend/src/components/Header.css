@@ -1,5 +1,5 @@
 /* ─── Site Header — FPT Dormitory style ─── */
-@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap");
+
 
 .site-header {
     position: sticky;
@@ -7,7 +7,7 @@
     z-index: 1000;
     background: #ffffff;
     border-bottom: 2px solid #e5e5e5;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", "Helvetica Neue", Arial, sans-serif;
+    font-family: var(--font-sans);
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
 }
 

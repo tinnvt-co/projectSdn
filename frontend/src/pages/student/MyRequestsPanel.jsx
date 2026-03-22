@@ -1,14 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
+﻿import { useEffect, useMemo, useState } from "react";
 import { studentApi } from "../../services/studentApi";
 
-const fmtDate = (d) => (d ? new Date(d).toLocaleDateString("vi-VN") : "-");
+const fmtDate = (date) => (date ? new Date(date).toLocaleDateString("vi-VN") : "-");
 
-const TYPE_LABEL = {
-    damage_report: "Báo Hỏng Hóc",
-    room_transfer: "Chuyển Phòng",
-    room_retention: "Giữ Phòng",
-    room_reservation_cancel: "Hủy Phòng đã giữ chỗ",
-    other: "Khác",
+const REQUEST_TYPE_META = {
+    damage_report: { label: "Báo hỏng hóc", short: "BH", tone: "danger" },
+    room_transfer: { label: "Chuyển phòng", short: "CP", tone: "primary" },
+    room_retention: { label: "Giữ phòng", short: "GP", tone: "success" },
+    room_reservation_cancel: { label: "Hủy giữ chỗ", short: "HG", tone: "warning" },
+    other: { label: "Khác", short: "KH", tone: "neutral" },
 };
 
 const STATUS_MAP = {
@@ -17,7 +17,7 @@ const STATUS_MAP = {
     manager_rejected: { label: "Manager từ chối", cls: "rejected" },
     admin_approved: { label: "Admin đã duyệt", cls: "approved" },
     admin_rejected: { label: "Admin từ chối", cls: "rejected" },
-    completed: { label: "Hoàn Thành", cls: "completed" },
+    completed: { label: "Hoàn thành", cls: "completed" },
 };
 
 export default function MyRequestsPanel() {
@@ -48,9 +48,9 @@ export default function MyRequestsPanel() {
     const load = () => {
         setLoading(true);
         Promise.all([
-            studentApi.getRequests().then((r) => setData(r.data.data || [])),
-            studentApi.getProfile().then((r) => setProfile(r.data.data || null)),
-            studentApi.getBookings().then((r) => setBookings(r.data.data || [])),
+            studentApi.getRequests().then((response) => setData(response.data.data || [])),
+            studentApi.getProfile().then((response) => setProfile(response.data.data || null)),
+            studentApi.getBookings().then((response) => setBookings(response.data.data || [])),
         ])
             .catch(() => {})
             .finally(() => setLoading(false));
@@ -58,10 +58,13 @@ export default function MyRequestsPanel() {
 
     const loadAvailableRooms = () => {
         setLoadingRooms(true);
-        studentApi.getAvailableRooms()
-            .then((r) => {
+        studentApi
+            .getAvailableRooms()
+            .then((response) => {
                 const currentRoomId = profile?.currentRoomId?._id;
-                const roomList = (r.data.data || []).filter((room) => String(room._id) !== String(currentRoomId || ""));
+                const roomList = (response.data.data || []).filter(
+                    (room) => String(room._id) !== String(currentRoomId || "")
+                );
                 setRooms(roomList);
             })
             .catch(() => setRooms([]))
@@ -78,8 +81,9 @@ export default function MyRequestsPanel() {
         }
     }, [showForm, form.type, profile?.currentRoomId?._id]);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
         if (!form.title || !form.description) {
             setAlert({ type: "error", msg: "Vui lòng nhập tiêu đề và mô tả" });
             return;
@@ -108,15 +112,21 @@ export default function MyRequestsPanel() {
                 title: form.title,
                 description: form.description,
             };
-            if (form.type === "room_transfer") payload.targetRoomId = form.targetRoomId;
+
+            if (form.type === "room_transfer") {
+                payload.targetRoomId = form.targetRoomId;
+            }
 
             await studentApi.createRequest(payload);
             setAlert({ type: "success", msg: "Gửi yêu cầu thành công!" });
             setForm({ type: "damage_report", title: "", description: "", targetRoomId: "" });
             setShowForm(false);
             load();
-        } catch (err) {
-            setAlert({ type: "error", msg: err.response?.data?.message || "Gửi yêu cầu thất bại" });
+        } catch (error) {
+            setAlert({
+                type: "error",
+                msg: error.response?.data?.message || "Gửi yêu cầu thất bại",
+            });
         }
         setSubmitting(false);
     };
@@ -146,7 +156,7 @@ export default function MyRequestsPanel() {
             <button
                 className="sd-toggle-form"
                 onClick={() => {
-                    setShowForm((v) => !v);
+                    setShowForm((value) => !value);
                     setAlert(null);
                 }}
             >
@@ -156,17 +166,30 @@ export default function MyRequestsPanel() {
             {showForm && (
                 <form className="sd-form" onSubmit={handleSubmit}>
                     <div className="sd-form-title">Gửi yêu cầu mới</div>
+
                     <div className="sd-field">
-                        <label className="sd-label">Loại yêu cầu <span style={{ color: "#ef4444" }}>*</span></label>
+                        <label className="sd-label">
+                            Loại yêu cầu <span style={{ color: "#ef4444" }}>*</span>
+                        </label>
                         <select
                             className="sd-select"
                             value={form.type}
-                            onChange={(e) => setForm((f) => ({ ...f, type: e.target.value, targetRoomId: "" }))}
+                            onChange={(event) =>
+                                setForm((current) => ({
+                                    ...current,
+                                    type: event.target.value,
+                                    targetRoomId: "",
+                                }))
+                            }
                         >
                             <option value="damage_report">Báo hỏng hóc</option>
-                            <option value="room_transfer" disabled={!profile?.currentRoomId}>Xin chuyển phòng</option>
+                            <option value="room_transfer" disabled={!profile?.currentRoomId}>
+                                Xin chuyển phòng
+                            </option>
                             <option value="room_retention">Xin giữ phòng</option>
-                            <option value="room_reservation_cancel" disabled={profile?.currentRoomId || !reservedBooking}>Xin hủy phòng đã giữ chỗ</option>
+                            <option value="room_reservation_cancel" disabled={profile?.currentRoomId || !reservedBooking}>
+                                Xin hủy phòng đã giữ chỗ
+                            </option>
                             <option value="other">Khác</option>
                         </select>
                     </div>
@@ -178,30 +201,54 @@ export default function MyRequestsPanel() {
                                 <input
                                     className="sd-input"
                                     disabled
-                                    value={`Phòng ${profile.currentRoomId.roomNumber} - ${profile.currentRoomId.buildingId?.name || "KTX"}`}
+                                    value={`Phòng ${profile.currentRoomId.roomNumber} - ${
+                                        profile.currentRoomId.buildingId?.name || "KTX"
+                                    }`}
                                 />
                             </div>
                             <div className="sd-field">
-                                <label className="sd-label">Phòng muốn chuyển đến <span style={{ color: "#ef4444" }}>*</span></label>
+                                <label className="sd-label">
+                                    Phòng muốn chuyển đến <span style={{ color: "#ef4444" }}>*</span>
+                                </label>
                                 <select
                                     className="sd-select"
                                     value={form.targetRoomId}
-                                    onChange={(e) => setForm((f) => ({ ...f, targetRoomId: e.target.value }))}
+                                    onChange={(event) =>
+                                        setForm((current) => ({
+                                            ...current,
+                                            targetRoomId: event.target.value,
+                                        }))
+                                    }
                                 >
                                     <option value="">Chọn phòng còn trống</option>
                                     {rooms.map((room) => (
                                         <option key={room._id} value={room._id}>
-                                            {`Phòng ${room.roomNumber} - ${room.buildingId?.name || "KTX"} (Còn ${room.maxOccupancy - room.currentOccupancy} chỗ)`}
+                                            {`Phòng ${room.roomNumber} - ${
+                                                room.buildingId?.name || "KTX"
+                                            } (Còn ${room.maxOccupancy - room.currentOccupancy} chỗ)`}
                                         </option>
                                     ))}
                                 </select>
-                                {loadingRooms && <div style={{ color: "#999", fontSize: 12 }}>Đang tải danh sách phòng trống...</div>}
+                                {loadingRooms && (
+                                    <div style={{ color: "#999", fontSize: 12 }}>
+                                        Đang tải danh sách phòng trống...
+                                    </div>
+                                )}
                             </div>
                         </>
                     )}
 
                     {form.type === "room_reservation_cancel" && reservedBooking && (
-                        <div style={{ padding: "12px 16px", background: "#fff8eb", border: "1px solid rgba(217,119,6,0.2)", borderRadius: 10, fontSize: 13, color: "#555" }}>
+                        <div
+                            style={{
+                                padding: "12px 16px",
+                                background: "#fff8eb",
+                                border: "1px solid rgba(217,119,6,0.2)",
+                                borderRadius: 10,
+                                fontSize: 13,
+                                color: "#555",
+                            }}
+                        >
                             Bạn đang xin hủy giữ chỗ: <strong>Phòng {reservedBooking.roomId?.roomNumber || "-"}</strong>
                             {" - "}
                             {reservedBooking.roomId?.buildingId?.name || "KTX"}.
@@ -209,25 +256,35 @@ export default function MyRequestsPanel() {
                     )}
 
                     <div className="sd-field">
-                        <label className="sd-label">Tiêu đề <span style={{ color: "#ef4444" }}>*</span></label>
+                        <label className="sd-label">
+                            Tiêu đề <span style={{ color: "#ef4444" }}>*</span>
+                        </label>
                         <input
                             className="sd-input"
                             placeholder="Nhập tiêu đề yêu cầu"
                             value={form.title}
-                            onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+                            onChange={(event) => setForm((current) => ({ ...current, title: event.target.value }))}
                         />
                     </div>
+
                     <div className="sd-field">
-                        <label className="sd-label">Mô tả chi tiết <span style={{ color: "#ef4444" }}>*</span></label>
+                        <label className="sd-label">
+                            Mô tả chi tiết <span style={{ color: "#ef4444" }}>*</span>
+                        </label>
                         <textarea
                             className="sd-textarea"
                             placeholder="Mô tả rõ nội dung yêu cầu..."
                             value={form.description}
-                            onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+                            onChange={(event) =>
+                                setForm((current) => ({ ...current, description: event.target.value }))
+                            }
                         />
                     </div>
+
                     <div className="sd-form-actions">
-                        <button type="button" className="sd-btn-secondary" onClick={() => setShowForm(false)}>Hủy</button>
+                        <button type="button" className="sd-btn-secondary" onClick={() => setShowForm(false)}>
+                            Hủy
+                        </button>
                         <button type="submit" className="sd-btn-primary" disabled={submitting}>
                             {submitting ? "Đang gửi..." : "Gửi yêu cầu"}
                         </button>
@@ -243,21 +300,30 @@ export default function MyRequestsPanel() {
             ) : (
                 <div className="sd-list">
                     {data.map((item) => {
-                        const s = STATUS_MAP[item.status] || { label: item.status, cls: "info" };
+                        const statusMeta = STATUS_MAP[item.status] || { label: item.status, cls: "info" };
+                        const requestMeta = REQUEST_TYPE_META[item.type] || REQUEST_TYPE_META.other;
+                        const metaParts = [
+                            requestMeta.label,
+                            fmtDate(item.createdAt),
+                            item.currentRoomId ? `Phòng ${item.currentRoomId.roomNumber}` : null,
+                            item.targetRoomId ? `Chuyển đến phòng ${item.targetRoomId.roomNumber}` : null,
+                        ].filter(Boolean);
+
                         return (
-                            <div key={item._id} className="sd-list-item">
-                                <div className="sd-list-icon">{TYPE_LABEL[item.type]?.split(" ")[0] || "?"}</div>
+                            <div key={item._id} className="sd-list-item sd-request-item">
+                                <div className={`sd-request-icon sd-request-icon--${requestMeta.tone}`}>
+                                    {requestMeta.short}
+                                </div>
                                 <div className="sd-list-body">
-                                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                                        <span className="sd-list-title">{item.title}</span>
-                                        <span className={`sd-badge ${s.cls}`}>{s.label}</span>
+                                    <div className="sd-request-header">
+                                        <div className="sd-request-title-row">
+                                            <span className="sd-list-title">{item.title}</span>
+                                            <span className={`sd-badge ${statusMeta.cls}`}>{statusMeta.label}</span>
+                                        </div>
+                                        <span className="sd-request-type">{requestMeta.label}</span>
                                     </div>
                                     <p className="sd-list-text">{item.description}</p>
-                                    <div className="sd-list-meta">
-                                        {TYPE_LABEL[item.type]} · {fmtDate(item.createdAt)}
-                                        {item.currentRoomId && ` · Phong ${item.currentRoomId.roomNumber}`}
-                                        {item.targetRoomId && ` -> Phong ${item.targetRoomId.roomNumber}`}
-                                    </div>
+                                    <div className="sd-list-meta sd-request-meta">{metaParts.join(" · ")}</div>
                                 </div>
                             </div>
                         );
