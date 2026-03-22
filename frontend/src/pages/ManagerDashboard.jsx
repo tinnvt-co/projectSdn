@@ -4,6 +4,8 @@ import "./student/StudentDashboard.css";
 import api from "../services/api";
 import ChangePasswordModal from "../components/ChangePasswordModal";
 
+// Main menu items for manager dashboard
+
 const MENU = [
     { id: "overview", icon: "📊", label: "Tổng quan" },
     { id: "requests", icon: "📝", label: "Yêu cầu" },

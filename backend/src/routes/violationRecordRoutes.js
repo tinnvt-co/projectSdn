@@ -1,5 +1,8 @@
 const express = require("express");
 const router = express.Router();
+// Routes cho quản lý vi phạm của sinh viên
+// Bao gồm tạo, đọc, cập nhật, xóa bản ghi vi phạm liên quan đến sinh viên và phòng ở
+
 const {
   createViolationRecord,
   getAllViolationRecords,

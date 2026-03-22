@@ -10,6 +10,8 @@ const ElectricityUsage = require("../models/ElectricityUsage");
 const Setting = require("../models/Setting");
 const Notification = require("../models/Notification");
 
+
+
 const getCurrentTermCode = (date = new Date()) => {
     const month = date.getMonth() + 1;
     return `HK${month < 6 ? 1 : 2}-${date.getFullYear()}`;

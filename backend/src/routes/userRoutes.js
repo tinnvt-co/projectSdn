@@ -1,5 +1,8 @@
 const express = require("express");
 const router = express.Router();
+
+// Routes cho quản lý người dùng của admin 
+
 const {
     getAllUsers,
     createUser,
