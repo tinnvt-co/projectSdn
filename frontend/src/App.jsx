@@ -7,9 +7,6 @@ const LandingPage = lazy(() => import("./pages/LandingPage"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const ForgotPasswordPage = lazy(() => import("./pages/ForgotPasswordPage"));
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
-const AdminUsersPage = lazy(() => import("./pages/AdminUsersPage"));
-const AdminReportsPage = lazy(() => import("./pages/AdminReportsPage"));
-const AdminNotificationsPage = lazy(() => import("./pages/AdminNotificationsPage"));
 const ManagerDashboard = lazy(() => import("./pages/ManagerDashboard"));
 const ManagerReportsPage = lazy(() => import("./pages/ManagerReportsPage"));
 const ManagerRequestsPage = lazy(() => import("./pages/ManagerRequestsPage"));
@@ -127,27 +124,15 @@ export default function App() {
           />
           <Route
             path="/admin/users"
-            element={
-              <PrivateRoute roles={["admin"]}>
-                <AdminUsersPage />
-              </PrivateRoute>
-            }
+            element={<Navigate to="/admin/dashboard?tab=users" replace />}
           />
           <Route
             path="/admin/reports"
-            element={
-              <PrivateRoute roles={["admin"]}>
-                <AdminReportsPage />
-              </PrivateRoute>
-            }
+            element={<Navigate to="/admin/dashboard?tab=reports" replace />}
           />
           <Route
             path="/admin/notifications"
-            element={
-              <PrivateRoute roles={["admin"]}>
-                <AdminNotificationsPage />
-              </PrivateRoute>
-            }
+            element={<Navigate to="/admin/dashboard?tab=notifications" replace />}
           />
 
           <Route
