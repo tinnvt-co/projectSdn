@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import api from "../../../services/api";
-import { StatCard } from "./shared";
+import { StatCard } from "./cards";
 
 const fmtMoney = (n) => Number(n || 0).toLocaleString("vi-VN") + "đ";
 

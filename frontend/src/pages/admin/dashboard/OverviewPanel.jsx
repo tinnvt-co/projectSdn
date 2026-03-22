@@ -1,13 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../../services/api";
-import {
-    OVERVIEW_EMPTY_STATS,
-    QuickLink,
-    StatCard,
-    fmtOverviewMoney,
-    fmtOverviewTime,
-} from "./shared";
+import { StatCard, QuickLink } from "./cards";
+import { OVERVIEW_EMPTY_STATS } from "./constants";
+import { fmtOverviewMoney, fmtOverviewTime } from "./formatters";
 
 function OverviewPanel() {
     const [stats, setStats] = useState(OVERVIEW_EMPTY_STATS);

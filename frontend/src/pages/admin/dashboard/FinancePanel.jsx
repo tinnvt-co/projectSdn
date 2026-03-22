@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../../services/api";
-import { StatCard, fmtOverviewTime } from "./shared";
+import { StatCard } from "./cards";
+import { fmtOverviewTime } from "./formatters";
 
 const FIN_TYPE_LABELS = { room_fee: "Phí phòng", electricity: "Điện", violation_fine: "Phí vi phạm", damage_compensation: "Bồi thường", other: "Khác" };
 const FIN_TYPE_COLORS = { room_fee: "#6366f1", electricity: "#f59e0b", violation_fine: "#ef4444", damage_compensation: "#ec4899", other: "#94a3b8" };

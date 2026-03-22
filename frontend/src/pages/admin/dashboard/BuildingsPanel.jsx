@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import api from "../../../services/api";
-import { StatCard } from "./shared";
+import { StatCard } from "./cards";
 
 const B_fmtNum = (n) => Number(n || 0).toLocaleString("vi-VN");
 const B_ROOM_STATUS = { available: "Còn chỗ", partial: "Còn ít chỗ", full: "Hết chỗ", maintenance: "Bảo trì" };

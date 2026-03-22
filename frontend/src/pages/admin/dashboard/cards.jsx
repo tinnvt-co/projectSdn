@@ -1,33 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-const OVERVIEW_EMPTY_STATS = {
-    totalUsers: null,
-    totalStudents: null,
-    totalBuildings: null,
-    activeBuildings: null,
-    pendingReports: null,
-    unpaidAmount: null,
-    collectionRate: null,
-    totalInvoices: null,
-    registrationOpen: null,
-};
-
-const fmtOverviewMoney = (value) => {
-    if (value === null || value === undefined) return "—";
-    return `${Number(value || 0).toLocaleString("vi-VN")}đ`;
-};
-
-const fmtOverviewTime = (value) => {
-    if (!value) return "—";
-    return new Date(value).toLocaleString("vi-VN", {
-        hour: "2-digit",
-        minute: "2-digit",
-        day: "2-digit",
-        month: "2-digit",
-    });
-};
-
-function StatCard({ icon, label, value, meta, color = "#e8540a", loading = false }) {
+export function StatCard({ icon, label, value, meta, color = "#e8540a", loading = false }) {
     return (
         <div className={`ad-stat-card${loading ? " is-loading" : ""}`}>
             <div className="ad-stat-icon" style={{ background: color + "18" }}>{icon}</div>
@@ -49,7 +22,7 @@ function StatCard({ icon, label, value, meta, color = "#e8540a", loading = false
     );
 }
 
-function QuickLink({ icon, label, caption, href, accent = "#e8540a" }) {
+export function QuickLink({ icon, label, caption, href, accent = "#e8540a" }) {
     const navigate = useNavigate();
     return (
         <button
@@ -64,13 +37,3 @@ function QuickLink({ icon, label, caption, href, accent = "#e8540a" }) {
         </button>
     );
 }
-
-/* Panels */
-
-export {
-    OVERVIEW_EMPTY_STATS,
-    QuickLink,
-    StatCard,
-    fmtOverviewMoney,
-    fmtOverviewTime,
-};

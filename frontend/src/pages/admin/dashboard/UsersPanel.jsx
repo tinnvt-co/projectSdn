@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import api from "../../../services/api";
-import { StatCard } from "./shared";
+import { StatCard } from "./cards";
 
 const U_ROLE_LABELS = { admin: "Admin", manager: "Quản lý", student: "Sinh viên" };
 const U_ROLE_COLORS = { admin: "#f59e0b", manager: "#6366f1", student: "#22c55e" };

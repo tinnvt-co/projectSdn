@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ChangePasswordModal from "../../components/ChangePasswordModal";
 import "../student/StudentDashboard.css";
@@ -10,30 +10,36 @@ import "./AdminDashboard.css";
 import "./AdminDashboardOverview.css";
 import "./AdminDashboardFinance.css";
 import "./AdminDashboardTabs.css";
-import OverviewPanel from "./dashboard/OverviewPanel";
-import UsersPanel from "./dashboard/UsersPanel";
-import BuildingsPanel from "./dashboard/BuildingsPanel";
-import ReportsPanel from "./dashboard/ReportsPanel";
-import FinancePanel from "./dashboard/FinancePanel";
-import NotificationsPanel from "./dashboard/NotificationsPanel";
-import SettingsPanel from "./dashboard/SettingsPanel";
+import { ADMIN_MENU, getAdminTabFromSearch } from "./dashboard/constants";
 
-const MENU = [
-    { id: "overview", icon: "🛡️", label: "Tổng quan" },
-    { id: "users", icon: "👥", label: "Tài khoản" },
-    { id: "buildings", icon: "🏢", label: "Tòa nhà & Phòng" },
-    { id: "reports", icon: "📑", label: "Báo cáo" },
-    { id: "finance", icon: "💰", label: "Tài chính" },
-    { id: "settings", icon: "⚙️", label: "Cài đặt & Bill" },
-    { id: "notifications", icon: "🔔", label: "Thông báo" },
-];
+const OverviewPanel = lazy(() => import("./dashboard/OverviewPanel"));
+const UsersPanel = lazy(() => import("./dashboard/UsersPanel"));
+const BuildingsPanel = lazy(() => import("./dashboard/BuildingsPanel"));
+const ReportsPanel = lazy(() => import("./dashboard/ReportsPanel"));
+const FinancePanel = lazy(() => import("./dashboard/FinancePanel"));
+const NotificationsPanel = lazy(() => import("./dashboard/NotificationsPanel"));
+const SettingsPanel = lazy(() => import("./dashboard/SettingsPanel"));
 
-const ADMIN_TABS = new Set(MENU.map((item) => item.id));
+const PANEL_COMPONENTS = {
+    overview: OverviewPanel,
+    users: UsersPanel,
+    buildings: BuildingsPanel,
+    reports: ReportsPanel,
+    finance: FinancePanel,
+    settings: SettingsPanel,
+    notifications: NotificationsPanel,
+};
 
-function getAdminTabFromSearch(search) {
-    const params = new URLSearchParams(search);
-    const tab = params.get("tab");
-    return ADMIN_TABS.has(tab) ? tab : "overview";
+function AdminPanelLoader() {
+    return (
+        <div className="ad-panel-stack">
+            <section className="ad-surface-panel" style={{ minHeight: 240, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <div className="ad-empty-inline" style={{ padding: 0 }}>
+                    Đang tải nội dung quản trị...
+                </div>
+            </section>
+        </div>
+    );
 }
 
 export default function AdminDashboard() {
@@ -53,15 +59,7 @@ export default function AdminDashboard() {
         navigate(`/admin/dashboard?tab=${tabId}`, { replace: true });
     };
 
-    const panels = {
-        overview: <OverviewPanel />,
-        users: <UsersPanel />,
-        buildings: <BuildingsPanel />,
-        reports: <ReportsPanel />,
-        finance: <FinancePanel />,
-        settings: <SettingsPanel />,
-        notifications: <NotificationsPanel />,
-    };
+    const ActivePanel = PANEL_COMPONENTS[active] || OverviewPanel;
 
     return (
         <div className="sd-wrapper">
@@ -73,7 +71,7 @@ export default function AdminDashboard() {
                     <div className="sd-sidebar-code" style={{ color: "#e8540a", fontWeight: 600, fontSize: 11 }}>🛡️ Quản trị viên</div>
                 </div>
                 <nav className="sd-menu">
-                    {MENU.map(item => (
+                    {ADMIN_MENU.map(item => (
                         <button
                             key={item.id}
                             className={`sd-menu-item${active === item.id ? " active" : ""}`}
@@ -96,7 +94,9 @@ export default function AdminDashboard() {
 
             {/* Content */}
             <main className="sd-content">
-                {panels[active]}
+                <Suspense fallback={<AdminPanelLoader />}>
+                    <ActivePanel />
+                </Suspense>
             </main>
 
             {showChangePw && (
