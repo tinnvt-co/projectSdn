@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../services/api";
+import { ArrowLeftIcon, BellIcon, BuildingIcon, EyeIcon, EyeOffIcon, LockIcon, ShieldIcon, UserIcon, WalletIcon } from "./AuthIcons";
 import "./AuthPages.css";
 
 const ROLE_DASHBOARD = {
@@ -57,7 +58,8 @@ export default function LoginPage() {
     return (
         <div className="auth-bg auth-login-bg">
             <Link to="/" className="auth-back-btn">
-                ← Trang chủ
+                <ArrowLeftIcon />
+                <span>Trang chủ</span>
             </Link>
             <div className="login-shell">
                 <section className="login-showcase">
@@ -80,21 +82,27 @@ export default function LoginPage() {
 
                         <div className="login-feature-list">
                             <div className="login-feature-card">
-                                <span className="login-feature-icon">🏢</span>
+                                <span className="login-feature-icon">
+                                    <BuildingIcon />
+                                </span>
                                 <div>
                                     <strong>Quản lý chỗ ở tập trung</strong>
                                     <p>Phòng, tòa nhà, lịch sử ở và đăng ký đều nằm trong một luồng rõ ràng.</p>
                                 </div>
                             </div>
                             <div className="login-feature-card">
-                                <span className="login-feature-icon">💳</span>
+                                <span className="login-feature-icon">
+                                    <WalletIcon />
+                                </span>
                                 <div>
                                     <strong>Tài chính minh bạch</strong>
                                     <p>Hóa đơn, thanh toán QR và công nợ được theo dõi trực quan theo từng sinh viên.</p>
                                 </div>
                             </div>
                             <div className="login-feature-card">
-                                <span className="login-feature-icon">🛎️</span>
+                                <span className="login-feature-icon">
+                                    <BellIcon />
+                                </span>
                                 <div>
                                     <strong>Vận hành nhanh hơn</strong>
                                     <p>Yêu cầu, báo cáo và thông báo được xử lý nhanh cho admin, manager và sinh viên.</p>
@@ -127,7 +135,9 @@ export default function LoginPage() {
                         <div className="form-field">
                             <label className="form-label">Tên đăng nhập / Email</label>
                             <div className="input-box login-input-box">
-                                <span className="icon">👤</span>
+                                <span className="icon">
+                                    <UserIcon />
+                                </span>
                                 <input
                                     id="username"
                                     name="username"
@@ -144,7 +154,9 @@ export default function LoginPage() {
                         <div className="form-field">
                             <label className="form-label">Mật khẩu</label>
                             <div className="input-box login-input-box">
-                                <span className="icon">🔒</span>
+                                <span className="icon">
+                                    <LockIcon />
+                                </span>
                                 <input
                                     id="password"
                                     name="password"
@@ -156,14 +168,17 @@ export default function LoginPage() {
                                     required
                                 />
                                 <button type="button" className="eye-btn" onClick={() => setShowPass((prev) => !prev)}>
-                                    {showPass ? "🙈" : "👁️"}
+                                    {showPass ? <EyeOffIcon /> : <EyeIcon />}
                                 </button>
                             </div>
                         </div>
 
                         {error && (
                             <div className="auth-alert error">
-                                <span>⚠️</span> {error}
+                                <span className="auth-alert-icon">
+                                    <ShieldIcon />
+                                </span>
+                                {error}
                             </div>
                         )}
 

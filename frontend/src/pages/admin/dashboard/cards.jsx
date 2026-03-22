@@ -3,9 +3,14 @@ import { useNavigate } from "react-router-dom";
 export function StatCard({ icon, label, value, meta, color = "#e8540a", loading = false }) {
     return (
         <div className={`ad-stat-card${loading ? " is-loading" : ""}`}>
-            <div className="ad-stat-icon" style={{ background: color + "18" }}>{icon}</div>
-            <div className="ad-stat-copy">
-                <div className="ad-stat-label">{label}</div>
+            <div className="ad-stat-head">
+                <div className="ad-stat-icon" style={{ background: color + "18" }}>{icon}</div>
+                <div className="ad-stat-copy">
+                    <div className="ad-stat-label">{label}</div>
+                </div>
+            </div>
+
+            <div className="ad-stat-body">
                 {loading ? (
                     <>
                         <div className="ad-skeleton ad-skeleton-value" />
